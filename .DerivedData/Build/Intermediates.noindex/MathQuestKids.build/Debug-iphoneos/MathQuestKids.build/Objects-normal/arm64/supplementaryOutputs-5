@@ -1,0 +1,23 @@
+{
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/MasteryEngine.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.dia",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.swiftdeps"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/ProgressRepository.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.dia",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.swiftdeps"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/ReviewScheduler.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.dia",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.swiftdeps"
+  }
+}

@@ -1,0 +1,329 @@
+{
+  "" : {
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKids-primary.dia",
+    "emit-module-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKids-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKids-primary-emit-module.dia",
+    "pch" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKids-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKids-primary.swiftdeps"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/AppState.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppState~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/AppTheme.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AppTheme~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/FeatureFlags.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/FeatureFlags~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/MathQuestKidsApp.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MathQuestKidsApp~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/NetworkGuard.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NetworkGuard~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/RootView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/RootView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/App/ThemedBackgroundView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ThemedBackgroundView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Content/ContentLoader.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentLoader~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Content/ContentPack.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ContentPack~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/CoreDataStack.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CoreDataStack~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/ManagedEntities.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ManagedEntities~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/MasteryEngine.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/MasteryEngine~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/ProgressRepository.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProgressRepository~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/ReviewScheduler.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ReviewScheduler~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Data/SessionComposer.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionComposer~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Domain/CurriculumModels.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumModels~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Domain/Models.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/Models~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Domain/SessionRuntime.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionRuntime~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Diagnostic/DiagnosticView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Home/HomeView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HomeView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Launch/ProfileSetupView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/ProfileSetupView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Lessons/LessonPlanView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/LessonPlanView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Session/SessionSummaryView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionSummaryView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Session/SessionView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SessionView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/Settings/SettingsView.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Features/SharedButtons.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/SharedButtons~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Services/AdaptiveLessonPlanner.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/AdaptiveLessonPlanner~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Services/CurriculumService.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/CurriculumService~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Services/DiagnosticService.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/DiagnosticService~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Services/HintEngine.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/HintEngine~partial.swiftmodule"
+  },
+  "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/MathQuestKids/Services/NarrationService.swift" : {
+    "const-values" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.swiftconstvalues",
+    "dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.d",
+    "diagnostics" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.dia",
+    "index-unit-output-path" : "/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.o",
+    "llvm-bc" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.bc",
+    "object" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.o",
+    "swift-dependencies" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService.swiftdeps",
+    "swiftmodule" : "/Users/nitish/VS Code Projects/tpm-portfolio/mathquest-kids/.DerivedData/Build/Intermediates.noindex/MathQuestKids.build/Debug-iphoneos/MathQuestKids.build/Objects-normal/arm64/NarrationService~partial.swiftmodule"
+  }
+}
