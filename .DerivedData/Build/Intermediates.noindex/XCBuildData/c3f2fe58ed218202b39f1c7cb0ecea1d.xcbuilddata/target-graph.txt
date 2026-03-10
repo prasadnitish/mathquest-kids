@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'MathQuestKids' in project 'MathQuestKids' (no dependencies)

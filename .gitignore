@@ -1,1 +1,43 @@
+# macOS
+.DS_Store
+
+# Xcode
+.DerivedData/
+xcuserdata/
+*.xcuserstate
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.hmap
+*.ipa
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Packages/
+
+# CocoaPods
+Pods/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+.env.local
+
+# Node
+node_modules/
+
+# Claude Code
 .claude/worktrees/
+
+# Misc
+*.log
+tmp/
+temp/
