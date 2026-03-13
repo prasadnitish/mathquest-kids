@@ -15,9 +15,9 @@ struct RewardSplashView: View {
                 .ignoresSafeArea()
                 .onTapGesture { onDismiss() }
 
-            VStack(spacing: 28) {
+            VStack(spacing: 22) {
                 Text("You earned a sticker!")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
@@ -29,7 +29,7 @@ struct RewardSplashView: View {
                         LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
                     )
                     .shadow(color: icon.gradient.first?.opacity(0.6) ?? .clear, radius: 12, y: 4)
-                    .frame(width: 160, height: 160)
+                    .frame(width: 120, height: 120)
                 .scaleEffect(appeared ? 1.0 : (reduceMotion ? 0.95 : 0.2))
                 .opacity(appeared ? 1.0 : 0.0)
                 .animation(
@@ -40,8 +40,10 @@ struct RewardSplashView: View {
                 )
 
                 Text(sticker.title)
-                    .font(.title2.bold())
+                    .font(.title3.bold())
                     .foregroundStyle(.white)
+
+                companionCelebration
 
                 Button("Awesome!") { onDismiss() }
                     .font(.title3.bold())
@@ -51,7 +53,13 @@ struct RewardSplashView: View {
                     .foregroundStyle(.white)
                     .accessibilityLabel("Dismiss sticker reward")
             }
-            .padding(40)
+            .padding(28)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28))
+            .overlay(
+                RoundedRectangle(cornerRadius: 28)
+                    .stroke(.white.opacity(0.2), lineWidth: 1)
+            )
+            .padding(.horizontal, 24)
 
             if showParticles && !reduceMotion {
                 ParticleBurstView()
@@ -65,9 +73,45 @@ struct RewardSplashView: View {
                     showParticles = true
                 }
             }
-            appState.narrationService.speakFeedback("You earned the \(sticker.title)!", style: appState.narrationStyle, interrupt: true)
+            let companionPhrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
+            appState.narrationService.speakFeedback("\(appState.activeCompanion.name) says: \(companionPhrase) You earned the \(sticker.title)!", style: appState.narrationStyle, interrupt: true)
         }
         .accessibilityAddTraits(.isModal)
+    }
+
+    private var companionCelebration: some View {
+        let companion = appState.activeCompanion
+        let phrase = CompanionPhrases.stickerEarned(tone: companion.tone)
+
+        return HStack(spacing: 10) {
+            Group {
+                if !companion.imageName.isEmpty {
+                    Image(companion.imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 48, height: 48)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: companion.symbol)
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 48, height: 48)
+                        .background(appState.selectedTheme.primary.opacity(0.85), in: Circle())
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(companion.name)
+                    .font(.caption.bold())
+                    .foregroundStyle(.white.opacity(0.7))
+                Text(phrase)
+                    .font(.headline.bold())
+                    .foregroundStyle(.white)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
+        }
     }
 }
 

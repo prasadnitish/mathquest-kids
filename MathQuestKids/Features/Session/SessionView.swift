@@ -15,6 +15,8 @@ struct SessionView: View {
     @State private var activeHint: HintAction?
     @State private var itemStartTime = Date()
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     var body: some View {
         Group {
             if let runtime = appState.currentSession {
@@ -23,7 +25,8 @@ struct SessionView: View {
                 ProgressView("Preparing your quest...")
             }
         }
-        .padding(24)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 24)
     }
 
     private func sessionContent(runtime: SessionRuntime) -> some View {
@@ -52,24 +55,52 @@ struct SessionView: View {
                 }
 
                 Text(item.prompt)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.system(size: sizeClass == .compact ? 26 : 32, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
                     .minimumScaleFactor(0.8)
                     .accessibilityLabel("Problem prompt")
                     .accessibilityIdentifier("problemPrompt")
 
                 if let feedback {
-                    Text(feedback)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.24) : appState.selectedTheme.primary.opacity(0.16), in: RoundedRectangle(cornerRadius: 16))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke((feedbackTone == .positive ? appState.selectedTheme.accent : appState.selectedTheme.primary).opacity(0.28), lineWidth: 1)
-                        )
+                    let companion = appState.activeCompanion
+                    let companionPhrase = feedbackTone == .positive
+                        ? CompanionPhrases.correct(tone: companion.tone)
+                        : CompanionPhrases.incorrect(tone: companion.tone)
+
+                    HStack(alignment: .top, spacing: 10) {
+                        Group {
+                            if !companion.imageName.isEmpty {
+                                Image(companion.imageName)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 28, height: 28)
+                                    .clipShape(Circle())
+                            } else {
+                                Image(systemName: companion.symbol)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 28, height: 28)
+                                    .background(appState.selectedTheme.primary, in: Circle())
+                            }
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(companionPhrase)
+                                .font(.subheadline.bold())
+                                .foregroundStyle(appState.selectedTheme.primary)
+                            Text(feedback)
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(AppTheme.textPrimary)
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.24) : appState.selectedTheme.primary.opacity(0.16), in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke((feedbackTone == .positive ? appState.selectedTheme.accent : appState.selectedTheme.primary).opacity(0.28), lineWidth: 1)
+                    )
                 }
 
                 HStack(spacing: 12) {
@@ -111,10 +142,11 @@ struct SessionView: View {
             Spacer(minLength: 0)
         }
         .background(.clear)
-        .alert("Hint", isPresented: $showingHint, actions: {
+        .alert(appState.activeCompanion.name, isPresented: $showingHint, actions: {
             Button("OK", role: .cancel) { }
         }, message: {
-            Text(activeHint?.text ?? "Try one step at a time.")
+            let intro = CompanionPhrases.hintIntro(tone: appState.activeCompanion.tone)
+            Text("\(intro) \(activeHint?.text ?? "Try one step at a time.")")
         })
         .onAppear {
             itemStartTime = Date()
@@ -158,7 +190,7 @@ struct SessionView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Quest in Progress")
-                        .font(.title2.bold())
+                        .font(sizeClass == .compact ? .headline.bold() : .title2.bold())
                         .foregroundStyle(AppTheme.textPrimary)
                     Text("\(Int(progress * 100))% complete")
                         .font(.subheadline.weight(.semibold))
@@ -168,11 +200,12 @@ struct SessionView: View {
                 Text("\(runtime.index + 1)/\(runtime.items.count)")
                     .font(.title3.monospacedDigit().bold())
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.82))
+                    .padding(.trailing, 36)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
         }
-        .frame(height: 74)
+        .frame(height: 64)
         .overlay(
             RoundedRectangle(cornerRadius: 18)
                 .stroke(Color.white.opacity(0.45), lineWidth: 1)

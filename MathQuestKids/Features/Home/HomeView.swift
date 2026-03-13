@@ -154,9 +154,17 @@ struct HomeView: View {
                         .fill(appState.selectedTheme.primary.opacity(0.22))
                     Circle()
                         .stroke(appState.selectedTheme.primary.opacity(0.45), lineWidth: 1.5)
-                    Image(systemName: appState.activeCompanion.symbol)
-                        .font(.system(size: 42, weight: .black))
-                        .foregroundStyle(AppTheme.textPrimary)
+                    if !appState.activeCompanion.imageName.isEmpty {
+                        Image(appState.activeCompanion.imageName)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: appState.activeCompanion.symbol)
+                            .font(.system(size: 42, weight: .black))
+                            .foregroundStyle(AppTheme.textPrimary)
+                    }
                 }
                 .frame(width: 88, height: 88)
 
@@ -185,9 +193,17 @@ struct HomeView: View {
                                     ZStack {
                                         Circle()
                                             .fill(appState.selectedTheme.primary.opacity(0.20))
-                                        Image(systemName: companion.symbol)
-                                            .font(.title2.bold())
-                                            .foregroundStyle(AppTheme.textPrimary)
+                                        if !companion.imageName.isEmpty {
+                                            Image(companion.imageName)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 36, height: 36)
+                                                .clipShape(Circle())
+                                        } else {
+                                            Image(systemName: companion.symbol)
+                                                .font(.title2.bold())
+                                                .foregroundStyle(AppTheme.textPrimary)
+                                        }
                                     }
                                     .frame(width: 42, height: 42)
 

@@ -285,9 +285,17 @@ private struct CompanionCard: View {
                             .fill(theme.primary.opacity(0.22))
                         Circle()
                             .stroke(theme.primary.opacity(0.45), lineWidth: 1.5)
-                        Image(systemName: companion.symbol)
-                            .font(.system(size: 28, weight: .black))
-                            .foregroundStyle(AppTheme.textPrimary)
+                        if !companion.imageName.isEmpty {
+                            Image(companion.imageName)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 56, height: 56)
+                                .clipShape(Circle())
+                        } else {
+                            Image(systemName: companion.symbol)
+                                .font(.system(size: 28, weight: .black))
+                                .foregroundStyle(AppTheme.textPrimary)
+                        }
                     }
                     .frame(width: 64, height: 64)
 

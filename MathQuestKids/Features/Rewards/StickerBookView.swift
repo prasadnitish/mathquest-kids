@@ -7,8 +7,11 @@ struct StickerBookView: View {
 
     var body: some View {
         ZStack {
-            // Solid background so themed animation doesn't bleed through
-            Color(.systemBackground)
+            ThemedBackgroundView(theme: appState.selectedTheme)
+                .ignoresSafeArea()
+
+            // Translucent overlay for readability
+            Color(.systemBackground).opacity(0.7)
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
