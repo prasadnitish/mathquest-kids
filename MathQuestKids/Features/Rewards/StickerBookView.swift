@@ -105,16 +105,24 @@ struct StickerSlotView: View {
                         )
 
                     if sticker.isUnlocked {
-                        Image(systemName: icon.systemName)
-                            .font(.system(size: 44))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: icon.gradient,
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+                        if let imgName = icon.imageName {
+                            Image(imgName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .shadow(color: icon.gradient.first?.opacity(0.3) ?? .clear, radius: 3, y: 2)
+                        } else {
+                            Image(systemName: icon.systemName)
+                                .font(.system(size: 44))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: icon.gradient,
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
                                 )
-                            )
-                            .shadow(color: icon.gradient.first?.opacity(0.3) ?? .clear, radius: 3, y: 2)
+                                .shadow(color: icon.gradient.first?.opacity(0.3) ?? .clear, radius: 3, y: 2)
+                        }
                     } else {
                         Image(systemName: "lock.fill")
                             .font(.system(size: 24))

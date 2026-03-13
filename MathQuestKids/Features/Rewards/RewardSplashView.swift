@@ -25,14 +25,23 @@ struct RewardSplashView: View {
                     .multilineTextAlignment(.center)
 
                 let icon = sticker.icon(for: appState.selectedTheme)
-                Image(systemName: icon.systemName)
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(
-                        LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-                    .shadow(color: icon.gradient.first?.opacity(0.6) ?? .clear, radius: 12, y: 4)
-                    .frame(width: 120, height: 120)
+                Group {
+                    if let imgName = icon.imageName {
+                        Image(imgName)
+                            .resizable()
+                            .scaledToFit()
+                            .shadow(color: .black.opacity(0.2), radius: 12, y: 4)
+                    } else {
+                        Image(systemName: icon.systemName)
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(
+                                LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                            )
+                            .shadow(color: icon.gradient.first?.opacity(0.6) ?? .clear, radius: 12, y: 4)
+                    }
+                }
+                .frame(width: 120, height: 120)
                 .scaleEffect(appeared ? 1.0 : (reduceMotion ? 0.95 : 0.2))
                 .opacity(appeared ? 1.0 : 0.0)
                 .animation(
