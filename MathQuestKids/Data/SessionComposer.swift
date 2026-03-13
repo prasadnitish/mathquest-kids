@@ -80,20 +80,28 @@ final class SessionComposer {
 
     private func makePracticeItem(template: ItemTemplate, seed: Int, isReview: Bool) -> PracticeItem {
         let options: [String]
-        switch template.format {
-        case .subtractionStory:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
-            options = makeNumericOptions(answer: answer)
-        case .teenPlaceValue:
-            options = []
-        case .twoDigitComparison, .threeDigitComparison, .fractionComparison, .decimalComparison:
-            options = ["<", ">", "="]
-        case .multiplicationArray, .fractionOfWhole, .volumePrism:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
-            options = makeNumericOptions(answer: answer)
-        case .additionStory, .countAndMatch, .numberBond, .factFamily, .addTwoDigit, .subTwoDigit:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
-            options = makeNumericOptions(answer: answer)
+        // Use pre-set options from template if available (for string-answer word problems)
+        if let preset = template.templateOptions, !preset.isEmpty {
+            options = deterministic ? preset : preset.shuffled()
+        } else {
+            switch template.format {
+            case .subtractionStory:
+                let answer = Int(template.answer) ?? template.payload.target ?? 0
+                options = makeNumericOptions(answer: answer)
+            case .teenPlaceValue:
+                options = []
+            case .twoDigitComparison, .threeDigitComparison, .fractionComparison, .decimalComparison:
+                options = ["<", ">", "="]
+            case .multiplicationArray, .fractionOfWhole, .volumePrism:
+                let answer = Int(template.answer) ?? template.payload.target ?? 0
+                options = makeNumericOptions(answer: answer)
+            case .additionStory, .countAndMatch, .numberBond, .factFamily, .addTwoDigit, .subTwoDigit:
+                let answer = Int(template.answer) ?? template.payload.target ?? 0
+                options = makeNumericOptions(answer: answer)
+            case .wordProblem:
+                let answer = Int(template.answer) ?? template.payload.target ?? 0
+                options = makeNumericOptions(answer: answer)
+            }
         }
 
         return PracticeItem(

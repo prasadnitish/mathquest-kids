@@ -60,6 +60,21 @@ struct ItemTemplate: Codable {
     let answer: String
     let supports: [SupportType]
     let payload: ItemPayload
+    let templateOptions: [String]?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        unit = try container.decode(UnitType.self, forKey: .unit)
+        skill = try container.decode(String.self, forKey: .skill)
+        format = try container.decode(ItemFormat.self, forKey: .format)
+        difficulty = try container.decode(Int.self, forKey: .difficulty)
+        prompt = try container.decode(String.self, forKey: .prompt)
+        answer = try container.decode(String.self, forKey: .answer)
+        supports = try container.decode([SupportType].self, forKey: .supports)
+        payload = try container.decode(ItemPayload.self, forKey: .payload)
+        templateOptions = try container.decodeIfPresent([String].self, forKey: .templateOptions)
+    }
 }
 
 struct ItemPayload: Codable, Equatable {

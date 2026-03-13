@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -15,8 +16,8 @@ struct HomeView: View {
                     .environmentObject(appState)
                 rewardCard
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 84)
+            .padding(.horizontal, sizeClass == .compact ? 16 : 24)
+            .padding(.top, sizeClass == .compact ? 64 : 84)
             .padding(.bottom, 32)
         }
         .overlay(alignment: .top) {
@@ -34,7 +35,7 @@ struct HomeView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("\(greeting), \(appState.profile?.displayName ?? "Explorer")")
-                .font(.system(size: 38, weight: .bold, design: .rounded))
+                .font(.system(size: sizeClass == .compact ? 28 : 38, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.textPrimary)
 
             Text("Offline-first math adventures with adaptive K-5 learning paths.")
@@ -110,7 +111,10 @@ struct HomeView: View {
                 }
             }
 
-            HStack(spacing: 10) {
+            let buttonLayout = sizeClass == .compact
+                ? AnyLayout(VStackLayout(spacing: 10))
+                : AnyLayout(HStackLayout(spacing: 10))
+            buttonLayout {
                 Button("Start Recommended Quest") {
                     appState.startRecommendedSession()
                 }
@@ -162,7 +166,7 @@ struct HomeView: View {
                             .clipShape(Circle())
                     } else {
                         Image(systemName: appState.activeCompanion.symbol)
-                            .font(.system(size: 42, weight: .black))
+                            .font(.system(size: AppTheme.scaled(42, compact: sizeClass == .compact), weight: .black))
                             .foregroundStyle(AppTheme.textPrimary)
                     }
                 }
@@ -312,6 +316,7 @@ struct HomeView: View {
 
 struct UnitCardView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.horizontalSizeClass) private var sizeClass
     let unit: UnitType
     let onStart: () -> Void
 
@@ -370,7 +375,7 @@ struct UnitCardView: View {
                     HStack {
                         Spacer()
                         Image(systemName: appState.selectedTheme.heroSymbol)
-                            .font(.system(size: 36, weight: .black))
+                            .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black))
                             .foregroundStyle(appState.selectedTheme.primary.opacity(0.16))
                     }
                     Spacer()

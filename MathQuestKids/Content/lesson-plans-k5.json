@@ -83,8 +83,8 @@
             "errorAnalysis"
           ],
           "estimatedMinutes": 16,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "kCompareGroups",
           "activityPrompt": "Build two sets and justify which has more using matching strategy."
         },
         {
@@ -102,8 +102,8 @@
             "mathTalk"
           ],
           "estimatedMinutes": 18,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "kShapeAttributes",
           "activityPrompt": "Sort mixed shape cards and explain rules in a class math talk."
         },
         {
@@ -197,26 +197,6 @@
           "activityPrompt": "Represent each story using counters, a bar model, and an equation."
         },
         {
-          "id": "g1-fact-families",
-          "grade": "grade1",
-          "title": "Fact Families and Number Bonds",
-          "domain": "operationsAlgebraicThinking",
-          "objective": "Relate addition and subtraction using part-part-whole structure.",
-          "standards": [
-            "CCSS.MATH.CONTENT.1.OA.B.3",
-            "CCSS.MATH.CONTENT.1.OA.D.8"
-          ],
-          "strategies": [
-            "numberBonds",
-            "variationTheory",
-            "errorAnalysis"
-          ],
-          "estimatedMinutes": 20,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
-          "activityPrompt": "Complete missing-number triangles and create equation families."
-        },
-        {
           "id": "g1-teen-place-value-core",
           "grade": "grade1",
           "title": "Teen Place Value Core",
@@ -270,8 +250,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 24,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g1AddSub100",
           "activityPrompt": "Solve by making a ten and explain strategy choices to a partner."
         },
         {
@@ -290,8 +270,8 @@
             "variationTheory"
           ],
           "estimatedMinutes": 20,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g1MeasureLength",
           "activityPrompt": "Measure classroom objects with paper clips and explain why gaps matter."
         },
         {
@@ -361,8 +341,8 @@
             "mathTalk"
           ],
           "estimatedMinutes": 22,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2PlaceValue1000",
           "activityPrompt": "Compose and decompose numbers with hundreds flats, tens rods, and ones."
         },
         {
@@ -399,8 +379,8 @@
             "mentalMath"
           ],
           "estimatedMinutes": 25,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2AddSubRegroup",
           "activityPrompt": "Trade tens and ones with blocks before writing vertical equations."
         },
         {
@@ -419,8 +399,8 @@
             "patternGeneralization"
           ],
           "estimatedMinutes": 21,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2EqualGroups",
           "activityPrompt": "Build arrays with tiles and write matching repeated-addition equations."
         },
         {
@@ -439,8 +419,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 24,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2TimeMoney",
           "activityPrompt": "Use open number lines for elapsed time and coin-value decompositions."
         },
         {
@@ -458,8 +438,8 @@
             "variationTheory"
           ],
           "estimatedMinutes": 19,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2DataIntro",
           "activityPrompt": "Collect class data and justify statements using evidence from plots."
         },
         {
@@ -548,8 +528,8 @@
             "errorAnalysis"
           ],
           "estimatedMinutes": 22,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g3DivMeaning",
           "activityPrompt": "Model both partitive and quotative division with bar models."
         },
         {
@@ -568,8 +548,8 @@
             "mathTalk"
           ],
           "estimatedMinutes": 24,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g3FractionUnit",
           "activityPrompt": "Partition strips, then locate fractions on open number lines."
         },
         {
@@ -587,8 +567,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 20,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g3FractionCompare",
           "activityPrompt": "Analyze wrong comparison statements and fix reasoning with visuals."
         },
         {
@@ -607,8 +587,8 @@
             "mathTalk"
           ],
           "estimatedMinutes": 23,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g3AreaConcept",
           "activityPrompt": "Tile rectangles physically, then derive area multiplication patterns."
         },
         {
@@ -626,8 +606,8 @@
             "workedExamples"
           ],
           "estimatedMinutes": 25,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g3MultiStep",
           "activityPrompt": "Use bar models to map known/unknown quantities before calculating."
         }
       ]
@@ -657,8 +637,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 24,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4PlaceValueMillion",
           "activityPrompt": "Generate near-miss numbers to discuss rounding boundary decisions."
         },
         {
@@ -676,8 +656,8 @@
             "errorAnalysis"
           ],
           "estimatedMinutes": 27,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4MultMultiDigit",
           "activityPrompt": "Transition from area models to algorithm while preserving place-value meaning."
         },
         {
@@ -695,8 +675,8 @@
             "workedExamples"
           ],
           "estimatedMinutes": 26,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4DivPartialQuotients",
           "activityPrompt": "Use open arrays and partial quotients before compact notation."
         },
         {
@@ -734,8 +714,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 23,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4FractionAddSub",
           "activityPrompt": "Start with visual models and identify common denominator mistakes."
         },
         {
@@ -754,8 +734,8 @@
             "patternGeneralization"
           ],
           "estimatedMinutes": 22,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4AngleMeasure",
           "activityPrompt": "Use protractors and angle decomposition challenges to reason."
         }
       ]
@@ -805,8 +785,8 @@
             "errorAnalysis"
           ],
           "estimatedMinutes": 27,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g5FractionAddSubUnlike",
           "activityPrompt": "Model denominator alignment visually before symbolic work."
         },
         {
@@ -863,8 +843,8 @@
             "spiralReview"
           ],
           "estimatedMinutes": 22,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g5LinePlotsFractions",
           "activityPrompt": "Use line-plot evidence to justify operations on fractional data."
         },
         {
@@ -882,8 +862,8 @@
             "guidedDiscovery"
           ],
           "estimatedMinutes": 23,
-          "isPlayableInApp": false,
-          "linkedUnit": null,
+          "isPlayableInApp": true,
+          "linkedUnit": "g5PreRatios",
           "activityPrompt": "Generate and explain pattern rules with tables and expressions."
         }
       ]

@@ -5,6 +5,7 @@ struct RewardSplashView: View {
     let onDismiss: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var appState: AppState
     @State private var appeared = false
     @State private var showParticles = false
@@ -16,8 +17,10 @@ struct RewardSplashView: View {
                 .onTapGesture { onDismiss() }
 
             VStack(spacing: 22) {
+                companionCelebration
+
                 Text("You earned a sticker!")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(32, compact: sizeClass == .compact), weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
@@ -40,10 +43,8 @@ struct RewardSplashView: View {
                 )
 
                 Text(sticker.title)
-                    .font(.title3.bold())
+                    .font(.title2.bold())
                     .foregroundStyle(.white)
-
-                companionCelebration
 
                 Button("Awesome!") { onDismiss() }
                     .font(.title3.bold())
@@ -53,13 +54,8 @@ struct RewardSplashView: View {
                     .foregroundStyle(.white)
                     .accessibilityLabel("Dismiss sticker reward")
             }
-            .padding(28)
+            .padding(32)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28))
-            .overlay(
-                RoundedRectangle(cornerRadius: 28)
-                    .stroke(.white.opacity(0.2), lineWidth: 1)
-            )
-            .padding(.horizontal, 24)
 
             if showParticles && !reduceMotion {
                 ParticleBurstView()
@@ -73,8 +69,8 @@ struct RewardSplashView: View {
                     showParticles = true
                 }
             }
-            let companionPhrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
-            appState.narrationService.speakFeedback("\(appState.activeCompanion.name) says: \(companionPhrase) You earned the \(sticker.title)!", style: appState.narrationStyle, interrupt: true)
+            let phrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
+            appState.narrationService.speakFeedback("\(appState.activeCompanion.name) says: \(phrase) You earned the \(sticker.title)!", style: appState.narrationStyle, interrupt: true)
         }
         .accessibilityAddTraits(.isModal)
     }
@@ -82,9 +78,10 @@ struct RewardSplashView: View {
     private var companionCelebration: some View {
         let companion = appState.activeCompanion
         let phrase = CompanionPhrases.stickerEarned(tone: companion.tone)
-
         return HStack(spacing: 10) {
-            Group {
+            ZStack {
+                Circle()
+                    .fill(appState.selectedTheme.primary.opacity(0.22))
                 if !companion.imageName.isEmpty {
                     Image(companion.imageName)
                         .resizable()
@@ -93,24 +90,16 @@ struct RewardSplashView: View {
                         .clipShape(Circle())
                 } else {
                     Image(systemName: companion.symbol)
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.title2.bold())
                         .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
-                        .background(appState.selectedTheme.primary.opacity(0.85), in: Circle())
                 }
             }
+            .frame(width: 48, height: 48)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(companion.name)
-                    .font(.caption.bold())
-                    .foregroundStyle(.white.opacity(0.7))
-                Text(phrase)
-                    .font(.headline.bold())
-                    .foregroundStyle(.white)
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
+            Text(phrase)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.9))
+                .multilineTextAlignment(.leading)
         }
     }
 }

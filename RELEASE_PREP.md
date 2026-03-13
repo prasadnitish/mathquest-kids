@@ -1,4 +1,4 @@
-# MathQuest Kids Release Prep (Phase 5)
+# Sprout Math Release Prep (Phase 5)
 
 ## Build and QA
 - Run `MathQuestKidsTests` and `MathQuestKidsUITests` on an iPad simulator.
@@ -25,7 +25,8 @@
 - Run internal test pass on at least one physical iPad.
 
 ## App Store Metadata Draft
-- Subtitle: "Offline math adventures for early learners"
+- App Name: Sprout Math
+- Subtitle: "Offline math adventures for K-5 learners"
 - Age: Kids 5 and under
 - Privacy summary: Data stays on-device in V1 unless future opt-in sync is added.
 - Screenshots: profile setup, home map, one screen per unit, session summary.

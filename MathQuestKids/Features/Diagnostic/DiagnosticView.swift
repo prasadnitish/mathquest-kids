@@ -2,11 +2,16 @@ import SwiftUI
 
 struct DiagnosticView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isCompact: Bool { sizeClass == .compact }
 
     var body: some View {
         Group {
             if let session = appState.diagnosticSession {
-                content(session: session)
+                ScrollView {
+                    content(session: session)
+                }
             } else {
                 ProgressView("Preparing diagnostic...")
                     .font(.title3)
@@ -15,18 +20,18 @@ struct DiagnosticView: View {
                     }
             }
         }
-        .padding(24)
+        .padding(isCompact ? 16 : 24)
     }
 
     private func content(session: DiagnosticSessionRuntime) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: isCompact ? 12 : 18) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Learning Level Check")
-                    .font(.system(size: 42, weight: .bold, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(42, compact: isCompact), weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
 
                 Text("12 quick questions. This places your child at the right level and builds a personalized K-5 path.")
-                    .font(.system(size: 30, weight: .semibold, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(30, compact: isCompact), weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.88))
                     .lineSpacing(2)
 
@@ -34,10 +39,10 @@ struct DiagnosticView: View {
                     .tint(appState.selectedTheme.accent)
 
                 Text("Question \(min(session.index + 1, session.questions.count)) of \(session.questions.count)")
-                    .font(.title3.weight(.bold))
+                    .font(isCompact ? .subheadline.weight(.bold) : .title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.8))
             }
-            .padding(18)
+            .padding(isCompact ? 14 : 18)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.white.opacity(0.85), in: RoundedRectangle(cornerRadius: 20))
             .overlay(
@@ -47,19 +52,19 @@ struct DiagnosticView: View {
 
             let question = session.currentQuestion
 
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: isCompact ? 10 : 14) {
                 HStack(spacing: 8) {
                     chip(title: question.targetGrade.title)
                     chip(title: question.domain.title)
                 }
 
                 Text(question.prompt)
-                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(38, compact: isCompact), weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
 
                 if let feedback = appState.diagnosticFeedbackMessage {
                     Text(feedback)
-                        .font(.title3.weight(.semibold))
+                        .font(isCompact ? .subheadline.weight(.semibold) : .title3.weight(.semibold))
                         .foregroundStyle(AppTheme.textPrimary)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -77,14 +82,14 @@ struct DiagnosticView: View {
                     } label: {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text(optionLetter(index))
-                                .font(.title3.bold())
+                                .font(isCompact ? .body.bold() : .title3.bold())
                                 .foregroundStyle(appState.selectedTheme.primary)
                             Text(choice)
-                                .font(.title2.weight(.semibold))
+                                .font(isCompact ? .body.weight(.semibold) : .title2.weight(.semibold))
                                 .foregroundStyle(AppTheme.textPrimary)
                             Spacer()
                         }
-                        .padding(16)
+                        .padding(isCompact ? 12 : 16)
                         .frame(maxWidth: .infinity)
                         .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 16))
                         .overlay(
@@ -102,14 +107,14 @@ struct DiagnosticView: View {
                 } label: {
                     HStack(spacing: 10) {
                         Image(systemName: "questionmark.circle.fill")
-                            .font(.title3.bold())
+                            .font(isCompact ? .body.bold() : .title3.bold())
                             .foregroundStyle(appState.selectedTheme.primary)
                         Text("I don't know yet")
-                            .font(.title3.weight(.semibold))
+                            .font(isCompact ? .body.weight(.semibold) : .title3.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
                         Spacer()
                     }
-                    .padding(16)
+                    .padding(isCompact ? 12 : 16)
                     .frame(maxWidth: .infinity)
                     .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16))
                     .overlay(
@@ -121,7 +126,7 @@ struct DiagnosticView: View {
                 .disabled(appState.diagnosticInteractionDisabled)
                 .accessibilityLabel("I don't know yet")
             }
-            .padding(20)
+            .padding(isCompact ? 14 : 20)
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 24))
             .shadow(color: .black.opacity(0.15), radius: 14, x: 0, y: 8)
 

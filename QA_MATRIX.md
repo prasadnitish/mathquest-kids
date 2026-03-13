@@ -1,4 +1,4 @@
-# MathQuest Kids QA Matrix (V1)
+# Sprout Math QA Matrix (V1)
 
 ## Functional
 - Profile creation persists after app restart.

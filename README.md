@@ -1,4 +1,4 @@
-# MathQuest Kids (iPad, Offline-First)
+# Sprout Math (iPad, Offline-First)
 
 Native SwiftUI iPad app for early math practice with deterministic tutoring, local-only persistence, and bundled content packs.
 

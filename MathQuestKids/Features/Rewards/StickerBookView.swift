@@ -2,8 +2,12 @@ import SwiftUI
 
 struct StickerBookView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    private var columns: [GridItem] {
+        let count = sizeClass == .compact ? 2 : 3
+        return Array(repeating: GridItem(.flexible()), count: count)
+    }
 
     var body: some View {
         ZStack {

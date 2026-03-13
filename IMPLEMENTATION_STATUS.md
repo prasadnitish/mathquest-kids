@@ -1,4 +1,4 @@
-# MathQuest Kids Phase Status
+# Sprout Math Phase Status
 
 ## Phase 0: Project Bootstrap
 - Completed: standalone Xcode project, iPad-only target, app shell, test targets.

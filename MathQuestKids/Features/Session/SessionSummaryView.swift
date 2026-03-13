@@ -3,7 +3,10 @@ import SwiftUI
 struct SessionSummaryView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var animateBadge = false
+
+    private var isCompact: Bool { sizeClass == .compact }
 
     var body: some View {
         ZStack {
@@ -11,7 +14,7 @@ struct SessionSummaryView: View {
             Spacer()
 
             Text("Quest Complete")
-                .font(.system(size: 42, weight: .bold, design: .rounded))
+                .font(.system(size: AppTheme.scaled(42, compact: isCompact), weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.textPrimary)
                 .padding(.horizontal, 18)
                 .padding(.vertical, 10)
@@ -24,7 +27,7 @@ struct SessionSummaryView: View {
             if let summary = appState.latestSummary {
                 VStack(spacing: 12) {
                     Image(systemName: "star.circle.fill")
-                        .font(.system(size: 72))
+                        .font(.system(size: AppTheme.scaled(72, compact: isCompact)))
                         .foregroundStyle(AppTheme.accent)
                         .scaleEffect(animateBadge ? 1.0 : 0.82)
                         .opacity(animateBadge ? 1.0 : 0.7)

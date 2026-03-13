@@ -7,6 +7,7 @@ private enum SessionFeedbackTone {
 
 struct SessionView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var selectedChoice: String = ""
     @State private var feedback: String?
@@ -15,18 +16,17 @@ struct SessionView: View {
     @State private var activeHint: HintAction?
     @State private var itemStartTime = Date()
 
-    @Environment(\.horizontalSizeClass) private var sizeClass
-
     var body: some View {
-        Group {
+        ScrollView {
             if let runtime = appState.currentSession {
                 sessionContent(runtime: runtime)
             } else {
                 ProgressView("Preparing your quest...")
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 24)
+        .scrollIndicators(.hidden)
+        .padding(.horizontal, sizeClass == .compact ? 16 : 24)
+        .padding(.top, sizeClass == .compact ? 8 : 16)
     }
 
     private func sessionContent(runtime: SessionRuntime) -> some View {
@@ -55,9 +55,10 @@ struct SessionView: View {
                 }
 
                 Text(item.prompt)
-                    .font(.system(size: sizeClass == .compact ? 26 : 32, weight: .bold, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(32, compact: sizeClass == .compact), weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(0.7)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel("Problem prompt")
                     .accessibilityIdentifier("problemPrompt")
 
@@ -67,31 +68,33 @@ struct SessionView: View {
                         ? CompanionPhrases.correct(tone: companion.tone)
                         : CompanionPhrases.incorrect(tone: companion.tone)
 
-                    HStack(alignment: .top, spacing: 10) {
-                        Group {
-                            if !companion.imageName.isEmpty {
-                                Image(companion.imageName)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 28, height: 28)
-                                    .clipShape(Circle())
-                            } else {
-                                Image(systemName: companion.symbol)
-                                    .font(.system(size: 16, weight: .bold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 28, height: 28)
-                                    .background(appState.selectedTheme.primary, in: Circle())
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 8) {
+                            ZStack {
+                                Circle()
+                                    .fill(appState.selectedTheme.primary.opacity(0.18))
+                                if !companion.imageName.isEmpty {
+                                    Image(companion.imageName)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 28, height: 28)
+                                        .clipShape(Circle())
+                                } else {
+                                    Image(systemName: companion.symbol)
+                                        .font(.caption.bold())
+                                        .foregroundStyle(appState.selectedTheme.primary)
+                                }
                             }
+                            .frame(width: 28, height: 28)
+
+                            Text(companionPhrase)
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(companionPhrase)
-                                .font(.subheadline.bold())
-                                .foregroundStyle(appState.selectedTheme.primary)
-                            Text(feedback)
-                                .font(.headline.weight(.semibold))
-                                .foregroundStyle(AppTheme.textPrimary)
-                        }
+                        Text(feedback)
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
@@ -190,7 +193,7 @@ struct SessionView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Quest in Progress")
-                        .font(sizeClass == .compact ? .headline.bold() : .title2.bold())
+                        .font(.title2.bold())
                         .foregroundStyle(AppTheme.textPrimary)
                     Text("\(Int(progress * 100))% complete")
                         .font(.subheadline.weight(.semibold))
@@ -200,12 +203,11 @@ struct SessionView: View {
                 Text("\(runtime.index + 1)/\(runtime.items.count)")
                     .font(.title3.monospacedDigit().bold())
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.82))
-                    .padding(.trailing, 36)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.vertical, 12)
         }
-        .frame(height: 64)
+        .frame(height: 74)
         .overlay(
             RoundedRectangle(cornerRadius: 18)
                 .stroke(Color.white.opacity(0.45), lineWidth: 1)
@@ -240,6 +242,8 @@ struct SessionView: View {
             CountAndMatchInteraction(item: item, selection: $selectedChoice)
         case .numberBond:
             NumberBondInteraction(item: item, selection: $selectedChoice)
+        case .wordProblem:
+            WordProblemInteraction(item: item, selection: $selectedChoice)
         }
     }
 
@@ -278,6 +282,8 @@ struct SessionView: View {
                 return "Great thinking! You found the missing number."
             case .subTwoDigit:
                 return "Well done! You subtracted those big numbers correctly."
+            case .wordProblem:
+                return "That's right! Great thinking."
             }
         }
 
@@ -308,6 +314,8 @@ struct SessionView: View {
             return "Nice try. Think: the whole minus the known part gives the missing part."
         case .subTwoDigit:
             return "Good effort. Subtract the ones first, then the tens."
+        case .wordProblem:
+            return "Good try. Read the problem again and think about what it's asking."
         }
     }
 }
@@ -495,50 +503,50 @@ struct TeenPlaceValueInteraction: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.textSecondary)
 
-            HStack(spacing: 12) {
-                PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten) {
-                    adjust(.ten, delta: 1)
-                } onRemove: {
-                    adjust(.ten, delta: -1)
+            HStack(alignment: .top, spacing: 12) {
+                VStack(spacing: 10) {
+                    PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten) {
+                        adjust(.ten, delta: 1)
+                    } onRemove: {
+                        adjust(.ten, delta: -1)
+                    }
+
+                    Button {
+                        adjust(.ten, delta: 1)
+                    } label: {
+                        Label("+1 Ten", systemImage: "plus.circle.fill")
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
                 }
-                PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one) {
-                    adjust(.one, delta: 1)
-                } onRemove: {
-                    adjust(.one, delta: -1)
+
+                VStack(spacing: 10) {
+                    PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one) {
+                        adjust(.one, delta: 1)
+                    } onRemove: {
+                        adjust(.one, delta: -1)
+                    }
+
+                    HStack(spacing: 8) {
+                        Button {
+                            adjust(.one, delta: 1)
+                        } label: {
+                            Label("+1 One", systemImage: "plus.circle.fill")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+
+                        Button {
+                            adjust(.one, delta: -1)
+                        } label: {
+                            Label("-1 One", systemImage: "minus.circle.fill")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .disabled(ones == 0)
+                    }
                 }
             }
 
-            HStack(spacing: 12) {
-                Button {
-                    adjust(.ten, delta: 1)
-                } label: {
-                    Label("+1 Ten", systemImage: "plus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-
-                Button {
-                    adjust(.one, delta: 1)
-                } label: {
-                    Label("+1 One", systemImage: "plus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-
-                Button {
-                    adjust(.ten, delta: -1)
-                } label: {
-                    Label("-1 Ten", systemImage: "minus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(tens == 0)
-
-                Button {
-                    adjust(.one, delta: -1)
-                } label: {
-                    Label("-1 One", systemImage: "minus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(ones == 0)
-
+            HStack {
+                Spacer()
                 Button {
                     tens = 0
                     ones = 0
@@ -674,13 +682,14 @@ enum TokenKind {
 struct ComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 20) {
                 NumberBadge(number: item.payload.left ?? 0)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
                 NumberBadge(number: item.payload.right ?? 0)
             }
 
@@ -750,6 +759,7 @@ struct MultiplicationArrayInteraction: View {
 struct FractionComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         let aTop = item.payload.numeratorA ?? 0
@@ -761,7 +771,7 @@ struct FractionComparisonInteraction: View {
             HStack(spacing: 18) {
                 FractionBadge(numerator: aTop, denominator: aBottom)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
                 FractionBadge(numerator: bTop, denominator: bBottom)
             }
 
@@ -845,6 +855,7 @@ struct VolumePrismInteraction: View {
 struct DecimalComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         let left = item.payload.decimalLeft ?? 0
@@ -854,7 +865,7 @@ struct DecimalComparisonInteraction: View {
             HStack(spacing: 20) {
                 DecimalBadge(value: left)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
                 DecimalBadge(value: right)
             }
 
@@ -874,10 +885,11 @@ struct DecimalComparisonInteraction: View {
 
 struct NumberBadge: View {
     let number: Int
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         Text("\(number)")
-            .font(.system(size: 36, weight: .bold, design: .rounded))
+            .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .bold, design: .rounded))
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
@@ -906,10 +918,12 @@ struct FractionBadge: View {
 
 struct DecimalBadge: View {
     let value: Double
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         Text(String(format: "%.3f", value))
-            .font(.system(size: 32, weight: .bold, design: .rounded))
+            .font(.system(size: AppTheme.scaled(32, compact: sizeClass == .compact), weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.7)
             .padding(.horizontal, 18)
             .padding(.vertical, 12)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
@@ -931,6 +945,32 @@ struct MetricBadge: View {
         .padding(10)
         .frame(width: 56)
         .background(Color.white.opacity(0.88), in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct WordProblemInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(item.prompt)
+                .font(.system(size: AppTheme.scaled(28, compact: sizeClass == .compact), weight: .semibold, design: .rounded))
+                .foregroundStyle(AppTheme.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                ForEach(item.options, id: \.self) { option in
+                    ChoiceButton(title: option, isSelected: selection == option) {
+                        selection = option
+                    }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
     }
 }
 

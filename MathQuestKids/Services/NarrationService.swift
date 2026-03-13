@@ -36,7 +36,7 @@ final class NarrationService {
     }
 
     func preview(style: NarrationStyle) {
-        speak("Hi explorer. I can read your math quests in this voice.", style: style, role: .feedback, interrupt: true)
+        speak("Hi explorer. I can read your math problems in this voice.", style: style, role: .feedback, interrupt: true)
     }
 
     private enum SpeechRole {
