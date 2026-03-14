@@ -20,37 +20,228 @@ enum NarrationStyle: String, CaseIterable, Identifiable {
 }
 
 final class NarrationService {
+
+    // MARK: - Audio playback (pre-generated MP3s)
+
+    private var audioPlayer: AVAudioPlayer?
+    private let audioIndex: [String: String]  // id → relative path
+
+    // MARK: - Fallback TTS
+
     private let synthesizer = AVSpeechSynthesizer()
 
-    func speakQuestion(_ text: String, style: NarrationStyle, interrupt: Bool = true) {
-        speak(
-            questionLeadIn(for: style) + text,
-            style: style,
-            role: .question,
-            interrupt: interrupt
-        )
+    // MARK: - Init
+
+    init() {
+        // Load the audio index that maps IDs to file paths
+        if let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio"),
+           let data = try? Data(contentsOf: url),
+           let index = try? JSONDecoder().decode([String: String].self, from: data) {
+            audioIndex = index
+        } else {
+            audioIndex = [:]
+        }
     }
 
+    // MARK: - Public API
+
+    /// Speak a question — tries pre-generated audio first, falls back to TTS.
+    /// Pass the item ID to look up pre-generated audio.
+    func speakQuestion(_ text: String, style: NarrationStyle, interrupt: Bool = true, itemID: String? = nil) {
+        if interrupt {
+            stopAll()
+        }
+
+        // Try pre-generated audio by item ID
+        if let itemID, playPreGenerated(id: itemID) {
+            return
+        }
+
+        // Fallback to system TTS
+        speakWithTTS(questionLeadIn(for: style) + text, style: style, role: .question)
+    }
+
+    /// Speak feedback text — tries to match known feedback phrases, falls back to TTS.
     func speakFeedback(_ text: String, style: NarrationStyle, interrupt: Bool = false) {
-        speak(text, style: style, role: .feedback, interrupt: interrupt)
+        if interrupt {
+            stopAll()
+        }
+
+        // Try known feedback audio by scanning for matching text
+        if playPreGeneratedByText(text, categories: ["feedback", "companion", "diagnostic"]) {
+            return
+        }
+
+        // Fallback to system TTS
+        speakWithTTS(text, style: style, role: .feedback)
     }
 
+    /// Preview voice for settings screen.
     func preview(style: NarrationStyle) {
-        speak("Hi explorer. I can read your math quests in this voice.", style: style, role: .feedback, interrupt: true)
+        stopAll()
+        if playPreGenerated(id: "preview-voice") {
+            return
+        }
+        speakWithTTS("Hi explorer. I can read your math problems in this voice.", style: style, role: .feedback)
     }
+
+    /// Stop all audio playback.
+    func stopAll() {
+        audioPlayer?.stop()
+        audioPlayer = nil
+        if synthesizer.isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
+        }
+    }
+
+    // MARK: - Pre-generated audio playback
+
+    private func playPreGenerated(id: String) -> Bool {
+        guard let relativePath = audioIndex[id] else { return false }
+
+        // Audio files are in the bundle under Audio/
+        guard let url = Bundle.main.url(
+            forResource: (relativePath as NSString).deletingPathExtension,
+            withExtension: "mp3",
+            subdirectory: "Audio"
+        ) else {
+            return false
+        }
+
+        do {
+            #if os(iOS)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            #endif
+
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.volume = 0.95
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /// Search for pre-generated audio by matching text content.
+    /// Used for feedback phrases where we don't have an item ID.
+    private func playPreGeneratedByText(_ text: String, categories: [String]) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Scan audio directory for a matching file by trying known IDs
+        // This is a simple lookup — the audio_index maps IDs to paths
+        for (id, _) in audioIndex {
+            // For feedback/companion/diagnostic, the ID encodes the category
+            let matchesCategory = categories.contains(where: { id.hasPrefix($0) || id.contains($0) })
+            guard matchesCategory else { continue }
+
+            // Try to play it — for feedback, we rely on the caller matching known phrases
+            // A more robust approach would store text→id mapping, but for now
+            // the feedback phrases are a small fixed set
+        }
+
+        // For the known fixed set, try direct ID lookups
+        let knownMappings: [String: String] = [
+            // Session completion
+            "Great finish!": "session-end-00",
+            "Nice persistence. You did it!": "session-end-01",
+            // Hint encouragement
+            "Nice effort. Let us use a visual helper.": "hint-encourage-00",
+            "Good thinking. Try this strategy hint.": "hint-encourage-01",
+            "You are learning. Let us do one step together.": "hint-encourage-02",
+            // Preview
+            "Hi explorer. I can read your math problems in this voice.": "preview-voice",
+            // Diagnostic feedback
+            "Thanks for showing your thinking. I will use that to choose the next challenge.": "diag-feedback-00",
+            "Thanks for telling me. I will use that to find a better starting point.": "diag-feedback-01",
+            "Nice number sense. I am noting how confidently that was solved.": "diag-feedback-02",
+            "Strong thinking. I am using that strategy signal for the next question.": "diag-feedback-03",
+            "Nice place-value thinking. That helps tune the next level.": "diag-feedback-04",
+            "Good reasoning. I am checking how stories and equations connect.": "diag-feedback-05",
+            "Nice noticing. That helps me place the next shape or measurement task.": "diag-feedback-06",
+            "Careful measurement thinking. I am using that to shape the next task.": "diag-feedback-07",
+            "Nice fraction reasoning. That gives me a clearer picture of the right level.": "diag-feedback-08",
+        ]
+
+        // Also add companion phrases
+        let companionMappings: [String: String] = [
+            "Awesome job!": "companion-correct_encouraging-00",
+            "You got it!": "companion-correct_encouraging-01",
+            "Way to go!": "companion-correct_encouraging-02",
+            "Super!": "companion-correct_encouraging-03",
+            "You did it!": "companion-correct_encouraging-04",
+            "Boom! Nailed it!": "companion-correct_energetic-00",
+            "Yes! Crushed it!": "companion-correct_energetic-01",
+            "Woo-hoo!": "companion-correct_energetic-02",
+            "Incredible!": "companion-correct_energetic-03",
+            "Amazing!": "companion-correct_energetic-04",
+            "Well done.": "companion-correct_calm-00",
+            "Nicely solved.": "companion-correct_calm-01",
+            "That is correct.": "companion-correct_calm-02",
+            "Good work.": "companion-correct_calm-03",
+            "Right answer.": "companion-correct_calm-04",
+            "Almost there!": "companion-incorrect_encouraging-00",
+            "Try again!": "companion-incorrect_encouraging-01",
+            "You can do it!": "companion-incorrect_encouraging-02",
+            "Keep going!": "companion-incorrect_encouraging-03",
+            "Nice try!": "companion-incorrect_encouraging-04",
+            "Oops! Try once more!": "companion-incorrect_energetic-00",
+            "So close! Give it another shot!": "companion-incorrect_energetic-01",
+            "Not quite! You got this!": "companion-incorrect_energetic-02",
+            "Not quite. Try again.": "companion-incorrect_calm-00",
+            "Close. Think it through.": "companion-incorrect_calm-01",
+            "Let us try once more.": "companion-incorrect_calm-02",
+            "Here is a hint.": "companion-hint_intros-00",
+            "Let me help.": "companion-hint_intros-01",
+            "Try thinking about it this way.": "companion-hint_intros-02",
+            "Want a clue?": "companion-hint_intros-03",
+            "How about a little help?": "companion-hint_intros-04",
+            "You earned a sticker!": "companion-sticker_earned-00",
+            "New sticker unlocked!": "companion-sticker_earned-01",
+            "Check out your new sticker!": "companion-sticker_earned-02",
+            "A sticker just for you!": "companion-sticker_earned-03",
+        ]
+
+        // Also add praise phrases
+        let praiseMappings: [String: String] = [
+            "Great strategy!": "praise-00",
+            "You kept trying and solved it!": "praise-01",
+            "Nice math thinking!": "praise-02",
+            "Strong effort, nice job!": "praise-03",
+            "That was careful math work!": "praise-04",
+            "You noticed the important part. Nice job!": "praise-05",
+            "Nice try. Let us look again.": "retry-00",
+            "You are learning. Try one more time.": "retry-01",
+            "Good effort. Use the hint if you want.": "retry-02",
+            "Keep going. You can do this step.": "retry-03",
+            "You are close. Check one part and try again.": "retry-04",
+            "Good thinking. Adjust one step and test it again.": "retry-05",
+        ]
+
+        let allMappings = knownMappings
+            .merging(companionMappings) { a, _ in a }
+            .merging(praiseMappings) { a, _ in a }
+
+        if let id = allMappings[trimmed] {
+            return playPreGenerated(id: id)
+        }
+
+        // Check if the text contains a known phrase (for compound feedback like "encouragement + hint")
+        // Don't match partial — fall through to TTS for compound strings
+        return false
+    }
+
+    // MARK: - Fallback TTS (AVSpeechSynthesizer)
 
     private enum SpeechRole {
         case question
         case feedback
     }
 
-    private func speak(_ text: String, style: NarrationStyle, role: SpeechRole, interrupt: Bool) {
+    private func speakWithTTS(_ text: String, style: NarrationStyle, role: SpeechRole) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-
-        if interrupt, synthesizer.isSpeaking {
-            synthesizer.stopSpeaking(at: .immediate)
-        }
 
         let utterance = AVSpeechUtterance(string: trimmed)
         utterance.voice = bestVoice(for: style)
@@ -114,6 +305,13 @@ final class NarrationService {
             preferredNames = ["Nicky", "Samantha", "Ava", "Moira"]
         case .storyteller:
             preferredNames = ["Daniel", "Alex", "Samantha", "Ava"]
+        }
+
+        // Prefer premium > enhanced > default
+        for name in preferredNames {
+            if let premium = voices.first(where: { $0.name == name && $0.quality == .premium }) {
+                return premium
+            }
         }
 
         for name in preferredNames {

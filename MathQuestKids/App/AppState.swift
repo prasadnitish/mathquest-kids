@@ -429,7 +429,7 @@ final class AppState: ObservableObject {
 
     func replayPrompt() {
         guard let item = currentSession?.currentItem else { return }
-        narrationService.speakQuestion(item.narrationText, style: narrationStyle, interrupt: true)
+        narrationService.speakQuestion(item.narrationText, style: narrationStyle, interrupt: true, itemID: item.templateID)
     }
 
     func readQuestionIfEnabled() {
@@ -442,8 +442,8 @@ final class AppState: ObservableObject {
     }
 
     func replayDiagnosticPrompt() {
-        guard let prompt = diagnosticSession?.currentQuestion.prompt else { return }
-        narrationService.speakQuestion(prompt, style: narrationStyle, interrupt: true)
+        guard let question = diagnosticSession?.currentQuestion else { return }
+        narrationService.speakQuestion(question.prompt, style: narrationStyle, interrupt: true, itemID: question.id)
     }
 
     func readDiagnosticPromptIfEnabled() {
