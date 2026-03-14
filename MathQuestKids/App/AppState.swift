@@ -646,12 +646,12 @@ final class AppState: ObservableObject {
     private func placementUnlockIndex(for grade: GradeBand?) -> Int {
         guard let grade else { return 0 }
         switch grade {
-        case .kindergarten: return 1
-        case .grade1: return 2
-        case .grade2: return 3
-        case .grade3: return 4
-        case .grade4: return 5
-        case .grade5: return UnitType.learningPath.count - 1
+        case .kindergarten: return 7   // unlock through teenPlaceValue (index 7)
+        case .grade1: return 12        // unlock through g1MeasureLength (index 12)
+        case .grade2: return 20        // unlock through g2DataIntro (index 20)
+        case .grade3: return 26        // unlock through g3MultiStep (index 26)
+        case .grade4: return 32        // unlock through g4AngleMeasure (index 32)
+        case .grade5: return 37        // unlock through g5PreRatios (index 37)
         }
     }
 
