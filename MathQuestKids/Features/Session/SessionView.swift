@@ -15,6 +15,7 @@ struct SessionView: View {
     @State private var activeHint: HintAction?
     @State private var itemStartTime = Date()
     @State private var showingQuitConfirmation = false
+    @State private var choicesDisabledTemporarily = false
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -93,16 +94,19 @@ struct SessionView: View {
                                 Image(companion.imageName)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 28, height: 28)
+                                    .frame(width: 48, height: 48)
                                     .clipShape(Circle())
+                                    .shadow(color: appState.selectedTheme.primary.opacity(0.3), radius: 4, y: 2)
                             } else {
                                 Image(systemName: companion.symbol)
-                                    .font(.system(size: 16, weight: .bold))
+                                    .font(.system(size: 22, weight: .bold))
                                     .foregroundStyle(.white)
-                                    .frame(width: 28, height: 28)
+                                    .frame(width: 48, height: 48)
                                     .background(appState.selectedTheme.primary, in: Circle())
+                                    .shadow(color: appState.selectedTheme.primary.opacity(0.3), radius: 4, y: 2)
                             }
                         }
+                        .offset(y: -12) // overflow above the card
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(companionPhrase)
@@ -142,7 +146,13 @@ struct SessionView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
 
-            manipulativeArea(item: item)
+            if runtime.pendingCorrection {
+                correctionOverlay(item: item)
+            } else {
+                manipulativeArea(item: item)
+                    .disabled(choicesDisabledTemporarily)
+                    .opacity(choicesDisabledTemporarily ? 0.6 : 1.0)
+            }
 
             Spacer(minLength: 0)
         }
@@ -168,6 +178,7 @@ struct SessionView: View {
         .onChange(of: runtime.index) { _, _ in
             selectedChoice = ""
             feedback = nil
+            choicesDisabledTemporarily = false
             itemStartTime = Date()
             appState.readQuestionIfEnabled()
         }
@@ -317,6 +328,102 @@ struct SessionView: View {
         }
     }
 
+    private func correctionOverlay(item: PracticeItem) -> some View {
+        let companion = appState.activeCompanion
+        let correctionPhrase = CompanionPhrases.correction(tone: companion.tone)
+
+        // Build a worked explanation from the hint engine
+        let context = AttemptContext(
+            unit: item.unit,
+            skillID: item.skillID,
+            prompt: item.prompt,
+            payload: item.payload,
+            incorrectAttempts: 2,
+            recentMisconceptions: [],
+            supports: item.supports
+        )
+        let workedHint = appState.hintEngine.nextHint(for: context)
+
+        return VStack(spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                Group {
+                    if !companion.imageName.isEmpty {
+                        Image(companion.imageName)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 56, height: 56)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: companion.symbol)
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 56, height: 56)
+                            .background(appState.selectedTheme.primary, in: Circle())
+                    }
+                }
+                .shadow(color: appState.selectedTheme.primary.opacity(0.35), radius: 6, y: 3)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(companion.name)
+                        .font(.caption.bold())
+                        .foregroundStyle(AppTheme.textSecondary)
+                    Text(correctionPhrase)
+                        .font(.headline.bold())
+                        .foregroundStyle(appState.selectedTheme.primary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Correct answer highlight
+            HStack(spacing: 10) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title2.bold())
+                    .foregroundStyle(.green)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("The answer is")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(AppTheme.textSecondary)
+                    Text(item.answer)
+                        .font(.title2.bold())
+                        .foregroundStyle(AppTheme.textPrimary)
+                }
+                Spacer()
+            }
+            .padding(14)
+            .background(Color.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Color.green.opacity(0.3), lineWidth: 1)
+            )
+
+            // Worked explanation
+            VStack(alignment: .leading, spacing: 6) {
+                Text("How to solve it")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(AppTheme.textSecondary)
+                Text(workedHint.text)
+                    .font(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(appState.selectedTheme.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+
+            Button {
+                appState.acknowledgeCorrection()
+            } label: {
+                Label("Got it, next question!", systemImage: "arrow.right.circle.fill")
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .accessibilityLabel("Acknowledge correction and continue")
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
     private func submit(item: PracticeItem) {
         let latency = Date().timeIntervalSince(itemStartTime) * 1000
         let mode: InputMode = .tap
@@ -325,6 +432,17 @@ struct SessionView: View {
         feedbackTone = isCorrect ? .positive : .coaching
         feedback = questFeedback(for: item, isCorrect: isCorrect)
         appState.submitAnswer(answer: answer, inputMode: mode, latencyMs: latency)
+
+        // After the first wrong answer, briefly disable choices so the child
+        // reads the feedback before trying again.
+        if !isCorrect && !(appState.currentSession?.pendingCorrection ?? false) {
+            choicesDisabledTemporarily = true
+            Task {
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                choicesDisabledTemporarily = false
+                selectedChoice = ""
+            }
+        }
     }
 
     private func questFeedback(for item: PracticeItem, isCorrect: Bool) -> String {

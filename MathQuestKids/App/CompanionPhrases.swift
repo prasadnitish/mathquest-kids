@@ -110,6 +110,36 @@ enum CompanionPhrases {
         ]
     ]
 
+    // MARK: - Correction (shown after 2 wrong answers with the correct answer)
+
+    static func correction(tone: CompanionTone) -> String {
+        pool(for: tone, from: correctionPools).randomElement()!
+    }
+
+    private static let correctionPools: [CompanionTone: [String]] = [
+        .encouraging: [
+            "Let's learn this together!",
+            "Now you know for next time!",
+            "Every mistake helps you grow!",
+            "This is how we learn!",
+            "You'll get it next time!"
+        ],
+        .energetic: [
+            "Ooh, tricky one! Now you know!",
+            "Level up! You learned something new!",
+            "Brain power unlocked!",
+            "Knowledge boost!",
+            "Now that's in your toolkit!"
+        ],
+        .calm: [
+            "Now you've seen the answer.",
+            "Take a moment to remember this.",
+            "Learning takes practice.",
+            "This will click soon.",
+            "A good thing to know."
+        ]
+    ]
+
     // MARK: - Helper
 
     private static func pool(for tone: CompanionTone, from pools: [CompanionTone: [String]]) -> [String] {

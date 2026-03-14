@@ -13,6 +13,8 @@ struct SessionRuntime {
     private(set) var recentMisconceptions: [String]
     private(set) var completed: Bool
     private(set) var pendingAdvance: Bool
+    private(set) var pendingCorrection: Bool
+    private(set) var missedItems: [MissedItem]
 
     init(blueprint: SessionBlueprint) {
         sessionID = blueprint.sessionID
@@ -26,6 +28,8 @@ struct SessionRuntime {
         recentMisconceptions = []
         completed = false
         pendingAdvance = false
+        pendingCorrection = false
+        missedItems = []
     }
 
     var currentItem: PracticeItem {
@@ -56,15 +60,16 @@ struct SessionRuntime {
     }
 
     mutating func recordSubmission(correct: Bool) {
-        // If this item already triggered pendingAdvance (e.g. 2 incorrect),
+        // If this item already triggered pendingAdvance (e.g. via correction acknowledgment),
         // don't double-count answeredCount on a subsequent correct answer.
-        let alreadyCounted = pendingAdvance
+        let alreadyCounted = pendingAdvance || pendingCorrection
 
         if correct {
             correctCount += 1
             if !alreadyCounted {
                 answeredCount += 1
             }
+            pendingCorrection = false
             pendingAdvance = true
         } else {
             incorrectByItem[currentItem.id, default: 0] += 1
@@ -74,9 +79,24 @@ struct SessionRuntime {
             recentMisconceptions.append("\(currentItem.skillID):\(currentItem.answer)")
             if !alreadyCounted && incorrectByItem[currentItem.id, default: 0] >= 2 {
                 answeredCount += 1
-                pendingAdvance = true
+                // Don't auto-advance — enter correction state so the child
+                // sees the correct answer and a worked explanation first.
+                pendingCorrection = true
+                missedItems.append(MissedItem(
+                    id: currentItem.id,
+                    prompt: currentItem.prompt,
+                    correctAnswer: currentItem.answer
+                ))
             }
         }
+    }
+
+    /// Called when the child taps "Got it" after seeing the correction.
+    mutating func acknowledgeCorrection() {
+        guard pendingCorrection else { return }
+        pendingCorrection = false
+        pendingAdvance = false
+        advanceOrComplete()
     }
 
     /// Call after showing feedback to actually move to the next item.

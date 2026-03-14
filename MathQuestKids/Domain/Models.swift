@@ -266,6 +266,12 @@ struct ReviewScheduleRecord: Equatable {
     let lapseCount: Int
 }
 
+struct MissedItem: Equatable, Identifiable {
+    let id: String
+    let prompt: String
+    let correctAnswer: String
+}
+
 struct SessionSummary: Equatable {
     let sessionID: UUID
     let unit: UnitType
@@ -273,6 +279,7 @@ struct SessionSummary: Equatable {
     let correctItems: Int
     let rewardTitle: String
     let nextRecommendation: String
+    let missedItems: [MissedItem]
 }
 
 struct UnitProgress: Equatable, Identifiable {

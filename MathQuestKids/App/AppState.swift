@@ -395,61 +395,30 @@ final class AppState: ObservableObject {
 
             // Update session immediately so progress bar reflects the answered item
             currentSession = runtime
-            narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
-            setStatus(masteryState.status == .mastered ? "Skill mastered!" : nil)
             playSFX(isCorrect ? .correct : .incorrect)
+            setStatus(masteryState.status == .mastered ? "Skill mastered!" : nil)
 
-            // After a brief delay, advance to the next question (or complete)
-            let feedbackDelayNs: UInt64 = isCorrect ? 1_200_000_000 : 1_800_000_000
-            sessionAdvanceTask?.cancel()
-            sessionAdvanceTask = Task { [weak self] in
-                try? await Task.sleep(nanoseconds: feedbackDelayNs)
-                guard !Task.isCancelled, let self else { return }
-                guard var rt = currentSession, rt.pendingAdvance else { return }
-                rt.advanceIfPending()
+            if runtime.pendingCorrection {
+                // Two wrong answers — show correction overlay (no auto-advance).
+                let correctionPhrase = CompanionPhrases.correction(tone: activeCompanion.tone)
+                narrationService.speakFeedback(correctionPhrase, style: narrationStyle)
+            } else {
+                narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
 
-                if rt.isComplete {
-                    let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
-                    let summary = SessionSummary(
-                        sessionID: rt.sessionID,
-                        unit: rt.focusUnit,
-                        totalItems: rt.items.count,
-                        correctItems: rt.correctCount,
-                        rewardTitle: reward,
-                        nextRecommendation: masteryEngine.nextRecommendation(for: item.skillID, childID: profile.id)
-                    )
+                // After a brief delay, advance to the next question (or complete)
+                let feedbackDelayNs: UInt64 = isCorrect ? 1_200_000_000 : 1_800_000_000
+                sessionAdvanceTask?.cancel()
+                sessionAdvanceTask = Task { [weak self] in
+                    try? await Task.sleep(nanoseconds: feedbackDelayNs)
+                    guard !Task.isCancelled, let self else { return }
+                    guard var rt = currentSession, rt.pendingAdvance else { return }
+                    rt.advanceIfPending()
 
-                    do {
-                        try repository.finishSession(
-                            sessionID: rt.sessionID,
-                            childID: profile.id,
-                            unit: rt.focusUnit,
-                            totalItems: Int16(rt.items.count),
-                            correctItems: Int16(rt.correctCount),
-                            rewardTitle: reward
-                        )
-                    } catch {
-                        diagnostics.error("Failed to finish session", metadata: ["error": error.localizedDescription])
+                    if rt.isComplete {
+                        finishSession(rt, lastItem: item, lastCorrect: isCorrect)
+                    } else {
+                        currentSession = rt
                     }
-
-                    latestSummary = summary
-                    currentSession = nil
-                    refreshDashboard()
-                    checkAndAwardSticker(for: rt.focusUnit)
-                    route = .summary
-                    narrationService.speakFeedback(isCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
-                    playSFX(.reward)
-                    diagnostics.info(
-                        "Session completed",
-                        metadata: [
-                            "sessionId": rt.sessionID.uuidString,
-                            "unit": rt.focusUnit.rawValue,
-                            "correct": "\(rt.correctCount)",
-                            "total": "\(rt.items.count)"
-                        ]
-                    )
-                } else {
-                    currentSession = rt
                 }
             }
         } catch {
@@ -463,6 +432,61 @@ final class AppState: ObservableObject {
             )
             setStatus("We couldn't save that attempt.")
         }
+    }
+
+    func acknowledgeCorrection() {
+        guard profile != nil, var runtime = currentSession, runtime.pendingCorrection else { return }
+        runtime.acknowledgeCorrection()
+
+        if runtime.isComplete {
+            finishSession(runtime, lastItem: runtime.items.last!, lastCorrect: false)
+        } else {
+            currentSession = runtime
+        }
+    }
+
+    private func finishSession(_ rt: SessionRuntime, lastItem: PracticeItem, lastCorrect: Bool) {
+        guard let profile else { return }
+        let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
+        let summary = SessionSummary(
+            sessionID: rt.sessionID,
+            unit: rt.focusUnit,
+            totalItems: rt.items.count,
+            correctItems: rt.correctCount,
+            rewardTitle: reward,
+            nextRecommendation: masteryEngine.nextRecommendation(for: lastItem.skillID, childID: profile.id),
+            missedItems: rt.missedItems
+        )
+
+        do {
+            try repository.finishSession(
+                sessionID: rt.sessionID,
+                childID: profile.id,
+                unit: rt.focusUnit,
+                totalItems: Int16(rt.items.count),
+                correctItems: Int16(rt.correctCount),
+                rewardTitle: reward
+            )
+        } catch {
+            diagnostics.error("Failed to finish session", metadata: ["error": error.localizedDescription])
+        }
+
+        latestSummary = summary
+        currentSession = nil
+        refreshDashboard()
+        checkAndAwardSticker(for: rt.focusUnit)
+        route = .summary
+        narrationService.speakFeedback(lastCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
+        playSFX(.reward)
+        diagnostics.info(
+            "Session completed",
+            metadata: [
+                "sessionId": rt.sessionID.uuidString,
+                "unit": rt.focusUnit.rawValue,
+                "correct": "\(rt.correctCount)",
+                "total": "\(rt.items.count)"
+            ]
+        )
     }
 
     func requestHint() -> HintAction? {
