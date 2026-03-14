@@ -21,10 +21,12 @@ struct StickerIcon: Equatable {
 
     static func icon(for unit: UnitType, theme: VisualTheme) -> StickerIcon {
         switch theme {
-        case .candyland:    return candyland(unit)
-        case .axolotl:      return axolotl(unit)
+        case .candyland:      return candyland(unit)
+        case .axolotl:        return axolotl(unit)
         case .rainbowUnicorn: return rainbowUnicorn(unit)
-        case .starsSpace:   return starsSpace(unit)
+        case .starsSpace:     return starsSpace(unit)
+        case .superhero:      return superhero(unit)
+        case .turboCars:      return turboCars(unit)
         }
     }
 
@@ -205,6 +207,96 @@ struct StickerIcon: Equatable {
         case .g5FractionAddSubUnlike: return StickerIcon(systemName: "chart.pie.fill", gradient: [.blue, .indigo])
         case .g5LinePlotsFractions: return StickerIcon(systemName: "chart.xyaxis.line", gradient: [.indigo, .cyan])
         case .g5PreRatios:          return StickerIcon(systemName: "arrow.left.arrow.right", gradient: [.cyan, .purple])
+        }
+    }
+
+    // MARK: - Superhero (bold & heroic)
+
+    private static func superhero(_ unit: UnitType) -> StickerIcon {
+        switch unit {
+        case .kCountObjects:        return StickerIcon(systemName: "shield.fill", gradient: [.red, .blue])
+        case .kComposeDecompose:    return StickerIcon(systemName: "bolt.shield.fill", gradient: [.yellow, .red])
+        case .kAddWithin5:          return StickerIcon(systemName: "star.circle.fill", gradient: [.red, .orange])
+        case .kAddWithin10:         return StickerIcon(systemName: "flame.fill", gradient: [.orange, .red])
+        case .g1AddWithin20:        return StickerIcon(systemName: "bolt.circle.fill", gradient: [.yellow, .orange])
+        case .g1FactFamilies:       return StickerIcon(systemName: "figure.run", gradient: [.blue, .red])
+        case .g2AddWithin100:       return StickerIcon(systemName: "figure.strengthtraining.traditional", gradient: [.red, .purple])
+        case .g2SubWithin100:       return StickerIcon(systemName: "figure.martial.arts", gradient: [.purple, .blue])
+        case .subtractionStories:   return StickerIcon(systemName: "shield.lefthalf.filled", gradient: [.blue, .indigo])
+        case .teenPlaceValue:       return StickerIcon(systemName: "bolt.fill", gradient: [.yellow, .red])
+        case .twoDigitComparison:   return StickerIcon(systemName: "eye.fill", gradient: [.blue, .cyan])
+        case .threeDigitComparison: return StickerIcon(systemName: "scope", gradient: [.red, .blue])
+        case .multiplicationArrays: return StickerIcon(systemName: "square.grid.3x3.fill", gradient: [.purple, .red])
+        case .fractionComparison:   return StickerIcon(systemName: "chart.pie.fill", gradient: [.blue, .purple])
+        case .fractionOfWhole:      return StickerIcon(systemName: "circle.grid.cross.fill", gradient: [.red, .blue])
+        case .volumeAndDecimals:    return StickerIcon(systemName: "trophy.circle.fill", gradient: [.yellow, .red])
+        case .kCompareGroups:       return StickerIcon(systemName: "scalemass.fill", gradient: [.red, .orange])
+        case .kShapeAttributes:     return StickerIcon(systemName: "triangle.fill", gradient: [.blue, .red])
+        case .g1AddSub100:          return StickerIcon(systemName: "plus.circle.fill", gradient: [.orange, .red])
+        case .g1MeasureLength:      return StickerIcon(systemName: "ruler.fill", gradient: [.red, .purple])
+        case .g2PlaceValue1000:     return StickerIcon(systemName: "number.circle.fill", gradient: [.blue, .red])
+        case .g2AddSubRegroup:      return StickerIcon(systemName: "arrow.triangle.2.circlepath", gradient: [.purple, .red])
+        case .g2EqualGroups:        return StickerIcon(systemName: "circle.grid.2x1.fill", gradient: [.red, .blue])
+        case .g2TimeMoney:          return StickerIcon(systemName: "clock.fill", gradient: [.yellow, .red])
+        case .g2DataIntro:          return StickerIcon(systemName: "chart.bar.fill", gradient: [.blue, .purple])
+        case .g3DivMeaning:         return StickerIcon(systemName: "divide.circle.fill", gradient: [.red, .purple])
+        case .g3FractionUnit:       return StickerIcon(systemName: "circle.lefthalf.filled", gradient: [.blue, .red])
+        case .g3FractionCompare:    return StickerIcon(systemName: "equal.circle.fill", gradient: [.purple, .blue])
+        case .g3AreaConcept:        return StickerIcon(systemName: "square.grid.3x3.fill", gradient: [.red, .orange])
+        case .g3MultiStep:          return StickerIcon(systemName: "list.number", gradient: [.blue, .red])
+        case .g4PlaceValueMillion:  return StickerIcon(systemName: "textformat.123", gradient: [.red, .purple])
+        case .g4MultMultiDigit:     return StickerIcon(systemName: "multiply.circle.fill", gradient: [.purple, .red])
+        case .g4DivPartialQuotients: return StickerIcon(systemName: "divide.square.fill", gradient: [.blue, .purple])
+        case .g4FractionAddSub:     return StickerIcon(systemName: "plus.forwardslash.minus", gradient: [.red, .blue])
+        case .g4AngleMeasure:       return StickerIcon(systemName: "angle", gradient: [.orange, .red])
+        case .g5FractionAddSubUnlike: return StickerIcon(systemName: "chart.pie.fill", gradient: [.purple, .blue])
+        case .g5LinePlotsFractions: return StickerIcon(systemName: "chart.xyaxis.line", gradient: [.red, .purple])
+        case .g5PreRatios:          return StickerIcon(systemName: "arrow.left.arrow.right", gradient: [.blue, .red])
+        }
+    }
+
+    // MARK: - Turbo Cars (racing & speed)
+
+    private static func turboCars(_ unit: UnitType) -> StickerIcon {
+        switch unit {
+        case .kCountObjects:        return StickerIcon(systemName: "car.fill", gradient: [.red, .orange])
+        case .kComposeDecompose:    return StickerIcon(systemName: "wrench.fill", gradient: [.gray, .orange])
+        case .kAddWithin5:          return StickerIcon(systemName: "flag.checkered", gradient: [.orange, .red])
+        case .kAddWithin10:         return StickerIcon(systemName: "gauge.open.with.lines.needle.67percent.and.arrowtriangle", gradient: [.red, .yellow])
+        case .g1AddWithin20:        return StickerIcon(systemName: "car.side.fill", gradient: [.orange, .red])
+        case .g1FactFamilies:       return StickerIcon(systemName: "fuelpump.fill", gradient: [.yellow, .orange])
+        case .g2AddWithin100:       return StickerIcon(systemName: "road.lanes", gradient: [.gray, .red])
+        case .g2SubWithin100:       return StickerIcon(systemName: "tire.fill", gradient: [.orange, .gray])
+        case .subtractionStories:   return StickerIcon(systemName: "car.rear.fill", gradient: [.red, .orange])
+        case .teenPlaceValue:       return StickerIcon(systemName: "steering.wheel", gradient: [.gray, .red])
+        case .twoDigitComparison:   return StickerIcon(systemName: "speedometer", gradient: [.orange, .red])
+        case .threeDigitComparison: return StickerIcon(systemName: "trophy.fill", gradient: [.yellow, .orange])
+        case .multiplicationArrays: return StickerIcon(systemName: "square.grid.3x3.fill", gradient: [.red, .gray])
+        case .fractionComparison:   return StickerIcon(systemName: "chart.pie.fill", gradient: [.orange, .red])
+        case .fractionOfWhole:      return StickerIcon(systemName: "circle.grid.cross.fill", gradient: [.red, .orange])
+        case .volumeAndDecimals:    return StickerIcon(systemName: "trophy.circle.fill", gradient: [.yellow, .red])
+        case .kCompareGroups:       return StickerIcon(systemName: "scalemass.fill", gradient: [.orange, .gray])
+        case .kShapeAttributes:     return StickerIcon(systemName: "triangle.fill", gradient: [.red, .yellow])
+        case .g1AddSub100:          return StickerIcon(systemName: "plus.circle.fill", gradient: [.orange, .red])
+        case .g1MeasureLength:      return StickerIcon(systemName: "ruler.fill", gradient: [.gray, .orange])
+        case .g2PlaceValue1000:     return StickerIcon(systemName: "number.circle.fill", gradient: [.red, .orange])
+        case .g2AddSubRegroup:      return StickerIcon(systemName: "arrow.triangle.2.circlepath", gradient: [.orange, .gray])
+        case .g2EqualGroups:        return StickerIcon(systemName: "circle.grid.2x1.fill", gradient: [.red, .yellow])
+        case .g2TimeMoney:          return StickerIcon(systemName: "clock.fill", gradient: [.yellow, .orange])
+        case .g2DataIntro:          return StickerIcon(systemName: "chart.bar.fill", gradient: [.orange, .red])
+        case .g3DivMeaning:         return StickerIcon(systemName: "divide.circle.fill", gradient: [.red, .gray])
+        case .g3FractionUnit:       return StickerIcon(systemName: "circle.lefthalf.filled", gradient: [.orange, .red])
+        case .g3FractionCompare:    return StickerIcon(systemName: "equal.circle.fill", gradient: [.gray, .orange])
+        case .g3AreaConcept:        return StickerIcon(systemName: "square.grid.3x3.fill", gradient: [.red, .orange])
+        case .g3MultiStep:          return StickerIcon(systemName: "list.number", gradient: [.orange, .yellow])
+        case .g4PlaceValueMillion:  return StickerIcon(systemName: "textformat.123", gradient: [.red, .gray])
+        case .g4MultMultiDigit:     return StickerIcon(systemName: "multiply.circle.fill", gradient: [.gray, .red])
+        case .g4DivPartialQuotients: return StickerIcon(systemName: "divide.square.fill", gradient: [.orange, .gray])
+        case .g4FractionAddSub:     return StickerIcon(systemName: "plus.forwardslash.minus", gradient: [.red, .orange])
+        case .g4AngleMeasure:       return StickerIcon(systemName: "angle", gradient: [.yellow, .red])
+        case .g5FractionAddSubUnlike: return StickerIcon(systemName: "chart.pie.fill", gradient: [.gray, .orange])
+        case .g5LinePlotsFractions: return StickerIcon(systemName: "chart.xyaxis.line", gradient: [.red, .gray])
+        case .g5PreRatios:          return StickerIcon(systemName: "arrow.left.arrow.right", gradient: [.orange, .red])
         }
     }
 }
