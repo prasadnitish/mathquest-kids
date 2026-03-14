@@ -71,7 +71,9 @@ struct RewardSplashView: View {
                 }
             }
             let companionPhrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
-            appState.narrationService.speakFeedback("\(appState.activeCompanion.name) says: \(companionPhrase) You earned the \(sticker.title)!", style: appState.narrationStyle, interrupt: true)
+            // Pass just the companion phrase for pre-generated audio match;
+            // sticker title and companion name are shown on screen.
+            appState.narrationService.speakFeedback(companionPhrase, style: appState.narrationStyle, interrupt: true)
         }
         .accessibilityAddTraits(.isModal)
     }

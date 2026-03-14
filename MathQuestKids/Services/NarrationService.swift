@@ -101,14 +101,27 @@ final class NarrationService {
             .replacingOccurrences(of: "you're", with: "you are")
 
         // Try exact match first
-        if playPreGeneratedByText(normalized, categories: ["feedback", "companion", "diagnostic"]) {
+        if playPreGeneratedByText(normalized, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
             return
         }
 
-        // For compound strings (e.g. "encouragement + hint text"), try the first sentence
-        let firstSentence = normalized.components(separatedBy: ". ").first ?? normalized
-        if firstSentence != normalized, playPreGeneratedByText(firstSentence + ".", categories: ["feedback", "companion", "diagnostic"]) {
-            return
+        // For compound strings (e.g. "encouragement + hint text"), try each sentence
+        let sentences = normalized.components(separatedBy: ". ").filter { !$0.isEmpty }
+        if sentences.count > 1 {
+            for sentence in sentences {
+                let candidate = sentence.hasSuffix(".") || sentence.hasSuffix("!") ? sentence : sentence + "."
+                if playPreGeneratedByText(candidate, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
+                    return
+                }
+            }
+            // Also try two-sentence combos (e.g. "Nice effort. Let us use a visual helper.")
+            for i in 0..<(sentences.count - 1) {
+                let combo = sentences[i] + ". " + sentences[i + 1]
+                let candidate = combo.hasSuffix(".") || combo.hasSuffix("!") ? combo : combo + "."
+                if playPreGeneratedByText(candidate, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
+                    return
+                }
+            }
         }
 
         // Fallback to system TTS
