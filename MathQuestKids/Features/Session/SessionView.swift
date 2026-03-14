@@ -7,7 +7,6 @@ private enum SessionFeedbackTone {
 
 struct SessionView: View {
     @EnvironmentObject private var appState: AppState
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var selectedChoice: String = ""
     @State private var feedback: String?
@@ -16,17 +15,18 @@ struct SessionView: View {
     @State private var activeHint: HintAction?
     @State private var itemStartTime = Date()
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     var body: some View {
-        ScrollView {
+        Group {
             if let runtime = appState.currentSession {
                 sessionContent(runtime: runtime)
             } else {
                 ProgressView("Preparing your quest...")
             }
         }
-        .scrollIndicators(.hidden)
-        .padding(.horizontal, sizeClass == .compact ? 16 : 24)
-        .padding(.top, sizeClass == .compact ? 8 : 16)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 24)
     }
 
     private func sessionContent(runtime: SessionRuntime) -> some View {
@@ -55,9 +55,10 @@ struct SessionView: View {
                 }
 
                 Text(item.prompt)
-                    .font(.system(size: AppTheme.scaled(32, compact: sizeClass == .compact), weight: .bold, design: .rounded))
+                    .font(.system(size: sizeClass == .compact ? 26 : 32, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.65)
+                    .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel("Problem prompt")
                     .accessibilityIdentifier("problemPrompt")
@@ -68,33 +69,31 @@ struct SessionView: View {
                         ? CompanionPhrases.correct(tone: companion.tone)
                         : CompanionPhrases.incorrect(tone: companion.tone)
 
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(spacing: 8) {
-                            ZStack {
-                                Circle()
-                                    .fill(appState.selectedTheme.primary.opacity(0.18))
-                                if !companion.imageName.isEmpty {
-                                    Image(companion.imageName)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 28, height: 28)
-                                        .clipShape(Circle())
-                                } else {
-                                    Image(systemName: companion.symbol)
-                                        .font(.caption.bold())
-                                        .foregroundStyle(appState.selectedTheme.primary)
-                                }
+                    HStack(alignment: .top, spacing: 10) {
+                        Group {
+                            if !companion.imageName.isEmpty {
+                                Image(companion.imageName)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 28, height: 28)
+                                    .clipShape(Circle())
+                            } else {
+                                Image(systemName: companion.symbol)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 28, height: 28)
+                                    .background(appState.selectedTheme.primary, in: Circle())
                             }
-                            .frame(width: 28, height: 28)
-
-                            Text(companionPhrase)
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(AppTheme.textSecondary)
                         }
 
-                        Text(feedback)
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(AppTheme.textPrimary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(companionPhrase)
+                                .font(.subheadline.bold())
+                                .foregroundStyle(appState.selectedTheme.primary)
+                            Text(feedback)
+                                .font(.headline.weight(.semibold))
+                                .foregroundStyle(AppTheme.textPrimary)
+                        }
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
@@ -106,34 +105,17 @@ struct SessionView: View {
                     )
                 }
 
-                HStack(spacing: 12) {
-                    Button {
-                        activeHint = appState.requestHint()
-                        showingHint = true
-                    } label: {
-                        Label("Hint", systemImage: "lightbulb.fill")
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) {
+                        sessionActionButtons(item: item)
                     }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .accessibilityLabel("Hint")
-
-                    Button {
-                        appState.replayPrompt()
-                    } label: {
-                        Label("Read Aloud", systemImage: "speaker.wave.2.fill")
+                    VStack(spacing: 8) {
+                        HStack(spacing: 12) {
+                            hintButton
+                            readAloudButton
+                        }
+                        submitButton(item: item)
                     }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .accessibilityLabel("Read Aloud")
-
-                    Spacer(minLength: 10)
-
-                    Button {
-                        submit(item: item)
-                    } label: {
-                        Label("Submit", systemImage: "checkmark.circle.fill")
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .disabled(selectedChoice.isEmpty)
-                    .accessibilityLabel("Submit Answer")
                 }
             }
             .padding(18)
@@ -193,7 +175,7 @@ struct SessionView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Quest in Progress")
-                        .font(.title2.bold())
+                        .font(sizeClass == .compact ? .headline.bold() : .title2.bold())
                         .foregroundStyle(AppTheme.textPrimary)
                     Text("\(Int(progress * 100))% complete")
                         .font(.subheadline.weight(.semibold))
@@ -203,16 +185,57 @@ struct SessionView: View {
                 Text("\(runtime.index + 1)/\(runtime.items.count)")
                     .font(.title3.monospacedDigit().bold())
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.82))
+                    .padding(.trailing, 36)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
         }
-        .frame(height: 74)
+        .frame(height: 64)
         .overlay(
             RoundedRectangle(cornerRadius: 18)
                 .stroke(Color.white.opacity(0.45), lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
+    }
+
+    private var hintButton: some View {
+        Button {
+            activeHint = appState.requestHint()
+            showingHint = true
+        } label: {
+            Label("Hint", systemImage: "lightbulb.fill")
+        }
+        .buttonStyle(SecondaryButtonStyle())
+        .accessibilityLabel("Hint")
+    }
+
+    private var readAloudButton: some View {
+        Button {
+            appState.replayPrompt()
+        } label: {
+            Label("Read Aloud", systemImage: "speaker.wave.2.fill")
+        }
+        .buttonStyle(SecondaryButtonStyle())
+        .accessibilityLabel("Read Aloud")
+    }
+
+    private func submitButton(item: PracticeItem) -> some View {
+        Button {
+            submit(item: item)
+        } label: {
+            Label("Submit", systemImage: "checkmark.circle.fill")
+        }
+        .buttonStyle(PrimaryButtonStyle())
+        .disabled(selectedChoice.isEmpty)
+        .accessibilityLabel("Submit Answer")
+    }
+
+    @ViewBuilder
+    private func sessionActionButtons(item: PracticeItem) -> some View {
+        hintButton
+        readAloudButton
+        Spacer(minLength: 10)
+        submitButton(item: item)
     }
 
     @ViewBuilder
@@ -242,8 +265,6 @@ struct SessionView: View {
             CountAndMatchInteraction(item: item, selection: $selectedChoice)
         case .numberBond:
             NumberBondInteraction(item: item, selection: $selectedChoice)
-        case .wordProblem:
-            WordProblemInteraction(item: item, selection: $selectedChoice)
         }
     }
 
@@ -282,8 +303,6 @@ struct SessionView: View {
                 return "Great thinking! You found the missing number."
             case .subTwoDigit:
                 return "Well done! You subtracted those big numbers correctly."
-            case .wordProblem:
-                return "That's right! Great thinking."
             }
         }
 
@@ -314,8 +333,6 @@ struct SessionView: View {
             return "Nice try. Think: the whole minus the known part gives the missing part."
         case .subTwoDigit:
             return "Good effort. Subtract the ones first, then the tens."
-        case .wordProblem:
-            return "Good try. Read the problem again and think about what it's asking."
         }
     }
 }
@@ -329,11 +346,13 @@ struct SubtractionStoryInteraction: View {
             let total = item.payload.minuend ?? Int(item.answer) ?? 0
             let removed = item.payload.subtrahend ?? 0
 
-            HStack(spacing: 8) {
+            let dotSize: CGFloat = total > 12 ? 22 : 28
+            let gridColumns = total > 12 ? 10 : 8
+            LazyVGrid(columns: Array(repeating: GridItem(.fixed(dotSize), spacing: 6), count: gridColumns), spacing: 6) {
                 ForEach(0..<max(total, 0), id: \.self) { idx in
                     Circle()
                         .fill(idx < removed ? AppTheme.error.opacity(0.35) : AppTheme.accent.opacity(0.8))
-                        .frame(width: 28, height: 28)
+                        .frame(width: dotSize, height: dotSize)
                         .overlay {
                             if idx < removed {
                                 Image(systemName: "xmark")
@@ -368,21 +387,36 @@ struct AdditionStoryInteraction: View {
             let left = item.payload.left ?? 0
             let right = item.payload.right ?? 0
 
-            HStack(spacing: 8) {
-                ForEach(0..<max(left, 0), id: \.self) { _ in
-                    Circle()
-                        .fill(AppTheme.accent.opacity(0.8))
-                        .frame(width: 28, height: 28)
+            let addTotal = left + right
+            let addDotSize: CGFloat = addTotal > 12 ? 22 : 28
+            let addGridCols = addTotal > 12 ? 10 : 8
+            VStack(spacing: 8) {
+                LazyVGrid(columns: Array(repeating: GridItem(.fixed(addDotSize), spacing: 6), count: addGridCols), spacing: 6) {
+                    ForEach(0..<max(left, 0), id: \.self) { _ in
+                        Circle()
+                            .fill(AppTheme.accent.opacity(0.8))
+                            .frame(width: addDotSize, height: addDotSize)
+                    }
+                    ForEach(0..<max(right, 0), id: \.self) { idx in
+                        Circle()
+                            .fill(AppTheme.primary.opacity(0.7))
+                            .frame(width: addDotSize, height: addDotSize)
+                    }
                 }
                 if left > 0 && right > 0 {
-                    Text("+")
-                        .font(.title2.bold())
-                        .foregroundStyle(AppTheme.textSecondary)
-                }
-                ForEach(0..<max(right, 0), id: \.self) { _ in
-                    Circle()
-                        .fill(AppTheme.primary.opacity(0.7))
-                        .frame(width: 28, height: 28)
+                    HStack(spacing: 6) {
+                        Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 12, height: 12)
+                        Text("= \(left)")
+                            .font(.caption.bold())
+                            .foregroundStyle(AppTheme.textSecondary)
+                        Text("+")
+                            .font(.caption.bold())
+                            .foregroundStyle(AppTheme.textSecondary)
+                        Circle().fill(AppTheme.primary.opacity(0.7)).frame(width: 12, height: 12)
+                        Text("= \(right)")
+                            .font(.caption.bold())
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
                 }
             }
             .padding(.vertical, 8)
@@ -503,50 +537,50 @@ struct TeenPlaceValueInteraction: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.textSecondary)
 
-            HStack(alignment: .top, spacing: 12) {
-                VStack(spacing: 10) {
-                    PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten) {
-                        adjust(.ten, delta: 1)
-                    } onRemove: {
-                        adjust(.ten, delta: -1)
-                    }
-
-                    Button {
-                        adjust(.ten, delta: 1)
-                    } label: {
-                        Label("+1 Ten", systemImage: "plus.circle.fill")
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
+            HStack(spacing: 12) {
+                PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten) {
+                    adjust(.ten, delta: 1)
+                } onRemove: {
+                    adjust(.ten, delta: -1)
                 }
-
-                VStack(spacing: 10) {
-                    PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one) {
-                        adjust(.one, delta: 1)
-                    } onRemove: {
-                        adjust(.one, delta: -1)
-                    }
-
-                    HStack(spacing: 8) {
-                        Button {
-                            adjust(.one, delta: 1)
-                        } label: {
-                            Label("+1 One", systemImage: "plus.circle.fill")
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-
-                        Button {
-                            adjust(.one, delta: -1)
-                        } label: {
-                            Label("-1 One", systemImage: "minus.circle.fill")
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-                        .disabled(ones == 0)
-                    }
+                PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one) {
+                    adjust(.one, delta: 1)
+                } onRemove: {
+                    adjust(.one, delta: -1)
                 }
             }
 
-            HStack {
-                Spacer()
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                Button {
+                    adjust(.ten, delta: 1)
+                } label: {
+                    Label("+1 Ten", systemImage: "plus.circle.fill")
+                }
+                .buttonStyle(SecondaryButtonStyle())
+
+                Button {
+                    adjust(.one, delta: 1)
+                } label: {
+                    Label("+1 One", systemImage: "plus.circle.fill")
+                }
+                .buttonStyle(SecondaryButtonStyle())
+
+                Button {
+                    adjust(.ten, delta: -1)
+                } label: {
+                    Label("-1 Ten", systemImage: "minus.circle.fill")
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .disabled(tens == 0)
+
+                Button {
+                    adjust(.one, delta: -1)
+                } label: {
+                    Label("-1 One", systemImage: "minus.circle.fill")
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .disabled(ones == 0)
+
                 Button {
                     tens = 0
                     ones = 0
@@ -682,14 +716,13 @@ enum TokenKind {
 struct ComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 20) {
                 NumberBadge(number: item.payload.left ?? 0)
                 Text("?")
-                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
+                    .font(.system(size: 36, weight: .black, design: .rounded))
                 NumberBadge(number: item.payload.right ?? 0)
             }
 
@@ -759,7 +792,6 @@ struct MultiplicationArrayInteraction: View {
 struct FractionComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         let aTop = item.payload.numeratorA ?? 0
@@ -771,7 +803,7 @@ struct FractionComparisonInteraction: View {
             HStack(spacing: 18) {
                 FractionBadge(numerator: aTop, denominator: aBottom)
                 Text("?")
-                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
+                    .font(.system(size: 36, weight: .black, design: .rounded))
                 FractionBadge(numerator: bTop, denominator: bBottom)
             }
 
@@ -855,7 +887,6 @@ struct VolumePrismInteraction: View {
 struct DecimalComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         let left = item.payload.decimalLeft ?? 0
@@ -865,7 +896,7 @@ struct DecimalComparisonInteraction: View {
             HStack(spacing: 20) {
                 DecimalBadge(value: left)
                 Text("?")
-                    .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black, design: .rounded))
+                    .font(.system(size: 36, weight: .black, design: .rounded))
                 DecimalBadge(value: right)
             }
 
@@ -885,11 +916,10 @@ struct DecimalComparisonInteraction: View {
 
 struct NumberBadge: View {
     let number: Int
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         Text("\(number)")
-            .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .bold, design: .rounded))
+            .font(.system(size: 36, weight: .bold, design: .rounded))
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
@@ -918,12 +948,10 @@ struct FractionBadge: View {
 
 struct DecimalBadge: View {
     let value: Double
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         Text(String(format: "%.3f", value))
-            .font(.system(size: AppTheme.scaled(32, compact: sizeClass == .compact), weight: .bold, design: .rounded))
-            .minimumScaleFactor(0.7)
+            .font(.system(size: 32, weight: .bold, design: .rounded))
             .padding(.horizontal, 18)
             .padding(.vertical, 12)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
@@ -945,32 +973,6 @@ struct MetricBadge: View {
         .padding(10)
         .frame(width: 56)
         .background(Color.white.opacity(0.88), in: RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-struct WordProblemInteraction: View {
-    let item: PracticeItem
-    @Binding var selection: String
-    @Environment(\.horizontalSizeClass) private var sizeClass
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(item.prompt)
-                .font(.system(size: AppTheme.scaled(28, compact: sizeClass == .compact), weight: .semibold, design: .rounded))
-                .foregroundStyle(AppTheme.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
-                }
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
     }
 }
 
