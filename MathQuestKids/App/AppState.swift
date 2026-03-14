@@ -57,6 +57,8 @@ final class AppState: ObservableObject {
     private let skipDiagnosticOnboarding: Bool
     private var temporarilySkippedDiagnostic = false
     private var diagnosticAdvanceTask: Task<Void, Never>?
+    private var sessionAdvanceTask: Task<Void, Never>?
+    private var statusClearTask: Task<Void, Never>?
 
     var availableCompanions: [ThemeCompanion] {
         CharacterPackLibrary.companions(for: selectedTheme)
@@ -140,7 +142,6 @@ final class AppState: ObservableObject {
         selectedCompanionID = loadCompanion(for: selectedTheme)
 
         if let profile {
-            refreshDashboard()
             diagnosticResult = loadDiagnosticResult(childID: profile.id)
             adaptivePath = self.adaptivePlanner.buildPath(result: diagnosticResult, catalog: catalog)
             refreshDashboard()
@@ -181,16 +182,16 @@ final class AppState: ObservableObject {
             if shouldRequireDiagnostic(for: created.id) {
                 route = .diagnostic
                 startDiagnosticIfNeeded()
-                statusMessage = "Great. Quick diagnostic next to personalize lessons."
+                setStatus("Great. Quick diagnostic next to personalize lessons.")
                 diagnostics.info("Profile created; diagnostic required", metadata: ["childId": created.id.uuidString])
             } else {
                 route = .home
-                statusMessage = "Welcome, \(created.displayName)!"
+                setStatus("Welcome, \(created.displayName)!")
                 diagnostics.info("Profile created", metadata: ["childId": created.id.uuidString])
             }
         } catch {
             diagnostics.error("Profile creation failed", metadata: ["error": error.localizedDescription])
-            statusMessage = "Couldn't save profile. Please try again."
+            setStatus("Couldn't save profile. Please try again.")
         }
     }
 
@@ -235,7 +236,7 @@ final class AppState: ObservableObject {
         temporarilySkippedDiagnostic = true
         diagnosticSession = nil
         route = .home
-        statusMessage = "You can run the diagnostic anytime in Parent Settings."
+        setStatus("You can run the diagnostic anytime in Parent Settings.")
         diagnostics.info("Diagnostic skipped for now")
     }
 
@@ -258,7 +259,7 @@ final class AppState: ObservableObject {
         adaptivePath = adaptivePlanner.buildPath(result: result, catalog: curriculumCatalog)
         refreshDashboard()
         route = .home
-        statusMessage = "Placement complete: \(result.placedGrade.title)."
+        setStatus("Placement complete: \(result.placedGrade.title).")
         playSFX(.reward)
         diagnostics.info(
             "Diagnostic finished",
@@ -272,7 +273,7 @@ final class AppState: ObservableObject {
     func startSession(for unit: UnitType) {
         guard let profile else { return }
         guard isUnitUnlocked(unit) else {
-            statusMessage = "Complete the previous quest to unlock this unit."
+            setStatus("Complete the previous quest to unlock this unit.")
             diagnostics.warning("Attempted to start locked unit", metadata: ["unit": unit.rawValue])
             return
         }
@@ -298,13 +299,13 @@ final class AppState: ObservableObject {
             )
         } catch {
             diagnostics.error("Session composition failed", metadata: ["unit": unit.rawValue, "error": error.localizedDescription])
-            statusMessage = "Unable to start that quest right now."
+            setStatus("Unable to start that quest right now.")
         }
     }
 
     func startRecommendedSession() {
         guard let unit = recommendedUnit() else {
-            statusMessage = "No playable lesson is available yet for this path."
+            setStatus("No playable lesson is available yet for this path.")
             return
         }
         startSession(for: unit)
@@ -342,7 +343,7 @@ final class AppState: ObservableObject {
         // 4. Ultimate fallback: highest unlocked unit (for replay)
         return dashboard.unitProgress
             .last(where: { $0.unlocked })?
-            .unit ?? .subtractionStories
+            .unit ?? .kCountObjects
     }
 
     /// Whether the current recommendation is from the adaptive planner
@@ -395,12 +396,15 @@ final class AppState: ObservableObject {
             // Update session immediately so progress bar reflects the answered item
             currentSession = runtime
             narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
-            statusMessage = masteryState.status == .mastered ? "Skill mastered!" : nil
+            setStatus(masteryState.status == .mastered ? "Skill mastered!" : nil)
             playSFX(isCorrect ? .correct : .incorrect)
 
             // After a brief delay, advance to the next question (or complete)
-            let feedbackDelay: TimeInterval = isCorrect ? 1.2 : 1.8
-            DispatchQueue.main.asyncAfter(deadline: .now() + feedbackDelay) { [self] in
+            let feedbackDelayNs: UInt64 = isCorrect ? 1_200_000_000 : 1_800_000_000
+            sessionAdvanceTask?.cancel()
+            sessionAdvanceTask = Task { [weak self] in
+                try? await Task.sleep(nanoseconds: feedbackDelayNs)
+                guard !Task.isCancelled, let self else { return }
                 guard var rt = currentSession, rt.pendingAdvance else { return }
                 rt.advanceIfPending()
 
@@ -457,7 +461,7 @@ final class AppState: ObservableObject {
                     "error": error.localizedDescription
                 ]
             )
-            statusMessage = "We couldn't save that attempt."
+            setStatus("We couldn't save that attempt.")
         }
     }
 
@@ -583,6 +587,8 @@ final class AppState: ObservableObject {
     }
 
     func goHome() {
+        sessionAdvanceTask?.cancel()
+        sessionAdvanceTask = nil
         route = profile == nil ? .profileSetup : .home
         currentSession = nil
         latestSummary = nil
@@ -616,7 +622,7 @@ final class AppState: ObservableObject {
     }
 
     func isUnitUnlocked(_ unit: UnitType) -> Bool {
-        dashboard.unitProgress.first(where: { $0.unit == unit })?.unlocked ?? (unit == .subtractionStories)
+        dashboard.unitProgress.first(where: { $0.unit == unit })?.unlocked ?? (unit == .kCountObjects)
     }
 
     private func shouldRequireDiagnostic(for childID: UUID) -> Bool {
@@ -651,6 +657,17 @@ final class AppState: ObservableObject {
         defaults.set(encoded, forKey: diagnosticStorageKey(for: result.childID))
     }
 
+    private func setStatus(_ message: String?, autoClearSeconds: Double = 4.0) {
+        statusClearTask?.cancel()
+        statusMessage = message
+        guard message != nil else { return }
+        statusClearTask = Task {
+            try? await Task.sleep(nanoseconds: UInt64(autoClearSeconds * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            statusMessage = nil
+        }
+    }
+
     private func playSFX(_ event: SFXEvent) {
         guard soundEffectsEnabled else { return }
         sfxService.play(event, theme: selectedTheme)
@@ -663,7 +680,7 @@ final class AppState: ObservableObject {
         }
 
         let unitCounts = repository.unitSessionCounts(childID: profile.id)
-        var unlockedUnits: Set<UnitType> = [.subtractionStories]
+        var unlockedUnits: Set<UnitType> = [.kCountObjects]
         let path = UnitType.learningPath
         let placementIndex = placementUnlockIndex(for: diagnosticResult?.placedGrade)
 
@@ -761,8 +778,9 @@ struct ParentGateChallenge {
     let answer: String
 
     static func newChallenge() -> ParentGateChallenge {
-        let left = Int.random(in: 2...9)
-        let right = Int.random(in: 2...9)
-        return ParentGateChallenge(prompt: "Parent check: \(left) + \(right) = ?", answer: String(left + right))
+        // Use multiplication with larger numbers so grade 3+ students can't easily solve it.
+        let left = Int.random(in: 12...29)
+        let right = Int.random(in: 7...19)
+        return ParentGateChallenge(prompt: "Parent check: \(left) \u{00D7} \(right) = ?", answer: String(left * right))
     }
 }

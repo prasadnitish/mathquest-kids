@@ -29,7 +29,10 @@ struct SessionRuntime {
     }
 
     var currentItem: PracticeItem {
-        items[index]
+        guard !items.isEmpty, index < items.count else {
+            preconditionFailure("SessionRuntime.currentItem accessed at index \(index) but items has \(items.count) elements")
+        }
+        return items[index]
     }
 
     var isComplete: Bool {
@@ -53,9 +56,15 @@ struct SessionRuntime {
     }
 
     mutating func recordSubmission(correct: Bool) {
+        // If this item already triggered pendingAdvance (e.g. 2 incorrect),
+        // don't double-count answeredCount on a subsequent correct answer.
+        let alreadyCounted = pendingAdvance
+
         if correct {
             correctCount += 1
-            answeredCount += 1
+            if !alreadyCounted {
+                answeredCount += 1
+            }
             pendingAdvance = true
         } else {
             incorrectByItem[currentItem.id, default: 0] += 1
@@ -63,7 +72,7 @@ struct SessionRuntime {
                 recentMisconceptions.removeFirst()
             }
             recentMisconceptions.append("\(currentItem.skillID):\(currentItem.answer)")
-            if incorrectByItem[currentItem.id, default: 0] >= 2 {
+            if !alreadyCounted && incorrectByItem[currentItem.id, default: 0] >= 2 {
                 answeredCount += 1
                 pendingAdvance = true
             }

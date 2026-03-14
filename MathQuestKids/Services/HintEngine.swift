@@ -280,8 +280,11 @@ struct DeterministicHintEngine: HintEngine {
             let top = context.payload.numeratorA ?? 1
             let bottom = max(context.payload.denominatorA ?? 1, 1)
             let whole = context.payload.whole ?? 0
-            let part = whole / bottom
-            return "One part is \(whole) / \(bottom) = \(part). Then \(top) parts is \(part * top)."
+            let partValue = Double(whole) / Double(bottom)
+            let result = partValue * Double(top)
+            let partStr = partValue.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(partValue))" : String(format: "%.1f", partValue)
+            let resultStr = result.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(result))" : String(format: "%.1f", result)
+            return "One part is \(whole) / \(bottom) = \(partStr). Then \(top) parts is \(resultStr)."
         case .volumeAndDecimals:
             if let left = context.payload.decimalLeft, let right = context.payload.decimalRight {
                 let sign = left == right ? "=" : (left > right ? ">" : "<")

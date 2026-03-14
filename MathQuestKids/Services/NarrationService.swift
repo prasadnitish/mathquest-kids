@@ -166,19 +166,7 @@ final class NarrationService {
     private func playPreGeneratedByText(_ text: String, categories: [String]) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Scan audio directory for a matching file by trying known IDs
-        // This is a simple lookup — the audio_index maps IDs to paths
-        for (id, _) in audioIndex {
-            // For feedback/companion/diagnostic, the ID encodes the category
-            let matchesCategory = categories.contains(where: { id.hasPrefix($0) || id.contains($0) })
-            guard matchesCategory else { continue }
-
-            // Try to play it — for feedback, we rely on the caller matching known phrases
-            // A more robust approach would store text→id mapping, but for now
-            // the feedback phrases are a small fixed set
-        }
-
-        // For the known fixed set, try direct ID lookups
+        // Direct lookup from known text→audio-ID mappings
         let knownMappings: [String: String] = [
             // Session completion
             "Great finish!": "session-end-00",

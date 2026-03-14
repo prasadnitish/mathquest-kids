@@ -285,7 +285,10 @@ struct DiagnosticSessionRuntime: Equatable {
     private(set) var selectedIndexes: [String: Int] = [:]
 
     var currentQuestion: DiagnosticQuestion {
-        questions[index]
+        guard !questions.isEmpty, index < questions.count else {
+            preconditionFailure("DiagnosticSessionRuntime.currentQuestion accessed at index \(index) but questions has \(questions.count) elements")
+        }
+        return questions[index]
     }
 
     var isComplete: Bool {
