@@ -107,27 +107,27 @@ final class DiagnosticService {
 
         // Grade 1
         DiagnosticQuestion(id: "diag-g1-01", prompt: "What is 14 as tens and ones?", choices: ["1 ten and 4 ones", "4 tens and 1 one", "14 tens", "2 tens and 4 ones"], correctIndex: 0, targetGrade: .grade1, domain: .placeValue),
-        DiagnosticQuestion(id: "diag-g1-02", prompt: "12 - 5 = ?", choices: ["6", "7", "8", "9"], correctIndex: 1, targetGrade: .grade1, domain: .operations),
+        DiagnosticQuestion(id: "diag-g1-02", prompt: "What is 12 minus 5?", choices: ["6", "7", "8", "9"], correctIndex: 1, targetGrade: .grade1, domain: .operations),
         DiagnosticQuestion(id: "diag-g1-03", prompt: "Which equation matches this story: 9 birds, 3 fly away?", choices: ["9 + 3", "9 - 3", "3 - 9", "9 + 9"], correctIndex: 1, targetGrade: .grade1, domain: .problemSolving),
 
         // Grade 2
         DiagnosticQuestion(id: "diag-g2-01", prompt: "Which number is greater?", choices: ["38", "83", "They are equal", "Not sure"], correctIndex: 1, targetGrade: .grade2, domain: .placeValue),
-        DiagnosticQuestion(id: "diag-g2-02", prompt: "46 + 27 = ?", choices: ["63", "73", "74", "83"], correctIndex: 1, targetGrade: .grade2, domain: .operations),
-        DiagnosticQuestion(id: "diag-g2-03", prompt: "A ribbon is 35 cm. It is cut into 20 cm and ? cm.", choices: ["10", "15", "20", "25"], correctIndex: 1, targetGrade: .grade2, domain: .measurement),
+        DiagnosticQuestion(id: "diag-g2-02", prompt: "What is 46 plus 27?", choices: ["63", "73", "74", "83"], correctIndex: 1, targetGrade: .grade2, domain: .operations),
+        DiagnosticQuestion(id: "diag-g2-03", prompt: "A ribbon is 35 centimeters. It is cut into 20 centimeters and how many more?", choices: ["10", "15", "20", "25"], correctIndex: 1, targetGrade: .grade2, domain: .measurement),
 
         // Grade 3
-        DiagnosticQuestion(id: "diag-g3-01", prompt: "Which is equivalent to 3 x 7?", choices: ["7 + 7 + 7", "3 + 7", "21 - 3", "7 + 3"], correctIndex: 0, targetGrade: .grade3, domain: .operations),
+        DiagnosticQuestion(id: "diag-g3-01", prompt: "Which is the same as 3 times 7?", choices: ["7 + 7 + 7", "3 + 7", "21 - 3", "7 + 3"], correctIndex: 0, targetGrade: .grade3, domain: .operations),
         DiagnosticQuestion(id: "diag-g3-02", prompt: "Which fraction is larger?", choices: ["1/4", "1/3", "They are equal", "Cannot tell"], correctIndex: 1, targetGrade: .grade3, domain: .fractions),
-        DiagnosticQuestion(id: "diag-g3-03", prompt: "Perimeter of a 5 by 3 rectangle is:", choices: ["8", "15", "16", "30"], correctIndex: 2, targetGrade: .grade3, domain: .geometry),
+        DiagnosticQuestion(id: "diag-g3-03", prompt: "What is the perimeter of a 5 by 3 rectangle?", choices: ["8", "15", "16", "30"], correctIndex: 2, targetGrade: .grade3, domain: .geometry),
 
         // Grade 4
-        DiagnosticQuestion(id: "diag-g4-01", prompt: "What is 304 x 10?", choices: ["304", "3,040", "30,400", "314"], correctIndex: 1, targetGrade: .grade4, domain: .placeValue),
+        DiagnosticQuestion(id: "diag-g4-01", prompt: "What is 304 times 10?", choices: ["304", "3,040", "30,400", "314"], correctIndex: 1, targetGrade: .grade4, domain: .placeValue),
         DiagnosticQuestion(id: "diag-g4-02", prompt: "Which decimal is greatest?", choices: ["0.45", "0.405", "0.54", "0.504"], correctIndex: 2, targetGrade: .grade4, domain: .numberSense),
-        DiagnosticQuestion(id: "diag-g4-03", prompt: "1/2 + 1/4 = ?", choices: ["2/6", "3/4", "1/6", "1/8"], correctIndex: 1, targetGrade: .grade4, domain: .fractions),
+        DiagnosticQuestion(id: "diag-g4-03", prompt: "What is one half plus one fourth?", choices: ["2/6", "3/4", "1/6", "1/8"], correctIndex: 1, targetGrade: .grade4, domain: .fractions),
 
         // Grade 5
-        DiagnosticQuestion(id: "diag-g5-01", prompt: "What is 3/5 of 20?", choices: ["8", "10", "12", "15"], correctIndex: 2, targetGrade: .grade5, domain: .fractions),
+        DiagnosticQuestion(id: "diag-g5-01", prompt: "What is three fifths of 20?", choices: ["8", "10", "12", "15"], correctIndex: 2, targetGrade: .grade5, domain: .fractions),
         DiagnosticQuestion(id: "diag-g5-02", prompt: "A recipe uses 1.5 cups sugar per batch. For 4 batches?", choices: ["5 cups", "5.5 cups", "6 cups", "6.5 cups"], correctIndex: 2, targetGrade: .grade5, domain: .problemSolving),
-        DiagnosticQuestion(id: "diag-g5-03", prompt: "Volume of a prism 4 x 3 x 2 is:", choices: ["9", "12", "24", "48"], correctIndex: 2, targetGrade: .grade5, domain: .measurement)
+        DiagnosticQuestion(id: "diag-g5-03", prompt: "What is the volume of a prism that is 4 by 3 by 2?", choices: ["9", "12", "24", "48"], correctIndex: 2, targetGrade: .grade5, domain: .measurement)
     ]
 }

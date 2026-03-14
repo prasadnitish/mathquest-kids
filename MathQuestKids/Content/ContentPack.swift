@@ -57,9 +57,14 @@ struct ItemTemplate: Codable {
     let format: ItemFormat
     let difficulty: Int
     let prompt: String
+    let spokenForm: String?
     let answer: String
     let supports: [SupportType]
     let payload: ItemPayload
+
+    /// The text that should be read aloud by TTS.
+    /// Falls back to `prompt` when no spoken form is provided.
+    var narrationText: String { spokenForm ?? prompt }
 }
 
 struct ItemPayload: Codable, Equatable {
