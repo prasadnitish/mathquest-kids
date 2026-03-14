@@ -327,11 +327,11 @@ enum HintAction {
     var encouragementLine: String {
         switch self {
         case .showConcreteSupport:
-            return "Nice effort. Let's use a visual helper."
+            return "Nice effort. Let us use a visual helper."
         case .strategyPrompt:
             return "Good thinking. Try this strategy hint."
         case .workedStep:
-            return "You're learning. Let's do one step together."
+            return "You are learning. Let us do one step together."
         }
     }
 
@@ -380,11 +380,11 @@ struct PraiseLibrary {
     ]
 
     private static let retry = [
-        "Nice try. Let's look again.",
-        "You're learning. Try one more time.",
+        "Nice try. Let us look again.",
+        "You are learning. Try one more time.",
         "Good effort. Use the hint if you want.",
         "Keep going. You can do this step.",
-        "You're close. Check one part and try again.",
+        "You are close. Check one part and try again.",
         "Good thinking. Adjust one step and test it again."
     ]
 
@@ -393,6 +393,6 @@ struct PraiseLibrary {
     }
 
     static func randomRetryPrompt() -> String {
-        retry.randomElement() ?? "Nice try. Let's look again."
+        retry.randomElement() ?? "Nice try. Let us look again."
     }
 }

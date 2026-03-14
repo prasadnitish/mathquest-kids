@@ -43,7 +43,7 @@ struct StickerIcon: Equatable {
         case .g2AddWithin100:       return StickerIcon(systemName: "crown.fill", gradient: [.yellow, .orange])
         case .g2SubWithin100:       return StickerIcon(systemName: "wand.and.stars", gradient: [.pink, .yellow])
         case .subtractionStories:   return StickerIcon(systemName: "cherry.fill", gradient: [.red, .pink])
-        case .teenPlaceValue:       return StickerIcon(systemName: "lollipop.fill", gradient: [.orange, .pink])
+        case .teenPlaceValue:       return StickerIcon(systemName: "cup.and.saucer.fill", gradient: [.orange, .pink])
         case .twoDigitComparison:   return StickerIcon(systemName: "tag.circle.fill", gradient: [.purple, .red])
         case .threeDigitComparison: return StickerIcon(systemName: "rosette", gradient: [.yellow, .pink])
         case .multiplicationArrays: return StickerIcon(systemName: "seal.fill", gradient: [.orange, .purple])

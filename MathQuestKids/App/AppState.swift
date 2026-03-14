@@ -504,7 +504,7 @@ final class AppState: ObservableObject {
         let hint = hintEngine.nextHint(for: context)
         runtime.registerHintUse()
         currentSession = runtime
-        narrationService.speakFeedback("\(hint.encouragementLine) \(hint.text)", style: narrationStyle, interrupt: true)
+        narrationService.speakFeedback(hint.encouragementLine, style: narrationStyle, interrupt: true)
         playSFX(.hint)
         return hint
     }
