@@ -227,6 +227,7 @@ enum SupportType: String, Codable {
     case fractionStrip
     case areaModel
     case decimalGrid
+    case visual
 }
 
 struct ChildProfileRecord: Equatable {
