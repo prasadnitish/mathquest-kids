@@ -116,11 +116,9 @@ struct StickerSlotView: View {
                         .frame(width: 100, height: 100)
 
                     if sticker.isUnlocked {
-                        Image(systemName: icon.systemName)
-                            .font(.system(size: 36, weight: .bold))
-                            .foregroundStyle(
-                                LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                            )
+                        Image(icon.imageName)
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: 80, height: 80)
                     } else {
                         Image(systemName: "lock.fill")
