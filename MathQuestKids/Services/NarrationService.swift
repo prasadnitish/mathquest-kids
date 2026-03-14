@@ -39,8 +39,7 @@ final class NarrationService {
 
     init() {
         // Load the audio index that maps IDs to file paths
-        // Xcode flattens folder structure when copying resources, so files end up at bundle root.
-        // Try subdirectory first (folder reference), then root (flattened copy).
+        // Try subdirectory first (folder reference), then root (flattened copy)
         let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio")
             ?? Bundle.main.url(forResource: "audio_index", withExtension: "json")
 
@@ -48,18 +47,10 @@ final class NarrationService {
            let data = try? Data(contentsOf: url),
            let index = try? JSONDecoder().decode([String: String].self, from: data) {
             audioIndex = index
-            print("[NarrationService] ✅ Loaded audio index: \(index.count) entries from \(url.lastPathComponent)")
+            print("[NarrationService] Loaded audio index: \(index.count) entries")
         } else {
             audioIndex = [:]
-            print("[NarrationService] ⚠️ audio_index.json NOT found in bundle")
-            // Debug: list what's in the bundle
-            if let resourcePath = Bundle.main.resourcePath {
-                let fm = FileManager.default
-                if let items = try? fm.contentsOfDirectory(atPath: resourcePath) {
-                    let audioRelated = items.filter { $0.lowercased().contains("audio") }
-                    print("[NarrationService] Bundle items matching 'audio': \(audioRelated)")
-                }
-            }
+            print("[NarrationService] audio_index.json not found in bundle")
         }
     }
 
@@ -73,15 +64,8 @@ final class NarrationService {
         }
 
         // Try pre-generated audio by item ID
-        if let itemID {
-            print("[NarrationService] Looking up itemID='\(itemID)' in audioIndex (\(audioIndex.count) entries)")
-            if playPreGenerated(id: itemID) {
-                print("[NarrationService] ✅ Playing pre-generated audio for '\(itemID)'")
-                return
-            }
-            print("[NarrationService] ❌ No pre-generated audio for '\(itemID)', falling back to TTS")
-        } else {
-            print("[NarrationService] No itemID provided, using TTS")
+        if let itemID, playPreGenerated(id: itemID) {
+            return
         }
 
         // Fallback to system TTS
@@ -125,31 +109,19 @@ final class NarrationService {
 
     private func playPreGenerated(id: String) -> Bool {
         guard let relativePath = audioIndex[id] else {
-            print("[NarrationService] ID '\(id)' not in audioIndex")
             return false
         }
 
-        // Xcode flattens folder structure when copying resources, so files like
-        // "diagnostic/diag-g2-03.mp3" end up at the bundle root as "diag-g2-03.mp3".
-        // Try the full subdirectory path first (folder reference), then bundle root (flattened).
-        let fileName = ((relativePath as NSString).lastPathComponent as NSString).deletingPathExtension
-        let resourceName = (relativePath as NSString).deletingPathExtension
+        let filename = ((relativePath as NSString).lastPathComponent as NSString).deletingPathExtension
+        let subdir = (relativePath as NSString).deletingLastPathComponent
 
-        let url = Bundle.main.url(
-            forResource: resourceName,
-            withExtension: "mp3",
-            subdirectory: "Audio"
-        ) ?? Bundle.main.url(
-            forResource: fileName,
-            withExtension: "mp3",
-            subdirectory: "Audio/\((relativePath as NSString).deletingLastPathComponent)"
-        ) ?? Bundle.main.url(
-            forResource: fileName,
-            withExtension: "mp3"
-        )
+        // Try multiple bundle layouts — Xcode may preserve or flatten the directory structure
+        let url = Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio/\(subdir)")
+            ?? Bundle.main.url(forResource: (relativePath as NSString).deletingPathExtension, withExtension: "mp3", subdirectory: "Audio")
+            ?? Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio")
+            ?? Bundle.main.url(forResource: filename, withExtension: "mp3")
 
         guard let url else {
-            print("[NarrationService] MP3 not found: resource='\(fileName)' relativePath='\(relativePath)'")
             return false
         }
 
@@ -174,7 +146,7 @@ final class NarrationService {
     private func playPreGeneratedByText(_ text: String, categories: [String]) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Direct lookup from known text→audio-ID mappings
+        // Direct lookup from known text-to-audio-ID mappings
         let knownMappings: [String: String] = [
             // Session completion
             "Great finish!": "session-end-00",
@@ -197,7 +169,6 @@ final class NarrationService {
             "Nice fraction reasoning. That gives me a clearer picture of the right level.": "diag-feedback-08",
         ]
 
-        // Also add companion phrases
         let companionMappings: [String: String] = [
             "Awesome job!": "companion-correct_encouraging-00",
             "You got it!": "companion-correct_encouraging-01",
@@ -236,7 +207,6 @@ final class NarrationService {
             "A sticker just for you!": "companion-sticker_earned-03",
         ]
 
-        // Also add praise phrases
         let praiseMappings: [String: String] = [
             "Great strategy!": "praise-00",
             "You kept trying and solved it!": "praise-01",
@@ -260,8 +230,6 @@ final class NarrationService {
             return playPreGenerated(id: id)
         }
 
-        // Check if the text contains a known phrase (for compound feedback like "encouragement + hint")
-        // Don't match partial — fall through to TTS for compound strings
         return false
     }
 
@@ -275,6 +243,11 @@ final class NarrationService {
     private func speakWithTTS(_ text: String, style: NarrationStyle, role: SpeechRole) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
+
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+        #endif
 
         let utterance = AVSpeechUtterance(string: trimmed)
         utterance.voice = bestVoice(for: style)
