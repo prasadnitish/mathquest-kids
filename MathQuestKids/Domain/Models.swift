@@ -205,6 +205,16 @@ enum ItemFormat: String, Codable {
     case factFamily       // missing addend
     case addTwoDigit      // two-digit column addition
     case subTwoDigit      // two-digit column subtraction
+    case groupComparison      // two dot groups + more/fewer/same
+    case shapeClassification  // shape image + attribute question
+    case measureLength        // ruler + unit count
+    case divisionGroups       // items split into equal groups
+    case areaTiling           // unit square grid
+    case timeMoney            // clock face / coin counting
+    case dataPlot             // bar chart / picture graph reading
+    case angleMeasure         // angle visual + degree options
+    case fractionAddSub       // fraction strip addition/subtraction
+    case ratioTable           // ratio/pattern table completion
 }
 
 enum SupportType: String, Codable {

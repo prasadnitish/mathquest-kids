@@ -89,6 +89,31 @@ struct ItemPayload: Codable, Equatable {
     let decimalLeft: Double?
     let decimalRight: Double?
 
+    // Shape attributes
+    let sides: Int?
+    let corners: Int?
+    let shapeName: String?
+
+    // Time & money
+    let hours: Int?
+    let minutes: Int?
+    let cents: Int?
+
+    // Division
+    let dividend: Int?
+    let divisor: Int?
+
+    // Angles
+    let degrees: Int?
+
+    // Data plots (stored as JSON arrays)
+    let barValues: [Int]?
+    let barLabels: [String]?
+
+    // Ratios
+    let ratioLeft: Int?
+    let ratioRight: Int?
+
     init(
         left: Int? = nil,
         right: Int? = nil,
@@ -108,7 +133,20 @@ struct ItemPayload: Codable, Equatable {
         width: Int? = nil,
         height: Int? = nil,
         decimalLeft: Double? = nil,
-        decimalRight: Double? = nil
+        decimalRight: Double? = nil,
+        sides: Int? = nil,
+        corners: Int? = nil,
+        shapeName: String? = nil,
+        hours: Int? = nil,
+        minutes: Int? = nil,
+        cents: Int? = nil,
+        dividend: Int? = nil,
+        divisor: Int? = nil,
+        degrees: Int? = nil,
+        barValues: [Int]? = nil,
+        barLabels: [String]? = nil,
+        ratioLeft: Int? = nil,
+        ratioRight: Int? = nil
     ) {
         self.left = left
         self.right = right
@@ -129,6 +167,19 @@ struct ItemPayload: Codable, Equatable {
         self.height = height
         self.decimalLeft = decimalLeft
         self.decimalRight = decimalRight
+        self.sides = sides
+        self.corners = corners
+        self.shapeName = shapeName
+        self.hours = hours
+        self.minutes = minutes
+        self.cents = cents
+        self.dividend = dividend
+        self.divisor = divisor
+        self.degrees = degrees
+        self.barValues = barValues
+        self.barLabels = barLabels
+        self.ratioLeft = ratioLeft
+        self.ratioRight = ratioRight
     }
 }
 

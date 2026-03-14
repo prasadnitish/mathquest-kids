@@ -94,6 +94,34 @@ final class SessionComposer {
         case .additionStory, .countAndMatch, .numberBond, .factFamily, .addTwoDigit, .subTwoDigit:
             let answer = Int(template.answer) ?? template.payload.target ?? 0
             options = makeNumericOptions(answer: answer)
+        case .groupComparison:
+            options = ["More", "Fewer", "Same"]
+        case .shapeClassification:
+            let shapes = ["Triangle", "Square", "Rectangle", "Circle", "Pentagon", "Hexagon", "Rhombus", "Trapezoid"]
+            let answer = template.answer
+            var opts = [answer]
+            for s in shapes.shuffled() where s != answer && opts.count < 4 { opts.append(s) }
+            options = deterministic ? opts.sorted() : opts.shuffled()
+        case .measureLength, .areaTiling, .angleMeasure, .timeMoney, .dataPlot, .ratioTable, .divisionGroups:
+            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            options = makeNumericOptions(answer: answer)
+        case .fractionAddSub:
+            let parts = template.answer.split(separator: "/").compactMap { Int($0) }
+            if parts.count == 2 {
+                let n = parts[0]; let d = parts[1]
+                var opts = ["\(n)/\(d)"]
+                for off in [-2, -1, 1, 2] {
+                    let candidate = max(0, n + off)
+                    if candidate != n { opts.append("\(candidate)/\(d)") }
+                }
+                let unique = Array(Set(opts))
+                let selected = deterministic ? Array(unique.sorted().prefix(4)) : Array(unique.shuffled().prefix(4))
+                var result = selected
+                if !result.contains("\(n)/\(d)") { result[result.count - 1] = "\(n)/\(d)" }
+                options = deterministic ? result.sorted() : result.shuffled()
+            } else {
+                options = [template.answer]
+            }
         }
 
         return PracticeItem(

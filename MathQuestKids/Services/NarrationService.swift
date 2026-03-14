@@ -26,11 +26,6 @@ final class NarrationService {
     private var audioPlayer: AVAudioPlayer?
     private let audioIndex: [String: String]  // id → relative path
 
-    /// True while feedback audio is playing. Used to delay next question audio.
-    var isSpeakingFeedback: Bool {
-        (audioPlayer?.isPlaying ?? false) || synthesizer.isSpeaking
-    }
-
     // MARK: - Fallback TTS
 
     private let synthesizer = AVSpeechSynthesizer()
@@ -93,39 +88,13 @@ final class NarrationService {
             stopAll()
         }
 
-        // Normalize contractions to match pre-generated audio
-        let normalized = text
-            .replacingOccurrences(of: "Let's", with: "Let us")
-            .replacingOccurrences(of: "let's", with: "let us")
-            .replacingOccurrences(of: "You're", with: "You are")
-            .replacingOccurrences(of: "you're", with: "you are")
-
-        // Try exact match first
-        if playPreGeneratedByText(normalized, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
+        // Try known feedback audio by scanning for matching text
+        if playPreGeneratedByText(text, categories: ["feedback", "companion", "diagnostic"]) {
             return
         }
 
-        // For compound strings (e.g. "encouragement + hint text"), try each sentence
-        let sentences = normalized.components(separatedBy: ". ").filter { !$0.isEmpty }
-        if sentences.count > 1 {
-            for sentence in sentences {
-                let candidate = sentence.hasSuffix(".") || sentence.hasSuffix("!") ? sentence : sentence + "."
-                if playPreGeneratedByText(candidate, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
-                    return
-                }
-            }
-            // Also try two-sentence combos (e.g. "Nice effort. Let us use a visual helper.")
-            for i in 0..<(sentences.count - 1) {
-                let combo = sentences[i] + ". " + sentences[i + 1]
-                let candidate = combo.hasSuffix(".") || combo.hasSuffix("!") ? combo : combo + "."
-                if playPreGeneratedByText(candidate, categories: ["feedback", "companion", "diagnostic", "hint", "praise", "retry", "session"]) {
-                    return
-                }
-            }
-        }
-
         // Fallback to system TTS
-        speakWithTTS(normalized, style: style, role: .feedback)
+        speakWithTTS(text, style: style, role: .feedback)
     }
 
     /// Preview voice for settings screen.
@@ -154,27 +123,22 @@ final class NarrationService {
             return false
         }
 
-        // relativePath is like "questions/bnd-01.mp3"
-        let nsPath = relativePath as NSString
-        let filename = (nsPath.lastPathComponent as NSString).deletingPathExtension  // "bnd-01"
-        let subfolder = nsPath.deletingLastPathComponent                              // "questions"
-
-        // Try multiple bundle path strategies (depends on how Xcode bundles the folder)
-        let url: URL? =
-            // 1. Audio/questions/bnd-01.mp3 (folder reference preserves structure)
-            Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio/\(subfolder)")
-            // 2. Audio/bnd-01.mp3 (flat inside Audio/)
-            ?? Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio")
-            // 3. questions/bnd-01.mp3 (no Audio prefix)
-            ?? Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: subfolder)
-            // 4. bnd-01.mp3 at bundle root (completely flat)
-            ?? Bundle.main.url(forResource: filename, withExtension: "mp3")
+        // Audio files are in the bundle under Audio/
+        let resourceName = (relativePath as NSString).deletingPathExtension
+        let url = Bundle.main.url(
+            forResource: resourceName,
+            withExtension: "mp3",
+            subdirectory: "Audio"
+        ) ?? Bundle.main.url(
+            forResource: (relativePath as NSString).lastPathComponent.replacingOccurrences(of: ".mp3", with: ""),
+            withExtension: "mp3",
+            subdirectory: "Audio/\((relativePath as NSString).deletingLastPathComponent)"
+        )
 
         guard let url else {
-            print("[NarrationService] MP3 not found for '\(id)': tried Audio/\(subfolder)/\(filename).mp3 and variants")
+            print("[NarrationService] MP3 not found: resource='\(resourceName)' subdirectory='Audio' relativePath='\(relativePath)'")
             return false
         }
-        print("[NarrationService] Found MP3 at: \(url.lastPathComponent) via \(url.deletingLastPathComponent().lastPathComponent)/")
 
         do {
             #if os(iOS)

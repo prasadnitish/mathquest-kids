@@ -267,6 +267,26 @@ struct SessionView: View {
             CountAndMatchInteraction(item: item, selection: $selectedChoice)
         case .numberBond:
             NumberBondInteraction(item: item, selection: $selectedChoice)
+        case .groupComparison:
+            GroupComparisonInteraction(item: item, selection: $selectedChoice)
+        case .shapeClassification:
+            ShapeClassificationInteraction(item: item, selection: $selectedChoice)
+        case .measureLength:
+            MeasureLengthInteraction(item: item, selection: $selectedChoice)
+        case .divisionGroups:
+            DivisionGroupsInteraction(item: item, selection: $selectedChoice)
+        case .areaTiling:
+            AreaTilingInteraction(item: item, selection: $selectedChoice)
+        case .timeMoney:
+            TimeMoneyInteraction(item: item, selection: $selectedChoice)
+        case .dataPlot:
+            DataPlotInteraction(item: item, selection: $selectedChoice)
+        case .angleMeasure:
+            AngleMeasureInteraction(item: item, selection: $selectedChoice)
+        case .fractionAddSub:
+            FractionAddSubInteraction(item: item, selection: $selectedChoice)
+        case .ratioTable:
+            RatioTableInteraction(item: item, selection: $selectedChoice)
         }
     }
 
@@ -305,6 +325,26 @@ struct SessionView: View {
                 return "Great thinking! You found the missing number."
             case .subTwoDigit:
                 return "Well done! You subtracted those big numbers correctly."
+            case .groupComparison:
+                return "Great comparing! You noticed which group has more."
+            case .shapeClassification:
+                return "Nice shape thinking! You noticed the right attributes."
+            case .measureLength:
+                return "Good measuring! You counted the units carefully."
+            case .divisionGroups:
+                return "Nice sharing! You split them into equal groups."
+            case .areaTiling:
+                return "Great area thinking! You counted the squares."
+            case .timeMoney:
+                return "Nice time and money skills!"
+            case .dataPlot:
+                return "Good data reading! You found the right value."
+            case .angleMeasure:
+                return "Nice angle measurement!"
+            case .fractionAddSub:
+                return "Great fraction work! You combined the parts correctly."
+            case .ratioTable:
+                return "Nice pattern thinking! You extended the ratio."
             }
         }
 
@@ -335,6 +375,26 @@ struct SessionView: View {
             return "Nice try. Think: the whole minus the known part gives the missing part."
         case .subTwoDigit:
             return "Good effort. Subtract the ones first, then the tens."
+        case .groupComparison:
+            return "Good try. Count each group carefully."
+        case .shapeClassification:
+            return "Look at the sides and corners again."
+        case .measureLength:
+            return "Try counting the marks from the start."
+        case .divisionGroups:
+            return "Try dividing the total evenly."
+        case .areaTiling:
+            return "Count the rows and columns carefully."
+        case .timeMoney:
+            return "Look at the clock hands or coins again."
+        case .dataPlot:
+            return "Check the chart labels and heights."
+        case .angleMeasure:
+            return "Look at how wide the angle opens."
+        case .fractionAddSub:
+            return "Try adding the numerators over the same denominator."
+        case .ratioTable:
+            return "Look at how the numbers grow in each row."
         }
     }
 }
@@ -985,6 +1045,385 @@ struct MetricBadge: View {
         .padding(10)
         .frame(width: 56)
         .background(Color.white.opacity(0.88), in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - New K-5 Interaction Views
+
+struct GroupComparisonInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 24) {
+                dotGroup(count: item.payload.left ?? 0, label: "Group A", color: AppTheme.accent)
+                dotGroup(count: item.payload.right ?? 0, label: "Group B", color: AppTheme.primary)
+            }
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+    private func dotGroup(count: Int, label: String, color: Color) -> some View {
+        VStack(spacing: 6) {
+            Text(label).font(.caption.bold()).foregroundStyle(AppTheme.textSecondary)
+            LazyVGrid(columns: Array(repeating: GridItem(.fixed(24)), count: 5), spacing: 6) {
+                ForEach(0..<max(count, 0), id: \.self) { _ in
+                    Circle().fill(color.opacity(0.8)).frame(width: 20, height: 20)
+                }
+            }.frame(minHeight: 40)
+        }
+        .padding(10)
+        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct ShapeClassificationInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var shapeSymbol: String {
+        switch item.payload.shapeName ?? "" {
+        case "Triangle": return "triangle.fill"
+        case "Square": return "square.fill"
+        case "Rectangle": return "rectangle.fill"
+        case "Circle": return "circle.fill"
+        case "Pentagon": return "pentagon.fill"
+        case "Hexagon": return "hexagon.fill"
+        case "Diamond", "Rhombus": return "diamond.fill"
+        default: return "questionmark.square.fill"
+        }
+    }
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: shapeSymbol).font(.system(size: 80)).foregroundStyle(AppTheme.primary.opacity(0.7)).frame(height: 120)
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct MeasureLengthInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var objectLength: Int { item.payload.target ?? 5 }
+    var body: some View {
+        VStack(spacing: 16) {
+            RoundedRectangle(cornerRadius: 6).fill(AppTheme.accent.opacity(0.6)).frame(width: CGFloat(objectLength) * 32, height: 24)
+            HStack(spacing: 0) {
+                ForEach(0...12, id: \.self) { tick in
+                    VStack(spacing: 2) {
+                        Rectangle().fill(AppTheme.textPrimary.opacity(0.6)).frame(width: 1, height: tick % 5 == 0 ? 18 : 10)
+                        Text("\(tick)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                    }.frame(width: 32)
+                }
+            }
+            .padding(.horizontal, 8).padding(.vertical, 6)
+            .background(Color.yellow.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct DivisionGroupsInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var total: Int { item.payload.dividend ?? (item.payload.multiplicand ?? 1) * (item.payload.multiplier ?? 1) }
+    private var groups: Int { max(item.payload.divisor ?? item.payload.multiplier ?? 1, 1) }
+    private var perGroup: Int { max(1, total / groups) }
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("\(total) items \u{00F7} \(groups) groups").font(.headline)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: min(groups, 4)), spacing: 12) {
+                ForEach(0..<min(groups, 8), id: \.self) { g in
+                    VStack(spacing: 4) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 16))], spacing: 4) {
+                            ForEach(0..<min(perGroup, 12), id: \.self) { _ in
+                                Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 14, height: 14)
+                            }
+                        }
+                        Text("Group \(g + 1)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                    }
+                    .padding(8)
+                    .background(AppTheme.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                }
+            }
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct AreaTilingInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var rows: Int { item.payload.length ?? item.payload.multiplicand ?? 3 }
+    private var cols: Int { item.payload.width ?? item.payload.multiplier ?? 4 }
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("\(rows) rows \u{00D7} \(cols) columns = ?").font(.headline)
+            VStack(spacing: 2) {
+                ForEach(0..<min(rows, 10), id: \.self) { _ in
+                    HStack(spacing: 2) {
+                        ForEach(0..<min(cols, 10), id: \.self) { _ in
+                            Rectangle().fill(AppTheme.accent.opacity(0.5)).frame(width: 28, height: 28)
+                                .overlay(Rectangle().stroke(AppTheme.primary.opacity(0.3), lineWidth: 1))
+                        }
+                    }
+                }
+            }
+            .padding(8).background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct TimeMoneyInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var isTimeQuestion: Bool { item.payload.hours != nil }
+    var body: some View {
+        VStack(spacing: 16) {
+            if isTimeQuestion {
+                ClockFaceView(hours: item.payload.hours ?? 0, minutes: item.payload.minutes ?? 0).frame(width: 160, height: 160)
+            } else {
+                CoinDisplayView(cents: item.payload.cents ?? 0)
+            }
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct ClockFaceView: View {
+    let hours: Int
+    let minutes: Int
+    var body: some View {
+        GeometryReader { geo in
+            let size = min(geo.size.width, geo.size.height)
+            let center = CGPoint(x: size / 2, y: size / 2)
+            ZStack {
+                Circle().stroke(AppTheme.textPrimary, lineWidth: 3)
+                ForEach(1...12, id: \.self) { h in
+                    let angle = Double(h) * .pi / 6 - .pi / 2
+                    let r = size / 2 - 20
+                    Text("\(h)").font(.caption.bold())
+                        .position(x: center.x + r * cos(angle), y: center.y + r * sin(angle))
+                }
+                // Hour hand
+                Rectangle().fill(AppTheme.textPrimary).frame(width: 4, height: size * 0.25)
+                    .offset(y: -size * 0.125)
+                    .rotationEffect(.degrees(Double(hours % 12) * 30 + Double(minutes) * 0.5))
+                // Minute hand
+                Rectangle().fill(AppTheme.primary).frame(width: 2.5, height: size * 0.35)
+                    .offset(y: -size * 0.175)
+                    .rotationEffect(.degrees(Double(minutes) * 6))
+                Circle().fill(AppTheme.textPrimary).frame(width: 8, height: 8)
+            }.frame(width: size, height: size)
+        }
+    }
+}
+
+struct CoinDisplayView: View {
+    let cents: Int
+    private var coins: [(String, Int)] {
+        var remaining = cents
+        var result: [(String, Int)] = []
+        for (name, value) in [("Q", 25), ("D", 10), ("N", 5), ("P", 1)] {
+            let count = remaining / value
+            if count > 0 { result.append((name, count)); remaining -= count * value }
+        }
+        return result
+    }
+    var body: some View {
+        HStack(spacing: 12) {
+            ForEach(coins, id: \.0) { name, count in
+                VStack(spacing: 4) {
+                    ZStack {
+                        Circle().fill(name == "P" ? Color.orange.opacity(0.6) : Color.gray.opacity(0.4))
+                            .frame(width: name == "Q" ? 40 : name == "D" ? 28 : 34,
+                                   height: name == "Q" ? 40 : name == "D" ? 28 : 34)
+                        Text(name).font(.caption.bold())
+                    }
+                    Text("\u{00D7}\(count)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+        }
+    }
+}
+
+struct DataPlotInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var values: [Int] { item.payload.barValues ?? [3, 5, 2, 4] }
+    private var labels: [String] { item.payload.barLabels ?? ["A", "B", "C", "D"] }
+    private var maxVal: Int { max(values.max() ?? 1, 1) }
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(alignment: .bottom, spacing: 12) {
+                ForEach(0..<min(values.count, labels.count), id: \.self) { i in
+                    VStack(spacing: 4) {
+                        Text("\(values[i])").font(.caption.bold())
+                        RoundedRectangle(cornerRadius: 4).fill(AppTheme.primary.opacity(0.6 + 0.1 * Double(i)))
+                            .frame(width: 36, height: CGFloat(values[i]) / CGFloat(maxVal) * 100)
+                        Text(labels[i]).font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                    }
+                }
+            }.frame(height: 140).padding()
+            .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct AngleMeasureInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var deg: Double { Double(item.payload.degrees ?? 90) }
+    var body: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                Path { p in p.move(to: CGPoint(x: 30, y: 130)); p.addLine(to: CGPoint(x: 200, y: 130)) }
+                    .stroke(AppTheme.textPrimary, lineWidth: 3)
+                Path { p in
+                    let r = deg * .pi / 180
+                    p.move(to: CGPoint(x: 30, y: 130))
+                    p.addLine(to: CGPoint(x: 30 + 170 * cos(r), y: 130 - 170 * sin(r)))
+                }.stroke(AppTheme.primary, lineWidth: 3)
+                Path { p in
+                    p.addArc(center: CGPoint(x: 30, y: 130), radius: 40, startAngle: .degrees(0), endAngle: .degrees(-deg), clockwise: true)
+                }.stroke(AppTheme.accent, style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
+                Text("?\u{00B0}").font(.headline.bold())
+                    .position(x: 30 + 55 * cos(deg / 2 * .pi / 180), y: 130 - 55 * sin(deg / 2 * .pi / 180))
+            }.frame(width: 230, height: 160)
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
+struct FractionAddSubInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var numA: Int { item.payload.numeratorA ?? 1 }
+    private var denA: Int { max(item.payload.denominatorA ?? 1, 1) }
+    private var numB: Int { item.payload.numeratorB ?? 1 }
+    private var denB: Int { max(item.payload.denominatorB ?? 1, 1) }
+    private var isSubtraction: Bool { item.prompt.contains("\u{2212}") || item.prompt.lowercased().contains("subtract") }
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 12) {
+                fractionVisual(numerator: numA, denominator: denA, color: AppTheme.accent)
+                Text(isSubtraction ? "\u{2212}" : "+").font(.title.bold())
+                fractionVisual(numerator: numB, denominator: denB, color: AppTheme.primary)
+            }
+            Text("= ?").font(.title2.bold()).foregroundStyle(AppTheme.textPrimary)
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+    private func fractionVisual(numerator: Int, denominator: Int, color: Color) -> some View {
+        VStack(spacing: 4) {
+            Text("\(numerator)/\(denominator)").font(.headline.bold())
+            HStack(spacing: 1) {
+                ForEach(0..<denominator, id: \.self) { i in
+                    Rectangle().fill(i < numerator ? color.opacity(0.7) : Color.gray.opacity(0.15))
+                        .frame(height: 20)
+                        .overlay(Rectangle().stroke(color.opacity(0.3), lineWidth: 0.5))
+                }
+            }.frame(width: 100).clipShape(RoundedRectangle(cornerRadius: 4))
+        }
+    }
+}
+
+struct RatioTableInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    private var ratioL: Int { item.payload.ratioLeft ?? item.payload.left ?? 2 }
+    private var ratioR: Int { item.payload.ratioRight ?? item.payload.right ?? 3 }
+    var body: some View {
+        VStack(spacing: 16) {
+            VStack(spacing: 0) {
+                ratioRow(cells: ["\u{00D7}", "1", "2", "3", "4"], header: true)
+                ratioRow(cells: ["A", "\(ratioL)", "\(ratioL * 2)", "\(ratioL * 3)", "?"], header: false)
+                ratioRow(cells: ["B", "\(ratioR)", "\(ratioR * 2)", "\(ratioR * 3)", "\(ratioR * 4)"], header: false)
+            }
+            .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.primary.opacity(0.2), lineWidth: 1))
+            HStack(spacing: 8) {
+                ForEach(item.options, id: \.self) { opt in
+                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+    private func ratioRow(cells: [String], header: Bool) -> some View {
+        HStack(spacing: 0) {
+            ForEach(cells.indices, id: \.self) { i in
+                Text(cells[i]).font(header ? .caption.bold() : .body.bold())
+                    .frame(width: 54, height: 36)
+                    .background(header ? AppTheme.primary.opacity(0.1) : (cells[i] == "?" ? AppTheme.accent.opacity(0.2) : Color.clear))
+                    .overlay(Rectangle().stroke(AppTheme.primary.opacity(0.12), lineWidth: 0.5))
+            }
+        }
     }
 }
 
