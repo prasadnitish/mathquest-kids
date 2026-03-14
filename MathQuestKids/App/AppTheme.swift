@@ -18,7 +18,7 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .axolotl: return "Axolotl Lagoon"
         case .rainbowUnicorn: return "Rainbow Unicorn"
         case .starsSpace: return "Stars and Space"
-        case .superhero: return "Superhero City"
+        case .superhero: return "Superhero"
         case .turboCars: return "Turbo Cars"
         }
     }
@@ -29,8 +29,8 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .axolotl: return Color(red: 0.16, green: 0.54, blue: 0.63)
         case .rainbowUnicorn: return Color(red: 0.56, green: 0.34, blue: 0.88)
         case .starsSpace: return Color(red: 0.25, green: 0.30, blue: 0.74)
-        case .superhero: return Color(red: 0.85, green: 0.18, blue: 0.18)
-        case .turboCars: return Color(red: 0.20, green: 0.42, blue: 0.90)
+        case .superhero: return Color(red: 0.80, green: 0.18, blue: 0.18)
+        case .turboCars: return Color(red: 0.82, green: 0.42, blue: 0.05)
         }
     }
 
@@ -40,8 +40,8 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .axolotl: return Color(red: 1.00, green: 0.58, blue: 0.72)
         case .rainbowUnicorn: return Color(red: 0.97, green: 0.51, blue: 0.70)
         case .starsSpace: return Color(red: 0.48, green: 0.90, blue: 0.94)
-        case .superhero: return Color(red: 1.00, green: 0.82, blue: 0.20)
-        case .turboCars: return Color(red: 0.98, green: 0.45, blue: 0.15)
+        case .superhero: return Color(red: 0.20, green: 0.50, blue: 0.90)
+        case .turboCars: return Color(red: 0.20, green: 0.75, blue: 0.30)
         }
     }
 
@@ -49,8 +49,10 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         switch self {
         case .candyland:
             return AppTheme.textPrimary
-        case .axolotl, .rainbowUnicorn, .starsSpace, .superhero, .turboCars:
+        case .axolotl, .rainbowUnicorn, .starsSpace, .superhero:
             return .white
+        case .turboCars:
+            return AppTheme.textPrimary
         }
     }
 
@@ -99,9 +101,9 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .superhero:
             return LinearGradient(
                 colors: [
-                    Color(red: 0.95, green: 0.22, blue: 0.22),
-                    Color(red: 0.80, green: 0.15, blue: 0.30),
-                    Color(red: 0.55, green: 0.10, blue: 0.35)
+                    Color(red: 0.15, green: 0.15, blue: 0.30),
+                    Color(red: 0.60, green: 0.12, blue: 0.12),
+                    Color(red: 0.20, green: 0.20, blue: 0.45)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -109,9 +111,9 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .turboCars:
             return LinearGradient(
                 colors: [
-                    Color(red: 0.15, green: 0.35, blue: 0.85),
-                    Color(red: 0.12, green: 0.28, blue: 0.70),
-                    Color(red: 0.10, green: 0.22, blue: 0.55)
+                    Color(red: 0.12, green: 0.12, blue: 0.14),
+                    Color(red: 0.20, green: 0.20, blue: 0.22),
+                    Color(red: 0.78, green: 0.38, blue: 0.04)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -137,7 +139,7 @@ enum VisualTheme: String, CaseIterable, Identifiable {
         case .rainbowUnicorn: return ["star.fill", "sparkles", "cloud.fill"]
         case .starsSpace: return ["star.fill", "sparkles", "moon.fill"]
         case .superhero: return ["bolt.fill", "shield.fill", "star.fill"]
-        case .turboCars: return ["flame.fill", "flag.checkered", "speedometer"]
+        case .turboCars: return ["flag.checkered", "flame.fill", "gauge.open.with.lines.needle.33percent"]
         }
     }
 
@@ -175,10 +177,4 @@ enum AppTheme {
     static let error = Color(red: 0.75, green: 0.23, blue: 0.20)
     static let textPrimary = Color(red: 0.08, green: 0.12, blue: 0.15)
     static let textSecondary = Color(red: 0.28, green: 0.32, blue: 0.37)
-
-    /// Scales a font size for compact (iPhone) vs regular (iPad) width.
-    /// On iPhone the size is reduced by ~35%.
-    static func scaled(_ iPadSize: CGFloat, compact: Bool) -> CGFloat {
-        compact ? round(iPadSize * 0.65) : iPadSize
-    }
 }

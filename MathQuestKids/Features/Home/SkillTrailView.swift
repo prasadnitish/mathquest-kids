@@ -6,27 +6,18 @@ struct SkillTrailView: View {
 
     private var gradeGroups: [(grade: String, nodes: [TrailNode])] {
         let kUnits: Set<UnitType> = [.kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
-                                      .kCompareGroups, .kShapeAttributes]
-        let g1Units: Set<UnitType> = [.subtractionStories, .teenPlaceValue, .g1AddWithin20, .g1FactFamilies,
-                                       .twoDigitComparison, .g1AddSub100, .g1MeasureLength]
-        let g2Units: Set<UnitType> = [.g2AddWithin100, .g2SubWithin100, .threeDigitComparison,
-                                       .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups,
-                                       .g2TimeMoney, .g2DataIntro]
-        let g3Units: Set<UnitType> = [.multiplicationArrays, .g3DivMeaning, .g3FractionUnit,
-                                       .g3FractionCompare, .fractionComparison, .g3AreaConcept,
-                                       .g3MultiStep]
-        let g4Units: Set<UnitType> = [.g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients,
-                                       .g4FractionAddSub, .g4AngleMeasure]
-        let g5Units: Set<UnitType> = [.fractionOfWhole, .volumeAndDecimals, .g5FractionAddSubUnlike,
-                                       .g5LinePlotsFractions, .g5PreRatios]
+                                      .subtractionStories, .teenPlaceValue]
+        let g1Units: Set<UnitType> = [.g1AddWithin20, .g1FactFamilies, .twoDigitComparison]
+        let g2Units: Set<UnitType> = [.g2AddWithin100, .g2SubWithin100, .threeDigitComparison]
+        let g3Units: Set<UnitType> = [.multiplicationArrays]
+        let g45Units: Set<UnitType> = [.fractionComparison, .fractionOfWhole, .volumeAndDecimals]
 
         return [
             ("Kindergarten", trail.nodes.filter { kUnits.contains($0.unit) }),
             ("Grade 1", trail.nodes.filter { g1Units.contains($0.unit) }),
             ("Grade 2", trail.nodes.filter { g2Units.contains($0.unit) }),
             ("Grade 3", trail.nodes.filter { g3Units.contains($0.unit) }),
-            ("Grade 4", trail.nodes.filter { g4Units.contains($0.unit) }),
-            ("Grade 5", trail.nodes.filter { g5Units.contains($0.unit) }),
+            ("Grades 4–5", trail.nodes.filter { g45Units.contains($0.unit) }),
         ].filter { !$0.1.isEmpty }
     }
 
@@ -84,7 +75,7 @@ struct SkillTrailNodeView: View {
     private var nodeColor: Color {
         switch node.nodeState {
         case .locked:           return Color.gray.opacity(0.35)
-        case .available:        return appState.selectedTheme.primary.opacity(0.75)
+        case .available:        return appState.selectedTheme.primary.opacity(0.88)
         case .inProgress:       return appState.selectedTheme.primary
         case .completed:        return AppTheme.accent
         case .mastered:         return Color.yellow
@@ -98,6 +89,19 @@ struct SkillTrailNodeView: View {
         case .inProgress:       return "pencil"
         case .completed:        return "checkmark"
         case .mastered:         return "star.fill"
+        }
+    }
+
+    private var nodeIconColor: Color {
+        switch node.nodeState {
+        case .locked:
+            return .white
+        case .available, .inProgress:
+            return appState.selectedTheme.onPrimaryText
+        case .completed:
+            return AppTheme.textPrimary
+        case .mastered:
+            return AppTheme.textPrimary
         }
     }
 
@@ -120,12 +124,12 @@ struct SkillTrailNodeView: View {
 
                     Image(systemName: nodeSymbol)
                         .font(.title3.bold())
-                        .foregroundStyle(.white)
+                        .foregroundStyle(nodeIconColor)
 
                     if case .inProgress(let pct) = node.nodeState {
                         Circle()
                             .trim(from: 0, to: pct)
-                            .stroke(Color.white.opacity(0.8), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                            .stroke(nodeIconColor.opacity(0.8), style: StrokeStyle(lineWidth: 4, lineCap: .round))
                             .frame(width: 58, height: 58)
                             .rotationEffect(.degrees(-90))
                     }
