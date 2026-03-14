@@ -90,9 +90,11 @@ struct SessionView: View {
                             Text(companionPhrase)
                                 .font(.subheadline.bold())
                                 .foregroundStyle(appState.selectedTheme.primary)
+                                .lineLimit(1)
                             Text(feedback)
                                 .font(.headline.weight(.semibold))
                                 .foregroundStyle(AppTheme.textPrimary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     .padding(.horizontal, 14)
@@ -346,9 +348,8 @@ struct SubtractionStoryInteraction: View {
             let total = item.payload.minuend ?? Int(item.answer) ?? 0
             let removed = item.payload.subtrahend ?? 0
 
-            let dotSize: CGFloat = total > 12 ? 22 : 28
-            let gridColumns = total > 12 ? 10 : 8
-            LazyVGrid(columns: Array(repeating: GridItem(.fixed(dotSize), spacing: 6), count: gridColumns), spacing: 6) {
+            let dotSize: CGFloat = total > 12 ? 20 : 26
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: dotSize, maximum: dotSize + 4))], spacing: 6) {
                 ForEach(0..<max(total, 0), id: \.self) { idx in
                     Circle()
                         .fill(idx < removed ? AppTheme.error.opacity(0.35) : AppTheme.accent.opacity(0.8))
@@ -364,7 +365,7 @@ struct SubtractionStoryInteraction: View {
             }
             .padding(.vertical, 8)
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -388,10 +389,9 @@ struct AdditionStoryInteraction: View {
             let right = item.payload.right ?? 0
 
             let addTotal = left + right
-            let addDotSize: CGFloat = addTotal > 12 ? 22 : 28
-            let addGridCols = addTotal > 12 ? 10 : 8
+            let addDotSize: CGFloat = addTotal > 12 ? 20 : 26
             VStack(spacing: 8) {
-                LazyVGrid(columns: Array(repeating: GridItem(.fixed(addDotSize), spacing: 6), count: addGridCols), spacing: 6) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: addDotSize, maximum: addDotSize + 4))], spacing: 6) {
                     ForEach(0..<max(left, 0), id: \.self) { _ in
                         Circle()
                             .fill(AppTheme.accent.opacity(0.8))
@@ -421,7 +421,7 @@ struct AdditionStoryInteraction: View {
             }
             .padding(.vertical, 8)
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -451,7 +451,7 @@ struct CountAndMatchInteraction: View {
             }
             .padding()
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -495,7 +495,7 @@ struct NumberBondInteraction: View {
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -671,7 +671,7 @@ struct PlaceValueBucket: View {
                 ForEach(0..<min(count, 5), id: \.self) { _ in
                     RoundedRectangle(cornerRadius: 4)
                         .fill(Color.green.opacity(0.82))
-                        .frame(width: 112, height: 18)
+                        .frame(maxWidth: .infinity, minHeight: 14, maxHeight: 18)
                 }
                 if count > 5 {
                     Text("+\(count - 5)")
@@ -683,7 +683,7 @@ struct PlaceValueBucket: View {
             .padding(.vertical, 8)
             .background(Color.white.opacity(0.82), in: RoundedRectangle(cornerRadius: 12))
         } else {
-            LazyVGrid(columns: Array(repeating: GridItem(.fixed(22), spacing: 6), count: 5), spacing: 6) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 22, maximum: 28))], spacing: 6) {
                 ForEach(0..<min(count, 20), id: \.self) { _ in
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.blue.opacity(0.85))
@@ -719,14 +719,15 @@ struct ComparisonInteraction: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 20) {
+            HStack(spacing: 12) {
                 NumberBadge(number: item.payload.left ?? 0)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: 30, weight: .black, design: .rounded))
                 NumberBadge(number: item.payload.right ?? 0)
             }
+            .frame(maxWidth: .infinity)
 
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -775,7 +776,7 @@ struct MultiplicationArrayInteraction: View {
             .padding(12)
             .background(Color.white.opacity(0.84), in: RoundedRectangle(cornerRadius: 12))
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -800,14 +801,15 @@ struct FractionComparisonInteraction: View {
         let bBottom = max(item.payload.denominatorB ?? 1, 1)
 
         return VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 18) {
+            HStack(spacing: 12) {
                 FractionBadge(numerator: aTop, denominator: aBottom)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: 30, weight: .black, design: .rounded))
                 FractionBadge(numerator: bTop, denominator: bBottom)
             }
+            .frame(maxWidth: .infinity)
 
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -837,7 +839,7 @@ struct FractionOfWholeInteraction: View {
             ProgressView(value: Double(num), total: Double(den))
                 .tint(AppTheme.primary)
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -870,7 +872,7 @@ struct VolumePrismInteraction: View {
                 MetricBadge(title: "H", value: h)
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -893,14 +895,15 @@ struct DecimalComparisonInteraction: View {
         let right = item.payload.decimalRight ?? 0
 
         return VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 20) {
+            HStack(spacing: 12) {
                 DecimalBadge(value: left)
                 Text("?")
-                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .font(.system(size: 30, weight: .black, design: .rounded))
                 DecimalBadge(value: right)
             }
+            .frame(maxWidth: .infinity)
 
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
                     ChoiceButton(title: option, isSelected: selection == option) {
                         selection = option
@@ -919,9 +922,11 @@ struct NumberBadge: View {
 
     var body: some View {
         Text("\(number)")
-            .font(.system(size: 36, weight: .bold, design: .rounded))
-            .padding(.horizontal, 20)
-            .padding(.vertical, 14)
+            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.6)
+            .lineLimit(1)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
     }
 }
@@ -933,15 +938,20 @@ struct FractionBadge: View {
     var body: some View {
         VStack(spacing: 4) {
             Text("\(numerator)")
-                .font(.title.bold())
+                .font(.title2.bold())
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
             Rectangle()
                 .fill(AppTheme.textPrimary.opacity(0.75))
-                .frame(width: 40, height: 2)
+                .frame(height: 2)
+                .frame(minWidth: 28)
             Text("\(denominator)")
-                .font(.title.bold())
+                .font(.title2.bold())
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
     }
 }
@@ -951,9 +961,11 @@ struct DecimalBadge: View {
 
     var body: some View {
         Text(String(format: "%.3f", value))
-            .font(.system(size: 32, weight: .bold, design: .rounded))
-            .padding(.horizontal, 18)
-            .padding(.vertical, 12)
+            .font(.system(size: 26, weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.6)
+            .lineLimit(1)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
             .background(AppTheme.primary.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
     }
 }
@@ -985,9 +997,11 @@ struct ChoiceButton: View {
         Button(action: action) {
             Text(title)
                 .font(.title3.bold())
-                .frame(minWidth: 70)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 10)
                 .background(isSelected ? AppTheme.primary.opacity(0.24) : Color.white)
                 .foregroundStyle(AppTheme.textPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: 12))

@@ -170,7 +170,7 @@ struct SettingsView: View {
 
                             Text("Privacy")
                                 .font(.title2.bold())
-                            Text("Sprout Math stores progress only on this iPad in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
+                            Text("MathQuest Kids stores progress only on this iPad in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
                                 .foregroundStyle(.secondary)
 
                             Text("Safety")
@@ -323,7 +323,7 @@ private struct CompanionCard: View {
                 }
             }
             .padding(14)
-            .frame(width: 280, alignment: .leading)
+            .frame(width: min(280, UIScreen.main.bounds.width - 80), alignment: .leading)
             .background {
                 Group {
                     if isSelected {

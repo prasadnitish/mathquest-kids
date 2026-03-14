@@ -2,7 +2,6 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var appState: AppState
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -16,8 +15,8 @@ struct HomeView: View {
                     .environmentObject(appState)
                 rewardCard
             }
-            .padding(.horizontal, sizeClass == .compact ? 16 : 24)
-            .padding(.top, sizeClass == .compact ? 64 : 84)
+            .padding(.horizontal, 24)
+            .padding(.top, 84)
             .padding(.bottom, 32)
         }
         .overlay(alignment: .top) {
@@ -35,17 +34,28 @@ struct HomeView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("\(greeting), \(appState.profile?.displayName ?? "Explorer")")
-                .font(.system(size: sizeClass == .compact ? 28 : 38, weight: .bold, design: .rounded))
+                .font(.system(size: 32, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.textPrimary)
+                .minimumScaleFactor(0.7)
+                .lineLimit(2)
 
             Text("Offline-first math adventures with adaptive K-5 learning paths.")
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(AppTheme.textSecondary)
 
-            HStack(spacing: 10) {
-                summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
-                summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
-                summaryPill(title: "Accuracy", value: "\(Int(appState.dashboard.averageAccuracy * 100))%")
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) {
+                    summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
+                    summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
+                    summaryPill(title: "Accuracy", value: "\(Int(appState.dashboard.averageAccuracy * 100))%")
+                }
+                VStack(spacing: 8) {
+                    HStack(spacing: 10) {
+                        summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
+                        summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
+                    }
+                    summaryPill(title: "Accuracy", value: "\(Int(appState.dashboard.averageAccuracy * 100))%")
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -76,6 +86,8 @@ struct HomeView: View {
                     Text("Level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
                         .font(.subheadline)
                         .foregroundStyle(AppTheme.textSecondary)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
                 }
 
                 Spacer()
@@ -111,19 +123,29 @@ struct HomeView: View {
                 }
             }
 
-            let buttonLayout = sizeClass == .compact
-                ? AnyLayout(VStackLayout(spacing: 10))
-                : AnyLayout(HStackLayout(spacing: 10))
-            buttonLayout {
-                Button("Start Recommended Quest") {
-                    appState.startRecommendedSession()
-                }
-                .buttonStyle(PrimaryButtonStyle())
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) {
+                    Button("Start Recommended Quest") {
+                        appState.startRecommendedSession()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
 
-                Button("View K-5 Lesson Plan") {
-                    appState.openLessonPlans()
+                    Button("View K-5 Lesson Plan") {
+                        appState.openLessonPlans()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
                 }
-                .buttonStyle(SecondaryButtonStyle())
+                VStack(spacing: 8) {
+                    Button("Start Recommended Quest") {
+                        appState.startRecommendedSession()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+
+                    Button("View K-5 Lesson Plan") {
+                        appState.openLessonPlans()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
             }
         }
         .padding(18)
@@ -166,7 +188,7 @@ struct HomeView: View {
                             .clipShape(Circle())
                     } else {
                         Image(systemName: appState.activeCompanion.symbol)
-                            .font(.system(size: AppTheme.scaled(42, compact: sizeClass == .compact), weight: .black))
+                            .font(.system(size: 42, weight: .black))
                             .foregroundStyle(AppTheme.textPrimary)
                     }
                 }
@@ -264,6 +286,8 @@ struct HomeView: View {
             Text("Sessions: \(appState.dashboard.completedSessions)  ·  Accuracy: \(Int(appState.dashboard.averageAccuracy * 100))%")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.textSecondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
             ProgressView(value: appState.dashboard.rewardProgress)
                 .tint(appState.selectedTheme.primary)
             Text("Keep a 5-day streak to unlock a bonus badge.")
@@ -316,7 +340,6 @@ struct HomeView: View {
 
 struct UnitCardView: View {
     @EnvironmentObject private var appState: AppState
-    @Environment(\.horizontalSizeClass) private var sizeClass
     let unit: UnitType
     let onStart: () -> Void
 
@@ -375,7 +398,7 @@ struct UnitCardView: View {
                     HStack {
                         Spacer()
                         Image(systemName: appState.selectedTheme.heroSymbol)
-                            .font(.system(size: AppTheme.scaled(36, compact: sizeClass == .compact), weight: .black))
+                            .font(.system(size: 36, weight: .black))
                             .foregroundStyle(appState.selectedTheme.primary.opacity(0.16))
                     }
                     Spacer()

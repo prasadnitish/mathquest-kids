@@ -2,44 +2,46 @@ import SwiftUI
 
 struct LessonPlanView: View {
     @EnvironmentObject private var appState: AppState
-    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selectedGrade: GradeBand = .kindergarten
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                header
+        ZStack {
+            Color(.systemBackground)
+                .ignoresSafeArea()
 
-                if appState.adaptivePath.hasRecommendations {
-                    adaptiveCard
-                }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    header
 
-                gradeSelector
+                    if appState.adaptivePath.hasRecommendations {
+                        adaptiveCard
+                    }
 
-                if let plan = appState.curriculumCatalog.gradePlan(for: selectedGrade) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text(plan.overview)
-                            .font(.body)
-                            .foregroundStyle(AppTheme.textSecondary)
+                    gradeSelector
 
-                        ForEach(plan.bigIdeas, id: \.self) { idea in
-                            Label(idea, systemImage: "sparkles")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(AppTheme.textPrimary)
+                    if let plan = appState.curriculumCatalog.gradePlan(for: selectedGrade) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(plan.overview)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            ForEach(plan.bigIdeas, id: \.self) { idea in
+                                Label(idea, systemImage: "sparkles")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                            }
+                        }
+                        .padding(18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+
+                        ForEach(plan.lessons) { lesson in
+                            lessonCard(lesson)
                         }
                     }
-                    .padding(18)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
-
-                    ForEach(plan.lessons) { lesson in
-                        lessonCard(lesson)
-                    }
                 }
+                .padding(24)
             }
-            .padding(.horizontal, sizeClass == .compact ? 16 : 24)
-            .padding(.top, sizeClass == .compact ? 64 : 84)
-            .padding(.bottom, 32)
         }
         .onAppear {
             selectedGrade = appState.adaptivePath.placedGrade
@@ -60,7 +62,7 @@ struct LessonPlanView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("K-5 Lesson Roadmap")
-                    .font(.system(size: AppTheme.scaled(34, compact: sizeClass == .compact), weight: .bold, design: .rounded))
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
                 Text("US standards aligned with blended pedagogy: Singapore-style CPA/bar models, RSM-style reasoning, plus spiral review and math talks.")
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.86))
@@ -82,6 +84,8 @@ struct LessonPlanView: View {
             Text("Current level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -125,7 +129,6 @@ struct LessonPlanView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.trailing, 4)
         }
     }
 
@@ -134,7 +137,9 @@ struct LessonPlanView: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(lesson.title)
                     .font(.title3.bold())
-                Spacer()
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 4)
                 Text("\(lesson.estimatedMinutes)m")
                     .font(.caption.bold())
                     .padding(.horizontal, 8)
@@ -153,10 +158,12 @@ struct LessonPlanView: View {
             Text("Standards: \(lesson.standards.joined(separator: ", "))")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text("Class move: \(lesson.activityPrompt)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
