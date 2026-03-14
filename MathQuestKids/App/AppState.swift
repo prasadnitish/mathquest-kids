@@ -429,18 +429,22 @@ final class AppState: ObservableObject {
     }
 
     func replayPrompt() {
-        guard let prompt = currentSession?.currentItem.prompt else { return }
-        narrationService.speakQuestion(prompt, style: narrationStyle, interrupt: true)
+        guard let item = currentSession?.currentItem else { return }
+        narrationService.speakQuestion(item.narrationText, style: narrationStyle, interrupt: true, itemID: item.templateID)
     }
 
     func readQuestionIfEnabled() {
         guard autoReadQuestions else { return }
-        replayPrompt()
+        // Short delay so the child can see the new question before audio starts
+        Task {
+            try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
+            replayPrompt()
+        }
     }
 
     func replayDiagnosticPrompt() {
-        guard let prompt = diagnosticSession?.currentQuestion.prompt else { return }
-        narrationService.speakQuestion(prompt, style: narrationStyle, interrupt: true)
+        guard let question = diagnosticSession?.currentQuestion else { return }
+        narrationService.speakQuestion(question.prompt, style: narrationStyle, interrupt: true, itemID: question.id)
     }
 
     func readDiagnosticPromptIfEnabled() {

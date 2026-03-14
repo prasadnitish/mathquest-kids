@@ -111,6 +111,7 @@ final class SessionComposer {
             skillID: template.skill,
             format: template.format,
             prompt: normalizedPrompt(template.prompt, format: template.format),
+            spokenForm: template.spokenForm,
             answer: template.answer,
             supports: template.supports,
             payload: template.payload,

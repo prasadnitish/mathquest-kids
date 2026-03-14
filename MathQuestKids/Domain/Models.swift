@@ -357,11 +357,15 @@ struct PracticeItem: Identifiable, Equatable {
     let skillID: String
     let format: ItemFormat
     let prompt: String
+    let spokenForm: String?
     let answer: String
     let supports: [SupportType]
     let payload: ItemPayload
     let options: [String]
     let isReview: Bool
+
+    /// The text that TTS should read aloud. Falls back to prompt.
+    var narrationText: String { spokenForm ?? prompt }
 }
 
 struct SessionBlueprint: Equatable {
