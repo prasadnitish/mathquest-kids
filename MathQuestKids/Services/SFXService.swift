@@ -18,7 +18,7 @@ final class SFXService {
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
-    private let queue = DispatchQueue(label: "NP.MathQuestKids.SFXService")
+    private let queue = DispatchQueue(label: "NP.SproutMath.SFXService")
 
     init() {
         engine.attach(player)

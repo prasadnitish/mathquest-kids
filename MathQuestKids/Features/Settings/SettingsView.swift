@@ -170,7 +170,7 @@ struct SettingsView: View {
 
                             Text("Privacy")
                                 .font(.title2.bold())
-                            Text("MathQuest Kids stores progress only on this iPad in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
+                            Text("Sprout Math stores progress only on this iPad in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
                                 .foregroundStyle(.secondary)
 
                             Text("Safety")

@@ -42,19 +42,19 @@ final class DiagnosticsLogger {
 
     private let logger: Logger
     private let fileManager: FileManager
-    private let queue = DispatchQueue(label: "NP.MathQuestKids.DiagnosticsLogger")
+    private let queue = DispatchQueue(label: "NP.SproutMath.DiagnosticsLogger")
     private let logsDirectoryURL: URL
     private let liveLogURL: URL
     private let isoFormatter = ISO8601DateFormatter()
     private let maxLogSizeBytes = 1_000_000
 
-    init(fileManager: FileManager = .default, subsystem: String = Bundle.main.bundleIdentifier ?? "NP.MathQuestKids") {
+    init(fileManager: FileManager = .default, subsystem: String = Bundle.main.bundleIdentifier ?? "NP.SproutMath") {
         self.fileManager = fileManager
         logger = Logger(subsystem: subsystem, category: "Diagnostics")
 
         let baseDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? fileManager.temporaryDirectory
-        logsDirectoryURL = baseDirectory.appendingPathComponent("MathQuestKids/Diagnostics", isDirectory: true)
+        logsDirectoryURL = baseDirectory.appendingPathComponent("SproutMath/Diagnostics", isDirectory: true)
         liveLogURL = logsDirectoryURL.appendingPathComponent("diagnostics.log")
 
         queue.sync {
@@ -92,7 +92,7 @@ final class DiagnosticsLogger {
         }
 
         let timestamp = fileTimestamp(Date())
-        let url = fileManager.temporaryDirectory.appendingPathComponent("MathQuestKids-Diagnostics-\(timestamp).txt")
+        let url = fileManager.temporaryDirectory.appendingPathComponent("SproutMath-Diagnostics-\(timestamp).txt")
         try data.write(to: url, options: .atomic)
         info("Prepared diagnostics export", metadata: ["file": url.lastPathComponent])
         return url
@@ -158,7 +158,7 @@ final class DiagnosticsLogger {
         }
 
         if !fileManager.fileExists(atPath: liveLogURL.path) {
-            let banner = "MathQuest Kids local diagnostics log\n"
+            let banner = "Sprout Math local diagnostics log\n"
             if let data = banner.data(using: .utf8) {
                 try? data.write(to: liveLogURL, options: .atomic)
             }
@@ -191,7 +191,7 @@ final class DiagnosticsLogger {
         let os = ProcessInfo.processInfo.operatingSystemVersionString
 
         return """
-        MathQuest Kids Diagnostics Snapshot
+        Sprout Math Diagnostics Snapshot
         GeneratedAt: \(generatedAt)
         BundleID: \(bundleID)
         Version: \(version)

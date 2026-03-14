@@ -13,7 +13,7 @@ struct ProfileSetupView: View {
                     .font(.system(size: 64, weight: .black))
                     .foregroundStyle(appState.selectedTheme.primary)
 
-                Text("MathQuest Kids")
+                Text("Sprout Math")
                     .font(.system(size: 46, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
 

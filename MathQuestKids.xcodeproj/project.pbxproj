@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6B80B6D32F49782700CE661C /* MathQuestKids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MathQuestKids.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B80B6D32F49782700CE661C /* Sprout Math.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sprout Math.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B80B6E02F49782800CE661C /* MathQuestKidsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathQuestKidsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B80B6EA2F49782800CE661C /* MathQuestKidsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathQuestKidsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -85,7 +85,7 @@
 		6B80B6D42F49782700CE661C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6B80B6D32F49782700CE661C /* MathQuestKids.app */,
+				6B80B6D32F49782700CE661C /* Sprout Math.app */,
 				6B80B6E02F49782800CE661C /* MathQuestKidsTests.xctest */,
 				6B80B6EA2F49782800CE661C /* MathQuestKidsUITests.xctest */,
 			);
@@ -114,7 +114,7 @@
 			packageProductDependencies = (
 			);
 			productName = MathQuestKids;
-			productReference = 6B80B6D32F49782700CE661C /* MathQuestKids.app */;
+			productReference = 6B80B6D32F49782700CE661C /* Sprout Math.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6B80B6DF2F49782800CE661C /* MathQuestKidsTests */ = {
@@ -411,7 +411,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.nitishprasad.sproutmath;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Sprout Math";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -445,7 +445,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.nitishprasad.sproutmath;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Sprout Math";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
