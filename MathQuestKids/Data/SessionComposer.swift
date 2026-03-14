@@ -82,17 +82,17 @@ final class SessionComposer {
         let options: [String]
         switch template.format {
         case .subtractionStory:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .teenPlaceValue:
             options = []
         case .twoDigitComparison, .threeDigitComparison, .fractionComparison, .decimalComparison:
             options = ["<", ">", "="]
         case .multiplicationArray, .fractionOfWhole, .volumePrism:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .additionStory, .countAndMatch, .numberBond, .factFamily, .addTwoDigit, .subTwoDigit:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .groupComparison:
             options = ["More", "Fewer", "Same"]
@@ -103,7 +103,7 @@ final class SessionComposer {
             for s in shapes.shuffled() where s != answer && opts.count < 4 { opts.append(s) }
             options = deterministic ? opts.sorted() : opts.shuffled()
         case .measureLength, .areaTiling, .angleMeasure, .timeMoney, .dataPlot, .ratioTable, .divisionGroups:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .fractionAddSub:
             let parts = template.answer.split(separator: "/").compactMap { Int($0) }

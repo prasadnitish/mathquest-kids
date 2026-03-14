@@ -646,7 +646,7 @@ struct CountAndMatchInteraction: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            let count = item.payload.target ?? 0
+            let count = Int(item.payload.target ?? 0)
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(36)), count: 5), spacing: 8) {
                 ForEach(0..<max(count, 0), id: \.self) { _ in
                     Circle()
@@ -680,7 +680,7 @@ struct NumberBondInteraction: View {
             Circle()
                 .fill(Color.white)
                 .overlay(Circle().stroke(AppTheme.primary, lineWidth: 2))
-                .overlay(Text("\(item.payload.target ?? 10)").font(.title.bold()))
+                .overlay(Text("\(Int(item.payload.target ?? 10))").font(.title.bold()))
                 .frame(width: 72, height: 72)
 
             // Dividing line
@@ -722,7 +722,7 @@ struct TeenPlaceValueInteraction: View {
     @State private var ones = 0
 
     private var targetNumber: Int {
-        item.payload.target ?? ((item.payload.tens ?? 0) * 10 + (item.payload.ones ?? 0))
+        Int(item.payload.target ?? Double((item.payload.tens ?? 0) * 10 + (item.payload.ones ?? 0)))
     }
 
     private var targetTens: Int {
@@ -1261,7 +1261,7 @@ struct ShapeClassificationInteraction: View {
 struct MeasureLengthInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
-    private var objectLength: Int { item.payload.target ?? 5 }
+    private var objectLength: Int { Int(item.payload.target ?? 5) }
     var body: some View {
         VStack(spacing: 16) {
             RoundedRectangle(cornerRadius: 6).fill(AppTheme.accent.opacity(0.6)).frame(width: CGFloat(objectLength) * 32, height: 24)

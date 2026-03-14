@@ -72,7 +72,7 @@ struct ItemPayload: Codable, Equatable {
     let right: Int?
     let minuend: Int?
     let subtrahend: Int?
-    let target: Int?
+    let target: Double?
     let tens: Int?
     let ones: Int?
 
@@ -119,7 +119,7 @@ struct ItemPayload: Codable, Equatable {
         right: Int? = nil,
         minuend: Int? = nil,
         subtrahend: Int? = nil,
-        target: Int? = nil,
+        target: Double? = nil,
         tens: Int? = nil,
         ones: Int? = nil,
         multiplicand: Int? = nil,

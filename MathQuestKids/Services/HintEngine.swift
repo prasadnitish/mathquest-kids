@@ -35,7 +35,7 @@ struct DeterministicHintEngine: HintEngine {
             let takeAway = context.payload.subtrahend ?? 0
             return "Start with \(start). Move or cross out \(takeAway). Then count what is still left."
         case .teenPlaceValue:
-            let target = context.payload.target ?? ((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0))
+            let target = Int(context.payload.target ?? Double((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0)))
             let tens = context.payload.tens ?? target / 10
             let ones = context.payload.ones ?? target % 10
             return "\(target) is built with \(tens) tens bars and \(ones) ones cubes. Build the tens first."
@@ -147,7 +147,7 @@ struct DeterministicHintEngine: HintEngine {
             let takeAway = context.payload.subtrahend ?? 0
             return "Think \(start) minus \(takeAway). Count back \(takeAway) steps, or count the leftovers after you remove some."
         case .teenPlaceValue:
-            let target = context.payload.target ?? ((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0))
+            let target = Int(context.payload.target ?? Double((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0)))
             return "Ask two questions: how many full groups of ten fit into \(target)? What ones are left after that?"
         case .twoDigitComparison:
             return "Use place value order: compare tens first. Only compare ones if the tens are tied."
@@ -251,7 +251,7 @@ struct DeterministicHintEngine: HintEngine {
             let left = max(0, start - takeAway)
             return "Work it through: start at \(start), take away \(takeAway), and \(left) are left. So \(start) - \(takeAway) = \(left)."
         case .teenPlaceValue:
-            let target = context.payload.target ?? ((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0))
+            let target = Int(context.payload.target ?? Double((context.payload.tens ?? 0) * 10 + (context.payload.ones ?? 0)))
             let tens = context.payload.tens ?? target / 10
             let ones = context.payload.ones ?? target % 10
             return "Break it apart: \(target) = \(tens * 10) + \(ones). That means \(tens) tens and \(ones) ones."
@@ -337,10 +337,10 @@ struct DeterministicHintEngine: HintEngine {
             let b = context.payload.right ?? context.payload.subtrahend ?? 0
             return "Break it apart: \(a) and \(b). Add or subtract to get \(a + b)."
         case .g1MeasureLength:
-            let length = context.payload.target ?? 0
+            let length = Int(context.payload.target ?? 0)
             return "The object stretches from 0 to \(length). So it is \(length) units long."
         case .g2PlaceValue1000:
-            let target = context.payload.target ?? 0
+            let target = Int(context.payload.target ?? 0)
             return "\(target) = \(target / 100) hundreds + \((target % 100) / 10) tens + \(target % 10) ones."
         case .g2AddSubRegroup:
             let a = context.payload.left ?? context.payload.minuend ?? 0
