@@ -39,7 +39,8 @@ final class NarrationService {
 
     init() {
         // Load the audio index that maps IDs to file paths
-        // Try subdirectory first (folder reference), then root (if copied to bundle root)
+        // Xcode flattens folder structure when copying resources, so files end up at bundle root.
+        // Try subdirectory first (folder reference), then root (flattened copy).
         let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio")
             ?? Bundle.main.url(forResource: "audio_index", withExtension: "json")
 
@@ -128,20 +129,27 @@ final class NarrationService {
             return false
         }
 
-        // Audio files are in the bundle under Audio/
+        // Xcode flattens folder structure when copying resources, so files like
+        // "diagnostic/diag-g2-03.mp3" end up at the bundle root as "diag-g2-03.mp3".
+        // Try the full subdirectory path first (folder reference), then bundle root (flattened).
+        let fileName = ((relativePath as NSString).lastPathComponent as NSString).deletingPathExtension
         let resourceName = (relativePath as NSString).deletingPathExtension
+
         let url = Bundle.main.url(
             forResource: resourceName,
             withExtension: "mp3",
             subdirectory: "Audio"
         ) ?? Bundle.main.url(
-            forResource: (relativePath as NSString).lastPathComponent.replacingOccurrences(of: ".mp3", with: ""),
+            forResource: fileName,
             withExtension: "mp3",
             subdirectory: "Audio/\((relativePath as NSString).deletingLastPathComponent)"
+        ) ?? Bundle.main.url(
+            forResource: fileName,
+            withExtension: "mp3"
         )
 
         guard let url else {
-            print("[NarrationService] MP3 not found: resource='\(resourceName)' subdirectory='Audio' relativePath='\(relativePath)'")
+            print("[NarrationService] MP3 not found: resource='\(fileName)' relativePath='\(relativePath)'")
             return false
         }
 
