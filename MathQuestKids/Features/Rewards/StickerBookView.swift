@@ -73,7 +73,7 @@ struct StickerSlotView: View {
     @State private var showDate = false
 
     var body: some View {
-        let assetName = sticker.imageName(for: theme)
+        let icon = sticker.icon(for: theme)
 
         Button(action: {
             if sticker.isUnlocked { showDate.toggle() } else { onTap() }
@@ -85,11 +85,12 @@ struct StickerSlotView: View {
                         .frame(width: 100, height: 100)
 
                     if sticker.isUnlocked {
-                        Image(assetName)
-                            .resizable()
-                            .scaledToFit()
+                        Image(systemName: icon.systemName)
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundStyle(
+                                LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                            )
                             .frame(width: 80, height: 80)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     } else {
                         Image(systemName: "lock.fill")
                             .font(.system(size: 24))

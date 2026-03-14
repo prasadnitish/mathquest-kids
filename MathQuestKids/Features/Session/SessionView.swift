@@ -31,7 +31,7 @@ struct SessionView: View {
 
     private func sessionContent(runtime: SessionRuntime) -> some View {
         let item = runtime.currentItem
-        let progress = Double(runtime.index) / Double(max(runtime.items.count, 1))
+        let progress = Double(runtime.answeredCount) / Double(max(runtime.items.count, 1))
 
         return VStack(alignment: .leading, spacing: 16) {
             topBar(runtime: runtime, progress: progress)
@@ -165,6 +165,7 @@ struct SessionView: View {
                         )
                     )
                     .frame(width: max(0, proxy.size.width * progress))
+                    .animation(.easeInOut(duration: 0.4), value: progress)
                     .overlay(alignment: .trailing) {
                         Image(systemName: appState.selectedTheme.heroSymbol)
                             .font(.title2.weight(.black))

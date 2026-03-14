@@ -352,47 +352,61 @@ final class AppState: ObservableObject {
             let masteryState = try masteryEngine.recordAttempt(attempt)
             runtime.recordSubmission(correct: isCorrect)
 
-            if runtime.isComplete {
-                let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
-                let summary = SessionSummary(
-                    sessionID: runtime.sessionID,
-                    unit: runtime.focusUnit,
-                    totalItems: runtime.items.count,
-                    correctItems: runtime.correctCount,
-                    rewardTitle: reward,
-                    nextRecommendation: masteryEngine.nextRecommendation(for: item.skillID, childID: profile.id)
-                )
+            // Update session immediately so progress bar reflects the answered item
+            currentSession = runtime
+            narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
+            statusMessage = masteryState.status == .mastered ? "Skill mastered!" : nil
+            playSFX(isCorrect ? .correct : .incorrect)
 
-                try repository.finishSession(
-                    sessionID: runtime.sessionID,
-                    childID: profile.id,
-                    unit: runtime.focusUnit,
-                    totalItems: Int16(runtime.items.count),
-                    correctItems: Int16(runtime.correctCount),
-                    rewardTitle: reward
-                )
+            // After a brief delay, advance to the next question (or complete)
+            let feedbackDelay: TimeInterval = isCorrect ? 1.2 : 1.8
+            DispatchQueue.main.asyncAfter(deadline: .now() + feedbackDelay) { [self] in
+                guard var rt = currentSession, rt.pendingAdvance else { return }
+                rt.advanceIfPending()
 
-                latestSummary = summary
-                currentSession = nil
-                refreshDashboard()
-                checkAndAwardSticker(for: runtime.focusUnit)
-                route = .summary
-                narrationService.speakFeedback(isCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
-                playSFX(.reward)
-                diagnostics.info(
-                    "Session completed",
-                    metadata: [
-                        "sessionId": runtime.sessionID.uuidString,
-                        "unit": runtime.focusUnit.rawValue,
-                        "correct": "\(runtime.correctCount)",
-                        "total": "\(runtime.items.count)"
-                    ]
-                )
-            } else {
-                currentSession = runtime
-                narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
-                statusMessage = masteryState.status == .mastered ? "Skill mastered!" : nil
-                playSFX(isCorrect ? .correct : .incorrect)
+                if rt.isComplete {
+                    let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
+                    let summary = SessionSummary(
+                        sessionID: rt.sessionID,
+                        unit: rt.focusUnit,
+                        totalItems: rt.items.count,
+                        correctItems: rt.correctCount,
+                        rewardTitle: reward,
+                        nextRecommendation: masteryEngine.nextRecommendation(for: item.skillID, childID: profile.id)
+                    )
+
+                    do {
+                        try repository.finishSession(
+                            sessionID: rt.sessionID,
+                            childID: profile.id,
+                            unit: rt.focusUnit,
+                            totalItems: Int16(rt.items.count),
+                            correctItems: Int16(rt.correctCount),
+                            rewardTitle: reward
+                        )
+                    } catch {
+                        diagnostics.error("Failed to finish session", metadata: ["error": error.localizedDescription])
+                    }
+
+                    latestSummary = summary
+                    currentSession = nil
+                    refreshDashboard()
+                    checkAndAwardSticker(for: rt.focusUnit)
+                    route = .summary
+                    narrationService.speakFeedback(isCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
+                    playSFX(.reward)
+                    diagnostics.info(
+                        "Session completed",
+                        metadata: [
+                            "sessionId": rt.sessionID.uuidString,
+                            "unit": rt.focusUnit.rawValue,
+                            "correct": "\(rt.correctCount)",
+                            "total": "\(rt.items.count)"
+                        ]
+                    )
+                } else {
+                    currentSession = rt
+                }
             }
         } catch {
             diagnostics.error(
@@ -438,7 +452,7 @@ final class AppState: ObservableObject {
         Task {
             // Wait up to 4 seconds for feedback audio to finish
             for _ in 0..<40 {
-                if !narrationService.isSpeakingFeedback { break }
+                if !narrationService.isSpeaking { break }
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
             }
             // Short pause so the child can see the new question before audio starts

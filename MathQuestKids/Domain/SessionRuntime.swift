@@ -7,10 +7,12 @@ struct SessionRuntime {
 
     private(set) var index: Int
     private(set) var correctCount: Int
+    private(set) var answeredCount: Int
     private(set) var hintsUsedByItem: [String: Int]
     private(set) var incorrectByItem: [String: Int]
     private(set) var recentMisconceptions: [String]
     private(set) var completed: Bool
+    private(set) var pendingAdvance: Bool
 
     init(blueprint: SessionBlueprint) {
         sessionID = blueprint.sessionID
@@ -18,10 +20,12 @@ struct SessionRuntime {
         items = blueprint.items
         index = 0
         correctCount = 0
+        answeredCount = 0
         hintsUsedByItem = [:]
         incorrectByItem = [:]
         recentMisconceptions = []
         completed = false
+        pendingAdvance = false
     }
 
     var currentItem: PracticeItem {
@@ -49,9 +53,10 @@ struct SessionRuntime {
     }
 
     mutating func recordSubmission(correct: Bool) {
+        answeredCount += 1
         if correct {
             correctCount += 1
-            advanceOrComplete()
+            pendingAdvance = true
         } else {
             incorrectByItem[currentItem.id, default: 0] += 1
             if recentMisconceptions.count > 8 {
@@ -59,9 +64,16 @@ struct SessionRuntime {
             }
             recentMisconceptions.append("\(currentItem.skillID):\(currentItem.answer)")
             if incorrectByItem[currentItem.id, default: 0] >= 2 {
-                advanceOrComplete()
+                pendingAdvance = true
             }
         }
+    }
+
+    /// Call after showing feedback to actually move to the next item.
+    mutating func advanceIfPending() {
+        guard pendingAdvance else { return }
+        pendingAdvance = false
+        advanceOrComplete()
     }
 
     private mutating func advanceOrComplete() {

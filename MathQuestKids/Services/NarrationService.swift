@@ -30,6 +30,11 @@ final class NarrationService {
 
     private let synthesizer = AVSpeechSynthesizer()
 
+    /// Whether any audio (pre-generated or TTS) is currently playing.
+    var isSpeaking: Bool {
+        (audioPlayer?.isPlaying ?? false) || synthesizer.isSpeaking
+    }
+
     // MARK: - Init
 
     init() {
