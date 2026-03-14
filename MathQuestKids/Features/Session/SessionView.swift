@@ -31,7 +31,7 @@ struct SessionView: View {
 
     private func sessionContent(runtime: SessionRuntime) -> some View {
         let item = runtime.currentItem
-        let progress = Double(runtime.index + 1) / Double(max(runtime.items.count, 1))
+        let progress = Double(runtime.index) / Double(max(runtime.items.count, 1))
 
         return VStack(alignment: .leading, spacing: 16) {
             topBar(runtime: runtime, progress: progress)

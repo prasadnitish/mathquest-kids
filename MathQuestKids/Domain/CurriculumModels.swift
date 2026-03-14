@@ -211,6 +211,27 @@ struct LessonPlanItem: Codable, Equatable, Identifiable {
     let isPlayableInApp: Bool
     let linkedUnit: UnitType?
     let activityPrompt: String
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        grade = try container.decode(GradeBand.self, forKey: .grade)
+        title = try container.decode(String.self, forKey: .title)
+        domain = try container.decode(LessonDomain.self, forKey: .domain)
+        objective = try container.decode(String.self, forKey: .objective)
+        standards = try container.decode([String].self, forKey: .standards)
+        strategies = try container.decode([PedagogyStrategy].self, forKey: .strategies)
+        estimatedMinutes = try container.decode(Int.self, forKey: .estimatedMinutes)
+        isPlayableInApp = try container.decode(Bool.self, forKey: .isPlayableInApp)
+        activityPrompt = try container.decode(String.self, forKey: .activityPrompt)
+        // Gracefully handle linkedUnit values that don't match a UnitType enum case
+        // (future units referenced in the curriculum but not yet playable in-app)
+        if let raw = try container.decodeIfPresent(String.self, forKey: .linkedUnit) {
+            linkedUnit = UnitType(rawValue: raw)
+        } else {
+            linkedUnit = nil
+        }
+    }
 }
 
 enum DiagnosticDomain: String, Codable, CaseIterable, Identifiable {
