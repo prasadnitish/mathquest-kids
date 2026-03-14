@@ -379,7 +379,7 @@ struct UnitCardView: View {
 
     var body: some View {
         let progress = appState.dashboard.unitProgress.first(where: { $0.unit == unit })
-        let unlocked = progress?.unlocked ?? (unit == .subtractionStories)
+        let unlocked = progress?.unlocked ?? (unit == .kCountObjects)
         let sessions = progress?.completedSessions ?? 0
 
         VStack(alignment: .leading, spacing: 10) {

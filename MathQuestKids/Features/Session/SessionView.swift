@@ -14,6 +14,7 @@ struct SessionView: View {
     @State private var showingHint = false
     @State private var activeHint: HintAction?
     @State private var itemStartTime = Date()
+    @State private var showingQuitConfirmation = false
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -34,6 +35,23 @@ struct SessionView: View {
         let progress = Double(runtime.answeredCount) / Double(max(runtime.items.count, 1))
 
         return VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Button {
+                    showingQuitConfirmation = true
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "chevron.left")
+                            .font(.body.weight(.semibold))
+                        Text("Quit")
+                            .font(.body.weight(.semibold))
+                    }
+                    .foregroundStyle(AppTheme.textSecondary)
+                }
+                .accessibilityLabel("Quit quest")
+
+                Spacer()
+            }
+
             topBar(runtime: runtime, progress: progress)
 
             VStack(alignment: .leading, spacing: 12) {
@@ -135,6 +153,14 @@ struct SessionView: View {
             let intro = CompanionPhrases.hintIntro(tone: appState.activeCompanion.tone)
             Text("\(intro) \(activeHint?.text ?? "Try one step at a time.")")
         })
+        .confirmationDialog("Leave this quest?", isPresented: $showingQuitConfirmation, titleVisibility: .visible) {
+            Button("Quit Quest", role: .destructive) {
+                appState.goHome()
+            }
+            Button("Keep Going", role: .cancel) { }
+        } message: {
+            Text("Your progress on this quest won't be saved.")
+        }
         .onAppear {
             itemStartTime = Date()
             appState.readQuestionIfEnabled()
