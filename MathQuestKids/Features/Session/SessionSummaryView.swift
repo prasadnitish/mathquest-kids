@@ -55,18 +55,20 @@ struct SessionSummaryView: View {
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 12) {
-                    Button("Back to Home") { appState.goHome() }
+                    Button("Start Next Quest") { appState.startRecommendedSession() }
                         .buttonStyle(PrimaryButtonStyle())
-                        .accessibilityLabel("Back to Home")
-                    Button("Lesson Plan") { appState.openLessonPlans() }
+                        .accessibilityLabel("Start next recommended quest")
+                    Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
+                        .accessibilityLabel("Back to Home")
                 }
                 VStack(spacing: 8) {
-                    Button("Back to Home") { appState.goHome() }
+                    Button("Start Next Quest") { appState.startRecommendedSession() }
                         .buttonStyle(PrimaryButtonStyle())
-                        .accessibilityLabel("Back to Home")
-                    Button("Lesson Plan") { appState.openLessonPlans() }
+                        .accessibilityLabel("Start next recommended quest")
+                    Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
+                        .accessibilityLabel("Back to Home")
                 }
             }
 

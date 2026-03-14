@@ -83,20 +83,28 @@ struct HomeView: View {
                         .font(.title2.bold())
                         .foregroundStyle(AppTheme.textPrimary)
 
-                    Text("Level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.8)
+                    if appState.adaptivePath.confidence > 0 {
+                        Text("Level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                    } else {
+                        Text("Take the placement quiz to personalize your path.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
                 }
 
                 Spacer()
 
-                Text("\(Int(appState.dashboard.averageAccuracy * 100))%")
-                    .font(.title2.bold())
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(appState.selectedTheme.accent.opacity(0.28), in: Capsule())
+                if appState.dashboard.completedSessions > 0 {
+                    Text("\(Int(appState.dashboard.averageAccuracy * 100))%")
+                        .font(.title2.bold())
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(appState.selectedTheme.accent.opacity(0.28), in: Capsule())
+                }
             }
 
             if appState.adaptivePath.recommendedLessons.isEmpty {
@@ -108,6 +116,32 @@ struct HomeView: View {
                 Text(top)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppTheme.textPrimary)
+            }
+
+            // Support & stretch lesson pills
+            if !appState.adaptivePath.supportLessons.isEmpty || !appState.adaptivePath.stretchLessons.isEmpty {
+                HStack(spacing: 6) {
+                    if !appState.adaptivePath.supportLessons.isEmpty {
+                        let supportTitle = appState.adaptivePath.supportLessons.first?.title ?? ""
+                        Label(supportTitle, systemImage: "arrow.down.circle")
+                            .font(.caption.bold())
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(Color.orange.opacity(0.12), in: Capsule())
+                            .lineLimit(1)
+                    }
+                    if !appState.adaptivePath.stretchLessons.isEmpty {
+                        let stretchTitle = appState.adaptivePath.stretchLessons.first?.title ?? ""
+                        Label(stretchTitle, systemImage: "arrow.up.circle")
+                            .font(.caption.bold())
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(Color.green.opacity(0.12), in: Capsule())
+                            .lineLimit(1)
+                    }
+                }
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -125,7 +159,7 @@ struct HomeView: View {
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 10) {
-                    Button("Start Recommended Quest") {
+                    Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
                         appState.startRecommendedSession()
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -136,7 +170,7 @@ struct HomeView: View {
                     .buttonStyle(SecondaryButtonStyle())
                 }
                 VStack(spacing: 8) {
-                    Button("Start Recommended Quest") {
+                    Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
                         appState.startRecommendedSession()
                     }
                     .buttonStyle(PrimaryButtonStyle())

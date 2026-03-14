@@ -311,15 +311,55 @@ final class AppState: ObservableObject {
     }
 
     private func recommendedUnit() -> UnitType? {
+        let completedUnits = Set(
+            dashboard.unitProgress
+                .filter { $0.completedSessions > 0 }
+                .map(\.unit)
+        )
+
+        // 1. First playable, unlocked, uncompleted recommended lesson
+        for lesson in adaptivePath.recommendedLessons where lesson.isPlayableInApp {
+            if let linked = lesson.linkedUnit,
+               isUnitUnlocked(linked),
+               !completedUnits.contains(linked) {
+                return linked
+            }
+        }
+
+        // 2. First playable, unlocked recommended lesson (even if completed — for review)
         for lesson in adaptivePath.recommendedLessons where lesson.isPlayableInApp {
             if let linked = lesson.linkedUnit, isUnitUnlocked(linked) {
                 return linked
             }
         }
 
+        // 3. Fallback: highest unlocked unit not yet completed
+        if let next = dashboard.unitProgress
+            .last(where: { $0.unlocked && $0.completedSessions == 0 }) {
+            return next.unit
+        }
+
+        // 4. Ultimate fallback: highest unlocked unit (for replay)
         return dashboard.unitProgress
-            .first(where: { $0.unlocked })?
+            .last(where: { $0.unlocked })?
             .unit ?? .subtractionStories
+    }
+
+    /// Whether the current recommendation is from the adaptive planner
+    /// or a generic fallback. Used to adjust UI messaging.
+    var isRecommendationPersonalized: Bool {
+        guard !adaptivePath.recommendedLessons.isEmpty else { return false }
+        let completedUnits = Set(
+            dashboard.unitProgress
+                .filter { $0.completedSessions > 0 }
+                .map(\.unit)
+        )
+        return adaptivePath.recommendedLessons.contains { lesson in
+            lesson.isPlayableInApp
+            && lesson.linkedUnit != nil
+            && isUnitUnlocked(lesson.linkedUnit!)
+            && !completedUnits.contains(lesson.linkedUnit!)
+        }
     }
 
     func openLessonPlans() {
@@ -655,6 +695,9 @@ final class AppState: ObservableObject {
             unitProgress: progress
         )
         refreshStickerCollection()
+
+        // Rebuild adaptive path so recommendations reflect latest progress
+        adaptivePath = adaptivePlanner.buildPath(result: diagnosticResult, catalog: curriculumCatalog)
     }
 
     private func placementUnlockIndex(for grade: GradeBand?) -> Int {

@@ -53,9 +53,9 @@ struct SessionRuntime {
     }
 
     mutating func recordSubmission(correct: Bool) {
-        answeredCount += 1
         if correct {
             correctCount += 1
+            answeredCount += 1
             pendingAdvance = true
         } else {
             incorrectByItem[currentItem.id, default: 0] += 1
@@ -64,6 +64,7 @@ struct SessionRuntime {
             }
             recentMisconceptions.append("\(currentItem.skillID):\(currentItem.answer)")
             if incorrectByItem[currentItem.id, default: 0] >= 2 {
+                answeredCount += 1
                 pendingAdvance = true
             }
         }
