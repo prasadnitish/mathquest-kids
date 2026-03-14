@@ -82,18 +82,74 @@ final class SessionComposer {
         let options: [String]
         switch template.format {
         case .subtractionStory:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .teenPlaceValue:
             options = []
         case .twoDigitComparison, .threeDigitComparison, .fractionComparison, .decimalComparison:
             options = ["<", ">", "="]
         case .multiplicationArray, .fractionOfWhole, .volumePrism:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
         case .additionStory, .countAndMatch, .numberBond, .factFamily, .addTwoDigit, .subTwoDigit:
-            let answer = Int(template.answer) ?? template.payload.target ?? 0
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
+        case .groupComparison:
+            options = ["More", "Fewer", "Same"]
+        case .shapeClassification:
+            if let numAnswer = Int(template.answer) {
+                // "How many sides/corners?" questions — numeric answers
+                options = makeNumericOptions(answer: numAnswer)
+            } else {
+                // "What shape is this?" questions — shape name answers
+                let shapes = ["Triangle", "Square", "Rectangle", "Circle", "Pentagon", "Hexagon", "Rhombus", "Trapezoid"]
+                let answer = template.answer
+                var opts = [answer]
+                for s in shapes.shuffled() where s != answer && opts.count < 4 { opts.append(s) }
+                options = deterministic ? opts.sorted() : opts.shuffled()
+            }
+        case .timeMoney:
+            if template.payload.hours != nil, let minutes = template.payload.minutes {
+                // Time question — generate plausible wrong times
+                options = makeTimeOptions(
+                    hours: template.payload.hours ?? 0,
+                    minutes: minutes,
+                    answer: template.answer
+                )
+            } else {
+                // Money question — numeric cents
+                let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
+                options = makeNumericOptions(answer: answer)
+            }
+        case .dataPlot:
+            if let labels = template.payload.barLabels, labels.contains(template.answer) {
+                // "Which has the most?" — use bar labels as options
+                options = deterministic ? labels : labels.shuffled()
+            } else {
+                // Numeric answer (e.g. "How many total?")
+                let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
+                options = makeNumericOptions(answer: answer)
+            }
+        case .measureLength, .areaTiling, .angleMeasure, .ratioTable, .divisionGroups:
+            let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
+            options = makeNumericOptions(answer: answer)
+        case .fractionAddSub:
+            let parts = template.answer.split(separator: "/").compactMap { Int($0) }
+            if parts.count == 2 {
+                let n = parts[0]; let d = parts[1]
+                var opts = ["\(n)/\(d)"]
+                for off in [-2, -1, 1, 2] {
+                    let candidate = max(0, n + off)
+                    if candidate != n { opts.append("\(candidate)/\(d)") }
+                }
+                let unique = Array(Set(opts))
+                let selected = deterministic ? Array(unique.sorted().prefix(4)) : Array(unique.shuffled().prefix(4))
+                var result = selected
+                if !result.contains("\(n)/\(d)") { result[result.count - 1] = "\(n)/\(d)" }
+                options = deterministic ? result.sorted() : result.shuffled()
+            } else {
+                options = [template.answer]
+            }
         }
 
         return PracticeItem(
@@ -135,6 +191,33 @@ final class SessionComposer {
             }
         }
         return deterministic ? ensureAnswer.sorted().map(String.init) : ensureAnswer.shuffled().map(String.init)
+    }
+
+    private func makeTimeOptions(hours: Int, minutes: Int, answer: String) -> [String] {
+        // Generate plausible wrong times near the correct time
+        let minuteOffsets = [-30, -15, 15, 30]
+        var candidates = [answer]
+        for offset in minuteOffsets {
+            var m = minutes + offset
+            var h = hours
+            if m < 0 { m += 60; h -= 1 }
+            if m >= 60 { m -= 60; h += 1 }
+            if h < 1 { h += 12 }
+            if h > 12 { h -= 12 }
+            let timeStr = String(format: "%d:%02d", h, m)
+            if timeStr != answer { candidates.append(timeStr) }
+        }
+        let unique = Array(Set(candidates))
+        let selected = deterministic ? Array(unique.sorted().prefix(4)) : Array(unique.shuffled().prefix(4))
+        var result = selected
+        if !result.contains(answer) {
+            if result.count >= 4 {
+                result[result.count - 1] = answer
+            } else {
+                result.append(answer)
+            }
+        }
+        return deterministic ? result.sorted() : result.shuffled()
     }
 
     private func normalizedPrompt(_ prompt: String, format: ItemFormat) -> String {

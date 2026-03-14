@@ -103,7 +103,12 @@ struct SettingsView: View {
 
                             Button("Retake Diagnostic") {
                                 dismiss()
-                                appState.retakeDiagnostic()
+                                // Delay route change so the sheet dismissal animation
+                                // completes before navigating to the diagnostic screen.
+                                Task {
+                                    try? await Task.sleep(nanoseconds: 400_000_000)
+                                    appState.retakeDiagnostic()
+                                }
                             }
                             .buttonStyle(SecondaryButtonStyle())
 

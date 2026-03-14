@@ -16,10 +16,27 @@ final class CoreDataStack {
             persistentContainer.persistentStoreDescriptions = [description]
         }
 
-        persistentContainer.loadPersistentStores { _, error in
+        persistentContainer.loadPersistentStores { description, error in
             if let error {
-                DiagnosticsLogger.shared.error("Core Data persistent store failed", metadata: ["error": error.localizedDescription])
-                fatalError("Core Data failed: \(error)")
+                DiagnosticsLogger.shared.error("Core Data persistent store failed — attempting recovery", metadata: ["error": error.localizedDescription])
+
+                // Delete the corrupt store and retry once
+                if let storeURL = description.url {
+                    try? FileManager.default.removeItem(at: storeURL)
+                    // Also remove WAL/SHM sidecar files
+                    try? FileManager.default.removeItem(at: storeURL.appendingPathExtension("wal"))
+                    try? FileManager.default.removeItem(at: storeURL.appendingPathExtension("shm"))
+                    DiagnosticsLogger.shared.warning("Deleted corrupt Core Data store; progress data was lost", metadata: ["url": storeURL.lastPathComponent])
+                }
+            }
+        }
+
+        // If no stores loaded (recovery deleted the file), reload
+        if persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+            persistentContainer.loadPersistentStores { _, retryError in
+                if let retryError {
+                    DiagnosticsLogger.shared.error("Core Data recovery failed", metadata: ["error": retryError.localizedDescription])
+                }
             }
         }
 

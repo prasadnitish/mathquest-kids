@@ -714,4 +714,210 @@ struct MathQuestKidsTests {
         #expect(domains.contains("operationsAlgebraicThinking"))
         #expect(playable.count >= 4)
     }
+
+    // MARK: - Recommended Quest Tests
+
+    @Test
+    func adaptivePlannerNoResultReturnsKindergartenPath() {
+        let catalog = makeMiniCatalog()
+        let planner = AdaptiveLessonPlanner()
+        let path = planner.buildPath(result: nil, catalog: catalog)
+
+        #expect(path.placedGrade == .kindergarten)
+        #expect(path.confidence == 0)
+        #expect(path.recommendedLessons.count <= 6)
+        #expect(path.supportLessons.isEmpty)
+    }
+
+    @Test
+    func adaptivePlannerWeakDomainsSortedFirst() {
+        let catalog = makeMiniCatalog()
+        let planner = AdaptiveLessonPlanner()
+        let result = DiagnosticResult(
+            childID: UUID(),
+            completedAt: .now,
+            placedGrade: .grade2,
+            confidence: 0.75,
+            overallScore: 0.65,
+            domainScores: ["operationsAlgebraicThinking": 0.3, "numberOperationsBaseTen": 0.9],
+            recommendedLessonIDs: [],
+            missedDomains: ["operationsAlgebraicThinking"]
+        )
+        let path = planner.buildPath(result: result, catalog: catalog)
+
+        #expect(path.placedGrade == .grade2)
+        #expect(path.confidence == 0.75)
+        // Weak domain lessons should be sorted before strong domain lessons
+        if let first = path.recommendedLessons.first {
+            #expect(first.domain == .operationsAlgebraicThinking)
+        }
+    }
+
+    @Test
+    func adaptivePlannerBuildsSupportAndStretchLessons() {
+        let catalog = makeMiniCatalog()
+        let planner = AdaptiveLessonPlanner()
+        let result = DiagnosticResult(
+            childID: UUID(),
+            completedAt: .now,
+            placedGrade: .grade2,
+            confidence: 0.70,
+            overallScore: 0.60,
+            domainScores: [:],
+            recommendedLessonIDs: [],
+            missedDomains: []
+        )
+        let path = planner.buildPath(result: result, catalog: catalog)
+
+        // Grade 2 should have Grade 1 support lessons and Grade 3 stretch lessons
+        #expect(!path.supportLessons.isEmpty)
+        #expect(path.supportLessons.allSatisfy { $0.grade == .grade1 })
+        #expect(!path.stretchLessons.isEmpty)
+        #expect(path.stretchLessons.allSatisfy { $0.grade == .grade3 })
+    }
+
+    @Test
+    func sessionRuntimeAnsweredCountOnlyIncrementsOnItemCompletion() {
+        let items = [
+            PracticeItem(
+                id: "t1-0", templateID: "t1", unit: .subtractionStories, skillID: "sub",
+                format: .subtractionStory, prompt: "9 - 4", spokenForm: nil,
+                answer: "5", supports: [], payload: ItemPayload(target: 5),
+                options: ["3", "4", "5", "6"], isReview: false
+            )
+        ]
+        let blueprint = SessionBlueprint(
+            sessionID: UUID(), childID: UUID(), focusUnit: .subtractionStories,
+            items: items, startedAt: .now
+        )
+        var runtime = SessionRuntime(blueprint: blueprint)
+
+        // First wrong answer: answeredCount should NOT increment (item not complete)
+        runtime.recordSubmission(correct: false)
+        #expect(runtime.answeredCount == 0)
+        #expect(runtime.pendingAdvance == false)
+
+        // Second wrong answer: item completes, answeredCount increments
+        runtime.recordSubmission(correct: false)
+        #expect(runtime.answeredCount == 1)
+        #expect(runtime.pendingAdvance == true)
+    }
+
+    @Test
+    func sessionRuntimeCorrectAnswerIncrementsAnsweredCount() {
+        let items = [
+            PracticeItem(
+                id: "t1-0", templateID: "t1", unit: .subtractionStories, skillID: "sub",
+                format: .subtractionStory, prompt: "9 - 4", spokenForm: nil,
+                answer: "5", supports: [], payload: ItemPayload(target: 5),
+                options: ["3", "4", "5", "6"], isReview: false
+            ),
+            PracticeItem(
+                id: "t2-0", templateID: "t2", unit: .subtractionStories, skillID: "sub",
+                format: .subtractionStory, prompt: "8 - 3", spokenForm: nil,
+                answer: "5", supports: [], payload: ItemPayload(target: 5),
+                options: ["3", "4", "5", "6"], isReview: false
+            )
+        ]
+        let blueprint = SessionBlueprint(
+            sessionID: UUID(), childID: UUID(), focusUnit: .subtractionStories,
+            items: items, startedAt: .now
+        )
+        var runtime = SessionRuntime(blueprint: blueprint)
+
+        runtime.recordSubmission(correct: true)
+        #expect(runtime.answeredCount == 1)
+        #expect(runtime.correctCount == 1)
+        #expect(runtime.pendingAdvance == true)
+
+        // Advance then answer second
+        runtime.advanceIfPending()
+        #expect(runtime.index == 1)
+
+        runtime.recordSubmission(correct: true)
+        #expect(runtime.answeredCount == 2)
+        #expect(runtime.isComplete == true)
+    }
+
+    @Test
+    func adaptivePlannerPrioritizesRecommendedLessonIDs() {
+        let catalog = makeMiniCatalog()
+        let planner = AdaptiveLessonPlanner()
+        let result = DiagnosticResult(
+            childID: UUID(),
+            completedAt: .now,
+            placedGrade: .grade1,
+            confidence: 0.80,
+            overallScore: 0.75,
+            domainScores: [:],
+            recommendedLessonIDs: ["grade1-oa"],
+            missedDomains: []
+        )
+        let path = planner.buildPath(result: result, catalog: catalog)
+
+        // Should use the explicit recommended IDs, not fall back to grade lessons
+        #expect(path.recommendedLessons.first?.id == "grade1-oa")
+    }
+
+    @Test
+    func adaptivePlannerG5HasNoStretchLessons() {
+        let catalog = makeMiniCatalog()
+        let planner = AdaptiveLessonPlanner()
+        let result = DiagnosticResult(
+            childID: UUID(),
+            completedAt: .now,
+            placedGrade: .grade5,
+            confidence: 0.90,
+            overallScore: 0.85,
+            domainScores: [:],
+            recommendedLessonIDs: [],
+            missedDomains: []
+        )
+        let path = planner.buildPath(result: result, catalog: catalog)
+
+        #expect(path.stretchLessons.isEmpty) // No grade beyond G5
+        #expect(!path.supportLessons.isEmpty) // G4 support should exist
+    }
+
+    // MARK: - Test Helpers
+
+    private func makeMiniCatalog() -> CurriculumCatalog {
+        CurriculumCatalog(
+            grades: GradeBand.allCases.map { grade in
+                GradePlan(
+                    grade: grade,
+                    overview: "\(grade.title) overview",
+                    bigIdeas: ["Big idea"],
+                    lessons: [
+                        LessonPlanItem(
+                            id: "\(grade.rawValue)-oa",
+                            grade: grade,
+                            title: "\(grade.title) Operations",
+                            domain: .operationsAlgebraicThinking,
+                            objective: "Objective",
+                            standards: ["CCSS"],
+                            strategies: [.barModeling, .spiralReview],
+                            estimatedMinutes: 20,
+                            isPlayableInApp: true,
+                            linkedUnit: .subtractionStories,
+                            activityPrompt: "Prompt"
+                        ),
+                        LessonPlanItem(
+                            id: "\(grade.rawValue)-pv",
+                            grade: grade,
+                            title: "\(grade.title) Place Value",
+                            domain: .numberOperationsBaseTen,
+                            objective: "Objective",
+                            standards: ["CCSS"],
+                            strategies: [.concretePictorialAbstract],
+                            estimatedMinutes: 18,
+                            isPlayableInApp: true,
+                            linkedUnit: .teenPlaceValue,
+                            activityPrompt: "Prompt"
+                        )
+                    ]
+                )
+            }
+        )
+    }
 }

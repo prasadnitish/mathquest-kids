@@ -197,6 +197,26 @@
           "activityPrompt": "Represent each story using counters, a bar model, and an equation."
         },
         {
+          "id": "g1-fact-families",
+          "grade": "grade1",
+          "title": "Fact Families and Number Bonds",
+          "domain": "operationsAlgebraicThinking",
+          "objective": "Relate addition and subtraction using part-part-whole structure.",
+          "standards": [
+            "CCSS.MATH.CONTENT.1.OA.B.3",
+            "CCSS.MATH.CONTENT.1.OA.D.8"
+          ],
+          "strategies": [
+            "numberBonds",
+            "variationTheory",
+            "errorAnalysis"
+          ],
+          "estimatedMinutes": 20,
+          "isPlayableInApp": true,
+          "linkedUnit": "g1FactFamilies",
+          "activityPrompt": "Complete missing-number triangles and create equation families."
+        },
+        {
           "id": "g1-teen-place-value-core",
           "grade": "grade1",
           "title": "Teen Place Value Core",

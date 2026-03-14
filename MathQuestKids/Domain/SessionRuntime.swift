@@ -7,10 +7,14 @@ struct SessionRuntime {
 
     private(set) var index: Int
     private(set) var correctCount: Int
+    private(set) var answeredCount: Int
     private(set) var hintsUsedByItem: [String: Int]
     private(set) var incorrectByItem: [String: Int]
     private(set) var recentMisconceptions: [String]
     private(set) var completed: Bool
+    private(set) var pendingAdvance: Bool
+    private(set) var pendingCorrection: Bool
+    private(set) var missedItems: [MissedItem]
 
     init(blueprint: SessionBlueprint) {
         sessionID = blueprint.sessionID
@@ -18,14 +22,21 @@ struct SessionRuntime {
         items = blueprint.items
         index = 0
         correctCount = 0
+        answeredCount = 0
         hintsUsedByItem = [:]
         incorrectByItem = [:]
         recentMisconceptions = []
         completed = false
+        pendingAdvance = false
+        pendingCorrection = false
+        missedItems = []
     }
 
     var currentItem: PracticeItem {
-        items[index]
+        guard !items.isEmpty, index < items.count else {
+            preconditionFailure("SessionRuntime.currentItem accessed at index \(index) but items has \(items.count) elements")
+        }
+        return items[index]
     }
 
     var isComplete: Bool {
@@ -49,19 +60,50 @@ struct SessionRuntime {
     }
 
     mutating func recordSubmission(correct: Bool) {
+        // If this item already triggered pendingAdvance (e.g. via correction acknowledgment),
+        // don't double-count answeredCount on a subsequent correct answer.
+        let alreadyCounted = pendingAdvance || pendingCorrection
+
         if correct {
             correctCount += 1
-            advanceOrComplete()
+            if !alreadyCounted {
+                answeredCount += 1
+            }
+            pendingCorrection = false
+            pendingAdvance = true
         } else {
             incorrectByItem[currentItem.id, default: 0] += 1
             if recentMisconceptions.count > 8 {
                 recentMisconceptions.removeFirst()
             }
             recentMisconceptions.append("\(currentItem.skillID):\(currentItem.answer)")
-            if incorrectByItem[currentItem.id, default: 0] >= 2 {
-                advanceOrComplete()
+            if !alreadyCounted && incorrectByItem[currentItem.id, default: 0] >= 2 {
+                answeredCount += 1
+                // Don't auto-advance — enter correction state so the child
+                // sees the correct answer and a worked explanation first.
+                pendingCorrection = true
+                missedItems.append(MissedItem(
+                    id: currentItem.id,
+                    prompt: currentItem.prompt,
+                    correctAnswer: currentItem.answer
+                ))
             }
         }
+    }
+
+    /// Called when the child taps "Got it" after seeing the correction.
+    mutating func acknowledgeCorrection() {
+        guard pendingCorrection else { return }
+        pendingCorrection = false
+        pendingAdvance = false
+        advanceOrComplete()
+    }
+
+    /// Call after showing feedback to actually move to the next item.
+    mutating func advanceIfPending() {
+        guard pendingAdvance else { return }
+        pendingAdvance = false
+        advanceOrComplete()
     }
 
     private mutating func advanceOrComplete() {

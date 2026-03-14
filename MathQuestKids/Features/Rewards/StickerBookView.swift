@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StickerBookView: View {
     @EnvironmentObject private var appState: AppState
+    @State private var lockedTapMessage: String?
 
     private let columns = [GridItem(.adaptive(minimum: 100, maximum: 140))]
 
@@ -51,7 +52,11 @@ struct StickerBookView: View {
                                     theme: appState.selectedTheme
                                 ) {
                                     if !sticker.isUnlocked {
-                                        appState.startSession(for: sticker.unitType)
+                                        if appState.isUnitUnlocked(sticker.unitType) {
+                                            appState.startSession(for: sticker.unitType)
+                                        } else {
+                                            lockedTapMessage = "Complete earlier quests to unlock \(sticker.unitType.title)."
+                                        }
                                     }
                                 }
                             }
@@ -61,6 +66,32 @@ struct StickerBookView: View {
                     .padding(.top, 4)
                     .padding(.bottom, 40)
                 }
+            }
+
+            // Feedback overlay for locked sticker taps
+            if let message = lockedTapMessage {
+                VStack {
+                    Text(message)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(.black.opacity(0.72), in: Capsule())
+                        .shadow(color: .black.opacity(0.18), radius: 8, x: 0, y: 4)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .onAppear {
+                            Task {
+                                try? await Task.sleep(nanoseconds: 2_500_000_000)
+                                withAnimation(.easeOut(duration: 0.3)) {
+                                    lockedTapMessage = nil
+                                }
+                            }
+                        }
+
+                    Spacer()
+                }
+                .padding(.top, 60)
+                .animation(.easeInOut(duration: 0.25), value: lockedTapMessage != nil)
             }
         }
     }
@@ -73,7 +104,7 @@ struct StickerSlotView: View {
     @State private var showDate = false
 
     var body: some View {
-        let assetName = sticker.imageName(for: theme)
+        let icon = sticker.icon(for: theme)
 
         Button(action: {
             if sticker.isUnlocked { showDate.toggle() } else { onTap() }
@@ -85,11 +116,12 @@ struct StickerSlotView: View {
                         .frame(width: 100, height: 100)
 
                     if sticker.isUnlocked {
-                        Image(assetName)
-                            .resizable()
-                            .scaledToFit()
+                        Image(systemName: icon.systemName)
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundStyle(
+                                LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                            )
                             .frame(width: 80, height: 80)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     } else {
                         Image(systemName: "lock.fill")
                             .font(.system(size: 24))

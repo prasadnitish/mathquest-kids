@@ -21,11 +21,7 @@ struct RewardSplashView: View {
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
-                Image(sticker.imageName(for: appState.selectedTheme))
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
+                stickerIconView(sticker.icon(for: appState.selectedTheme))
                     .frame(width: 120, height: 120)
                 .scaleEffect(appeared ? 1.0 : (reduceMotion ? 0.95 : 0.2))
                 .opacity(appeared ? 1.0 : 0.0)
@@ -76,6 +72,21 @@ struct RewardSplashView: View {
             appState.narrationService.speakFeedback(companionPhrase, style: appState.narrationStyle, interrupt: true)
         }
         .accessibilityAddTraits(.isModal)
+    }
+
+    private func stickerIconView(_ icon: StickerIcon) -> some View {
+        Image(systemName: icon.systemName)
+            .font(.system(size: 52, weight: .bold))
+            .foregroundStyle(
+                LinearGradient(colors: icon.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
+            .frame(width: 120, height: 120)
+            .background(.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(.white.opacity(0.3), lineWidth: 1)
+            )
+            .shadow(color: icon.gradient.first?.opacity(0.4) ?? .clear, radius: 12, y: 4)
     }
 
     private var companionCelebration: some View {

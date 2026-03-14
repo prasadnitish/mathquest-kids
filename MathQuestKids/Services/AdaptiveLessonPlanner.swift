@@ -53,14 +53,17 @@ final class AdaptiveLessonPlanner {
     }
 
     private func prioritize(lessons: [LessonPlanItem], weakDomains: Set<String>) -> [LessonPlanItem] {
-        lessons.sorted { lhs, rhs in
-            let lhsWeak = weakDomains.contains(lhs.domain.rawValue)
-            let rhsWeak = weakDomains.contains(rhs.domain.rawValue)
+        // Stable sort: weak domains first, then preserve original lesson order
+        // (which reflects curriculum sequence within the grade).
+        let indexed = lessons.enumerated().map { ($0.offset, $0.element) }
+        return indexed.sorted { lhs, rhs in
+            let lhsWeak = weakDomains.contains(lhs.1.domain.rawValue)
+            let rhsWeak = weakDomains.contains(rhs.1.domain.rawValue)
             if lhsWeak != rhsWeak {
                 return lhsWeak && !rhsWeak
             }
-            return lhs.estimatedMinutes < rhs.estimatedMinutes
-        }
+            return lhs.0 < rhs.0  // preserve curriculum order
+        }.map(\.1)
     }
 
     private func strategyHighlights(from lessons: [LessonPlanItem]) -> [PedagogyStrategy] {

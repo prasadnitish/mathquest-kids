@@ -51,22 +51,62 @@ struct SessionSummaryView: View {
                 .padding()
                 .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
                 .accessibilityLabel("Session summary")
+
+                if !summary.missedItems.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundStyle(.orange)
+                            Text("Questions to Review")
+                                .font(.headline.bold())
+                                .foregroundStyle(AppTheme.textPrimary)
+                        }
+
+                        ForEach(summary.missedItems) { missed in
+                            HStack(alignment: .top, spacing: 10) {
+                                Image(systemName: "arrow.turn.down.right")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(AppTheme.textSecondary)
+                                    .padding(.top, 3)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(missed.prompt)
+                                        .font(.subheadline)
+                                        .foregroundStyle(AppTheme.textPrimary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    HStack(spacing: 4) {
+                                        Text("Answer:")
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(AppTheme.textSecondary)
+                                        Text(missed.correctAnswer)
+                                            .font(.subheadline.bold())
+                                            .foregroundStyle(.green)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+                    .accessibilityLabel("Questions to review")
+                }
             }
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 12) {
-                    Button("Back to Home") { appState.goHome() }
+                    Button("Start Next Quest") { appState.startRecommendedSession() }
                         .buttonStyle(PrimaryButtonStyle())
-                        .accessibilityLabel("Back to Home")
-                    Button("Lesson Plan") { appState.openLessonPlans() }
+                        .accessibilityLabel("Start next recommended quest")
+                    Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
+                        .accessibilityLabel("Back to Home")
                 }
                 VStack(spacing: 8) {
-                    Button("Back to Home") { appState.goHome() }
+                    Button("Start Next Quest") { appState.startRecommendedSession() }
                         .buttonStyle(PrimaryButtonStyle())
-                        .accessibilityLabel("Back to Home")
-                    Button("Lesson Plan") { appState.openLessonPlans() }
+                        .accessibilityLabel("Start next recommended quest")
+                    Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
+                        .accessibilityLabel("Back to Home")
                 }
             }
 

@@ -212,6 +212,18 @@ struct LessonPlanItem: Codable, Equatable, Identifiable {
     let linkedUnit: UnitType?
     let activityPrompt: String
 
+    init(
+        id: String, grade: GradeBand, title: String, domain: LessonDomain,
+        objective: String, standards: [String], strategies: [PedagogyStrategy],
+        estimatedMinutes: Int, isPlayableInApp: Bool, linkedUnit: UnitType?,
+        activityPrompt: String
+    ) {
+        self.id = id; self.grade = grade; self.title = title; self.domain = domain
+        self.objective = objective; self.standards = standards; self.strategies = strategies
+        self.estimatedMinutes = estimatedMinutes; self.isPlayableInApp = isPlayableInApp
+        self.linkedUnit = linkedUnit; self.activityPrompt = activityPrompt
+    }
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
@@ -273,7 +285,10 @@ struct DiagnosticSessionRuntime: Equatable {
     private(set) var selectedIndexes: [String: Int] = [:]
 
     var currentQuestion: DiagnosticQuestion {
-        questions[index]
+        guard !questions.isEmpty, index < questions.count else {
+            preconditionFailure("DiagnosticSessionRuntime.currentQuestion accessed at index \(index) but questions has \(questions.count) elements")
+        }
+        return questions[index]
     }
 
     var isComplete: Bool {
