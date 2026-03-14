@@ -5,7 +5,7 @@
 * **Product / Feature Name:** Sprout Math
 * **Owner:** Nitish Prasad
 * **Date:** March 10, 2026
-* **Status:** Review
+* **Status:** Shipped (V1)
 
 **One-line summary:** Sprout Math is an offline-first iOS math app that helps K-5 learners build foundational math skills through short adaptive sessions, deterministic hints, and a parent-trusted privacy model — without ads, accounts, or cloud dependencies.
 
@@ -22,7 +22,7 @@
 
 **Evidence:**
 - App Store reviews for top K-5 math apps consistently surface complaints about: mandatory logins, broken offline behavior, aggressive in-app purchases in kids-facing UI, and confusing parent dashboards.
-- 2,123 question templates and 41 lessons have been authored and validated across the full K-5 US math curriculum (CCSS-aligned), confirming the content is deep enough to sustain repeat use.
+- 2,400+ question templates and 40 lessons have been authored and validated across the full K-5 US math curriculum (CCSS-aligned), confirming the content is deep enough to sustain repeat use.
 - A working build has completed 5 phases of development with unit, integration, and UI test coverage — confirming technical feasibility.
 
 ---
@@ -41,7 +41,7 @@
 - V1 will not include multi-child profiles (single profile per device).
 - V1 will not support Android — iOS (iPhone + iPad) only.
 - V1 will not include teacher-facing tools, classroom management, or school licensing.
-- V1 will not use AI-generated hints or any language model in the learning loop — all tutoring is deterministic and rule-based.
+- V1 will not use AI-generated hints or any language model in the learning loop — all tutoring is deterministic and rule-based. An AI tutor companion is planned for V2.
 - V1 will not include monetization (no subscriptions, no in-app purchases, no ads).
 
 ---
@@ -91,7 +91,8 @@
 * **Deterministic hints over AI-generated responses.** Hints are rule-based and tiered so tutoring behavior is explainable and age-appropriate. No language model is in the learning loop.
 * **Short sessions over endless play.** Sessions cap at 5-10 minutes with a clean stopping point. Parents need predictable handoff. Kids need closure.
 * **Portrait lock across iPhone and iPad.** Reduces cognitive overhead, keeps touch targets and narration consistent across devices, and avoids layout bugs from rotation.
-* **Content as data, not code.** The 2,123 question templates and 41 lesson plans are bundled JSON. New content can ship via app updates without code changes.
+* **Content as data, not code.** The 2,400+ question templates and 40 lesson plans are bundled JSON. New content can ship via app updates without code changes.
+* **Professional narration over synthetic voice.** 2,500+ question, feedback, and diagnostic audio clips are pre-generated using ElevenLabs with a child-friendly voice, with system TTS as a graceful fallback.
 * **Parent trust is a core feature.** Parent gate, local-only storage, explicit privacy copy, progress dashboard, and diagnostics export are treated as first-class product features — not afterthoughts tacked onto settings.
 
 ---
@@ -101,14 +102,16 @@
 ### Must Have
 
 * Adaptive placement diagnostic (18 questions, K-5, grade-level result with confidence score)
-* 38 playable skill units across K-5 with 2,123 question templates
+* 38 playable skill units across K-5 with 2,400+ question templates
 * Session composer with adaptive item count (5-9 items), spaced review interleaving (25% review / 75% focus), and retry-on-miss behavior
 * Deterministic 3-tier hint engine (concrete → strategy → worked example)
 * Text-to-speech narration with 4 voice styles (Calm, Playful, Energetic, Storyteller) and auto-read toggle
 * Core Data persistence for profiles, attempts, mastery state, review schedule, session logs, and sticker records — all local, no cloud
 * Skill trail visualization showing 38 units grouped by grade with locked / available / in-progress / completed / mastered states
-* 43-sticker reward system with 4 themed visual packs (Candyland, Axolotl Lagoon, Rainbow Unicorn, Stars and Space)
-* 12 companion characters (3 per theme) with distinct taglines and coaching approaches
+* Professional narration with 2,500+ pre-generated ElevenLabs audio clips across 4 voice styles (Calm, Playful, Energetic, Storyteller), plus system TTS fallback
+* Correction flow: after 2 incorrect attempts, the app shows the correct answer with a worked explanation before advancing
+* 43-sticker reward system with 6 themed visual packs (Candyland, Axolotl Lagoon, Rainbow Unicorn, Stars and Space, Superhero City, Turbo Cars)
+* 12 companion characters (3 per active theme) with distinct taglines and coaching approaches
 * Parent gate (random addition challenge) before settings access
 * Parent dashboard with grade placement, domain coverage, weak spot flagging, recent activity (last 50 sessions), and curriculum alignment note
 * Local diagnostics export for parents and testers
@@ -121,16 +124,16 @@
 * Sound effects for interactions (correct, incorrect, hint, tap, reward) with parent toggle
 * Themed background wallpapers with floating particle animations (reduced-motion aware)
 * Adaptive lesson planner recommending support lessons (prior grade), stretch lessons (next grade), and pedagogy highlights
-* 41-lesson K-5 lesson plan viewer with CCSS standards mapping, pedagogical strategy tags, and activity prompts
+* 40-lesson K-5 lesson plan viewer with CCSS standards mapping, pedagogical strategy tags, and activity prompts
 
-### Out of Scope
+### Out of Scope (V1)
 
 * Cloud sync / multi-device progress
 * Multi-child profiles per device
 * Android or web version
 * Teacher/classroom dashboard
 * In-app purchases or subscription
-* AI-generated hints or any language model integration
+* AI-generated hints or any language model integration (planned for V2 as AI tutor companion)
 * Social features, leaderboards, or multiplayer
 * Push notifications
 * Localization beyond US English / CCSS standards
@@ -178,7 +181,7 @@
 * Apple Developer Program enrollment (active) for TestFlight and App Store submission
 * App Store Connect metadata, screenshots, and privacy policy URL must be finalized before review
 * PrivacyInfo.xcprivacy manifest required by Apple for all new submissions (not yet created)
-* Content accuracy: 2,123 question templates must be mathematically correct — human spot-check required for each grade band before launch
+* Content accuracy: 2,400+ question templates must be mathematically correct — human spot-check required for each grade band before launch
 
 **Risks:**
 
@@ -217,6 +220,6 @@
 
 **Resolved decisions:**
 * **Age rating: Ages 6-8.** Apple Kids Category will use the 6-8 band. The curriculum spans K-5, but this band best represents the core audience.
-* **Monetization: None in V1.** Ship completely free with no IAP. V2 may introduce a paid AI tutor add-on if adoption warrants it.
+* **Monetization: None in V1.** Ship completely free with no IAP. V2 will introduce an AI tutor companion for conversational math support.
 * **Privacy policy: Canonical URL at [sproutmath.app/privacy.html](https://www.sproutmath.app/privacy.html).** Terms at [sproutmath.app/terms.html](https://www.sproutmath.app/terms.html). These URLs will be submitted to App Store Connect. Mirror copy also at nitishprasad.com/sproutmath-legal.
 * **Unit availability: All 38 units at launch.** All content is authored and wired. Full K-5 curriculum ships from day one.
