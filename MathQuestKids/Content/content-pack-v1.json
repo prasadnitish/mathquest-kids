@@ -42632,7 +42632,7 @@
       "skill": "count_objects_10",
       "format": "countAndMatch",
       "difficulty": 1,
-      "prompt": "How many dots? Tap the number.",
+      "prompt": "How many dots are there? Tap the number.",
       "answer": "3",
       "supports": [
         "counters"
@@ -42653,7 +42653,7 @@
       "skill": "count_objects_10",
       "format": "countAndMatch",
       "difficulty": 1,
-      "prompt": "How many dots? Tap the number.",
+      "prompt": "How many dots are there? Tap the number.",
       "answer": "5",
       "supports": [
         "counters"
@@ -42674,7 +42674,7 @@
       "skill": "count_objects_10",
       "format": "countAndMatch",
       "difficulty": 1,
-      "prompt": "How many dots? Tap the number.",
+      "prompt": "How many dots are there? Tap the number.",
       "answer": "7",
       "supports": [
         "counters"
@@ -42695,7 +42695,7 @@
       "skill": "count_objects_10",
       "format": "countAndMatch",
       "difficulty": 1,
-      "prompt": "How many dots? Tap the number.",
+      "prompt": "How many dots are there? Tap the number.",
       "answer": "9",
       "supports": [
         "counters"
@@ -42716,7 +42716,7 @@
       "skill": "count_objects_10",
       "format": "countAndMatch",
       "difficulty": 2,
-      "prompt": "How many dots? Tap the number.",
+      "prompt": "How many dots are there? Tap the number.",
       "answer": "10",
       "supports": [
         "counters"
@@ -45448,7 +45448,7 @@
       "skill": "shape_attributes",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "If you cut a square corner to corner, you get two ___",
+      "prompt": "If you cut a square from corner to corner, you get two ___.",
       "answer": "triangles",
       "supports": [],
       "payload": {
@@ -45633,7 +45633,7 @@
       "skill": "shape_attributes",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Two triangles joined on one side can make a ___",
+      "prompt": "Two triangles joined on one side can make a ___.",
       "answer": "rectangle",
       "supports": [],
       "payload": {
@@ -47092,7 +47092,7 @@
       "skill": "measure_length_iteration",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "You lay 1 cubes end to end, then 1 more. How long is the row?",
+      "prompt": "You lay 1 cube end to end, then 1 more. How long is the row?",
       "answer": "2",
       "supports": [],
       "payload": {
@@ -47185,7 +47185,7 @@
       "skill": "measure_length_iteration",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "You lay 1 paper clips end to end, then 2 more. How long is the row?",
+      "prompt": "You lay 1 paper clip end to end, then 2 more. How long is the row?",
       "answer": "3",
       "supports": [],
       "payload": {
@@ -47960,7 +47960,7 @@
       "skill": "measure_length_iteration",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "A crayon is 11 cubes long. A string is 14 cubes long. How much longer is the string?",
+      "prompt": "A crayon is 11 cube long. A string is 14 cubes long. How much longer is the string?",
       "answer": "3",
       "supports": [],
       "payload": {
@@ -48253,7 +48253,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "What number has 1 hundreds, 3 tens, and 7 ones?",
+      "prompt": "What number has 1 hundred, 3 tens, and 7 ones?",
       "answer": "137",
       "supports": [
         "placeValueMat"
@@ -48352,7 +48352,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "381 = ___ hundreds + 8 tens + 1 ones. How many hundreds?",
+      "prompt": "381 = ___ hundreds + 8 tens + 1 one. How many hundreds?",
       "answer": "3",
       "supports": [
         "placeValueMat"
@@ -48385,7 +48385,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "What number has 5 hundreds, 1 tens, and 7 ones?",
+      "prompt": "What number has 5 hundreds, 1 ten, and 7 ones?",
       "answer": "517",
       "supports": [
         "placeValueMat"
@@ -48517,7 +48517,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "What number has 2 hundreds, 8 tens, and 1 ones?",
+      "prompt": "What number has 2 hundreds, 8 tens, and 1 one?",
       "answer": "281",
       "supports": [
         "placeValueMat"
@@ -48616,7 +48616,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "412 = ___ hundreds + 1 tens + 2 ones. How many hundreds?",
+      "prompt": "412 = ___ hundreds + 1 ten + 2 ones. How many hundreds?",
       "answer": "4",
       "supports": [
         "placeValueMat"
@@ -48748,7 +48748,7 @@
       "skill": "place_value_1000",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "414 = ___ hundreds + 1 tens + 4 ones. How many hundreds?",
+      "prompt": "414 = ___ hundreds + 1 ten + 4 ones. How many hundreds?",
       "answer": "4",
       "supports": [
         "placeValueMat"
@@ -52611,7 +52611,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "1 picked stars. 4 picked hearts. How many more picked hearts?",
+      "prompt": "1 kid picked stars. 4 kids picked hearts. How many more picked hearts?",
       "answer": "3",
       "supports": [],
       "payload": {
@@ -52704,7 +52704,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "A chart: cats 5, dogs 7, fish 3. Which pet is most popular?",
+      "prompt": "A chart shows: cats 5, dogs 7, fish 3. Which pet is the most popular?",
       "answer": "dogs",
       "supports": [],
       "payload": {
@@ -52741,7 +52741,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "A chart: cats 5, dogs 7, fish 3. How many pets in all?",
+      "prompt": "A chart shows: cats 5, dogs 7, fish 3. How many pets are there in all?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -52772,7 +52772,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Red 4 votes. Blue 6. Green 2. How many total?",
+      "prompt": "Red got 4 votes. Blue got 6. Green got 2. How many votes in total?",
       "answer": "12",
       "supports": [],
       "payload": {
@@ -52834,7 +52834,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Sunny 12. Rainy 5. Cloudy 8. How many days counted?",
+      "prompt": "Sunny: 12 days. Rainy: 5 days. Cloudy: 8 days. How many days were counted in all?",
       "answer": "25",
       "supports": [],
       "payload": {
@@ -52927,7 +52927,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Red 5, Blue 8, Green 4. How many more Blue than Green?",
+      "prompt": "Red has 5, Blue has 8, and Green has 4. How many more does Blue have than Green?",
       "answer": "4",
       "supports": [],
       "payload": {
@@ -52958,7 +52958,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "20 kids. 9 like math, 6 reading, rest art. How many like art?",
+      "prompt": "There are 20 kids. 9 like math, 6 like reading, and the rest like art. How many like art?",
       "answer": "5",
       "supports": [],
       "payload": {
@@ -52989,7 +52989,7 @@
       "skill": "data_intro",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "If 3 more choose cats, cats equals dogs at 7. How many chose cats now?",
+      "prompt": "If 3 more kids choose cats, cats will equal dogs at 7. How many chose cats before?",
       "answer": "4",
       "supports": [],
       "payload": {
@@ -53051,7 +53051,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "6 ÷ 2 = ?",
+      "prompt": "6 \u00f7 2 = ?",
       "answer": "3",
       "supports": [],
       "payload": {
@@ -53175,7 +53175,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "12 ÷ 3 = ?",
+      "prompt": "12 \u00f7 3 = ?",
       "answer": "4",
       "supports": [],
       "payload": {
@@ -53299,7 +53299,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "6 ÷ 2 = ?",
+      "prompt": "6 \u00f7 2 = ?",
       "answer": "3",
       "supports": [],
       "payload": {
@@ -53423,7 +53423,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "25 ÷ 5 = ?",
+      "prompt": "25 \u00f7 5 = ?",
       "answer": "5",
       "supports": [],
       "payload": {
@@ -53547,7 +53547,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "36 ÷ 6 = ?",
+      "prompt": "36 \u00f7 6 = ?",
       "answer": "6",
       "supports": [],
       "payload": {
@@ -53671,7 +53671,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "16 ÷ 4 = ?",
+      "prompt": "16 \u00f7 4 = ?",
       "answer": "4",
       "supports": [],
       "payload": {
@@ -53795,7 +53795,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "30 ÷ 5 = ?",
+      "prompt": "30 \u00f7 5 = ?",
       "answer": "6",
       "supports": [],
       "payload": {
@@ -53919,7 +53919,7 @@
       "skill": "division_meaning",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "70 ÷ 7 = ?",
+      "prompt": "70 \u00f7 7 = ?",
       "answer": "10",
       "supports": [],
       "payload": {
@@ -57429,7 +57429,7 @@
       "skill": "multi_step_g3",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "28 kids. 12 boys. 8 girls wear glasses. How many girls without glasses?",
+      "prompt": "There are 28 kids. 12 are boys. 8 girls wear glasses. How many girls are without glasses?",
       "answer": "8",
       "supports": [],
       "payload": {
@@ -57460,7 +57460,7 @@
       "skill": "multi_step_g3",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "Leo read 14 pages Mon and 18 Tue. 50 pages total. How many left?",
+      "prompt": "Leo read 14 pages on Monday and 18 on Tuesday. The book has 50 pages total. How many are left?",
       "answer": "18",
       "supports": [],
       "payload": {
@@ -57584,7 +57584,7 @@
       "skill": "multi_step_g3",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Saved 35 cents. Grandma gave 25. Toy costs 45. How much left?",
+      "prompt": "You saved 35 cents. Grandma gave you 25 cents. A toy costs 45 cents. How much is left?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -57739,7 +57739,7 @@
       "skill": "multi_step_g3",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Bus had 35 people. 12 off, 8 on. How many now?",
+      "prompt": "A bus had 35 people. 12 got off and 8 got on. How many are on the bus now?",
       "answer": "31",
       "supports": [],
       "payload": {
@@ -58826,7 +58826,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "20 × 3 = ?",
+      "prompt": "20 \u00d7 3 = ?",
       "answer": "60",
       "supports": [],
       "payload": {
@@ -58919,7 +58919,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "19 × 5 = ?",
+      "prompt": "19 \u00d7 5 = ?",
       "answer": "95",
       "supports": [],
       "payload": {
@@ -59012,7 +59012,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "15 × 5 = ?",
+      "prompt": "15 \u00d7 5 = ?",
       "answer": "75",
       "supports": [],
       "payload": {
@@ -59074,7 +59074,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "14 × 4 = ?",
+      "prompt": "14 \u00d7 4 = ?",
       "answer": "56",
       "supports": [],
       "payload": {
@@ -59167,7 +59167,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "15 × 3 = ?",
+      "prompt": "15 \u00d7 3 = ?",
       "answer": "45",
       "supports": [],
       "payload": {
@@ -59260,7 +59260,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "13 × 5 = ?",
+      "prompt": "13 \u00d7 5 = ?",
       "answer": "65",
       "supports": [],
       "payload": {
@@ -59322,7 +59322,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "31 × 7 = ?",
+      "prompt": "31 \u00d7 7 = ?",
       "answer": "217",
       "supports": [],
       "payload": {
@@ -59415,7 +59415,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "33 × 9 = ?",
+      "prompt": "33 \u00d7 9 = ?",
       "answer": "297",
       "supports": [],
       "payload": {
@@ -59508,7 +59508,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "22 × 9 = ?",
+      "prompt": "22 \u00d7 9 = ?",
       "answer": "198",
       "supports": [],
       "payload": {
@@ -59570,7 +59570,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "34 × 17 = ?",
+      "prompt": "34 \u00d7 17 = ?",
       "answer": "578",
       "supports": [],
       "payload": {
@@ -59663,7 +59663,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "35 × 18 = ?",
+      "prompt": "35 \u00d7 18 = ?",
       "answer": "630",
       "supports": [],
       "payload": {
@@ -59756,7 +59756,7 @@
       "skill": "mult_multi_digit",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "40 × 24 = ?",
+      "prompt": "40 \u00d7 24 = ?",
       "answer": "960",
       "supports": [],
       "payload": {
@@ -59818,7 +59818,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "24 ÷ 2 = ?",
+      "prompt": "24 \u00f7 2 = ?",
       "answer": "12",
       "supports": [],
       "payload": {
@@ -59911,7 +59911,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "45 ÷ 5 = ?",
+      "prompt": "45 \u00f7 5 = ?",
       "answer": "9",
       "supports": [],
       "payload": {
@@ -60004,7 +60004,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "33 ÷ 3 = ?",
+      "prompt": "33 \u00f7 3 = ?",
       "answer": "11",
       "supports": [],
       "payload": {
@@ -60066,7 +60066,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "40 ÷ 5 = ?",
+      "prompt": "40 \u00f7 5 = ?",
       "answer": "8",
       "supports": [],
       "payload": {
@@ -60159,7 +60159,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "105 ÷ 7 = ?",
+      "prompt": "105 \u00f7 7 = ?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -60252,7 +60252,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "44 ÷ 4 = ?",
+      "prompt": "44 \u00f7 4 = ?",
       "answer": "11",
       "supports": [],
       "payload": {
@@ -60314,7 +60314,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "180 ÷ 9 = ?",
+      "prompt": "180 \u00f7 9 = ?",
       "answer": "20",
       "supports": [],
       "payload": {
@@ -60407,7 +60407,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "180 ÷ 9 = ?",
+      "prompt": "180 \u00f7 9 = ?",
       "answer": "20",
       "supports": [],
       "payload": {
@@ -60500,7 +60500,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "120 ÷ 8 = ?",
+      "prompt": "120 \u00f7 8 = ?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -60562,7 +60562,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "114 ÷ 6 = ?",
+      "prompt": "114 \u00f7 6 = ?",
       "answer": "19",
       "supports": [],
       "payload": {
@@ -60655,7 +60655,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "147 ÷ 7 = ?",
+      "prompt": "147 \u00f7 7 = ?",
       "answer": "21",
       "supports": [],
       "payload": {
@@ -60748,7 +60748,7 @@
       "skill": "division_partial_quotients",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "200 ÷ 8 = ?",
+      "prompt": "200 \u00f7 8 = ?",
       "answer": "25",
       "supports": [],
       "payload": {
@@ -62120,7 +62120,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "Which angle is less than 90°?",
+      "prompt": "Which angle is less than 90\u00b0?",
       "answer": "acute",
       "supports": [],
       "payload": {
@@ -62157,7 +62157,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "Which angle is greater than 90°?",
+      "prompt": "Which angle is greater than 90\u00b0?",
       "answer": "obtuse",
       "supports": [],
       "payload": {
@@ -62293,7 +62293,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "An angle of 45° is what type?",
+      "prompt": "An angle of 45\u00b0 is what type?",
       "answer": "acute",
       "supports": [],
       "payload": {
@@ -62330,7 +62330,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "An angle of 120° is what type?",
+      "prompt": "An angle of 120\u00b0 is what type?",
       "answer": "obtuse",
       "supports": [],
       "payload": {
@@ -62460,7 +62460,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "One angle is 90° and another 45°. What is the third?",
+      "prompt": "One angle is 90\u00b0 and another is 45\u00b0. What is the third angle?",
       "answer": "45",
       "supports": [],
       "payload": {
@@ -62491,7 +62491,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "An angle is 60°. How many more to make a right angle?",
+      "prompt": "An angle is 60\u00b0. How many more to make a right angle?",
       "answer": "30",
       "supports": [],
       "payload": {
@@ -62522,7 +62522,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Two supplementary angles: one is 110°. What is the other?",
+      "prompt": "Two angles are supplementary. One is 110\u00b0. What is the other?",
       "answer": "70",
       "supports": [],
       "payload": {
@@ -62584,7 +62584,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Triangle angles: 50° and 60°. What is the third?",
+      "prompt": "A triangle has angles of 50\u00b0 and 60\u00b0. What is the third angle?",
       "answer": "70",
       "supports": [],
       "payload": {
@@ -62615,7 +62615,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Obtuse angle is between ___ and 180°. Lower bound?",
+      "prompt": "An obtuse angle is between ___ and 180\u00b0. What is the lower bound?",
       "answer": "90",
       "supports": [],
       "payload": {
@@ -62646,7 +62646,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Quadrilateral: 80°, 90°, 100°. What is the fourth?",
+      "prompt": "A quadrilateral has angles of 80\u00b0, 90\u00b0, and 100\u00b0. What is the fourth angle?",
       "answer": "90",
       "supports": [],
       "payload": {
@@ -62677,7 +62677,7 @@
       "skill": "angle_measure",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "How many 60° angles fit in a full turn?",
+      "prompt": "How many 60\u00b0 angles fit in a full turn?",
       "answer": "6",
       "supports": [],
       "payload": {
@@ -63488,7 +63488,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "Three items each weigh 1/4 pound. Total weight?",
+      "prompt": "Three items each weigh 1/4 pound. What is the total weight?",
       "answer": "3/4",
       "supports": [],
       "payload": {
@@ -63525,7 +63525,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "Two items weigh 1/2 pound each. Total?",
+      "prompt": "Two items weigh 1/2 pound each. What is the total weight?",
       "answer": "1",
       "supports": [],
       "payload": {
@@ -63562,7 +63562,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 1,
-      "prompt": "Four items each measure 1/8 inch. Total?",
+      "prompt": "Four items each measure 1/8 inch. What is the total length?",
       "answer": "4/8",
       "supports": [],
       "payload": {
@@ -63599,7 +63599,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "2 items at 1/4 lb and 1 at 1/2 lb. Total?",
+      "prompt": "2 items weigh 1/4 lb each and 1 item weighs 1/2 lb. What is the total weight?",
       "answer": "1",
       "supports": [],
       "payload": {
@@ -63636,7 +63636,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "Line plot: 3 dots at 1/4, 2 at 1/2. How many data points?",
+      "prompt": "On a line plot, 3 dots are at 1/4 and 2 dots are at 1/2. How many data points are there?",
       "answer": "5",
       "supports": [],
       "payload": {
@@ -63667,7 +63667,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "3 items at 1/8 and 2 at 3/8. Total?",
+      "prompt": "3 items weigh 1/8 lb each and 2 items weigh 3/8 lb each. What is the total weight?",
       "answer": "9/8",
       "supports": [],
       "payload": {
@@ -63704,7 +63704,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "1 dot at 1/4, 3 at 1/2, 2 at 3/4. How many points?",
+      "prompt": "1 dot is at 1/4, 3 dots are at 1/2, and 2 dots are at 3/4. How many points are there in all?",
       "answer": "6",
       "supports": [],
       "payload": {
@@ -63735,7 +63735,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "5 items at 1/4 lb each. Total?",
+      "prompt": "5 items weigh 1/4 lb each. What is the total weight?",
       "answer": "5/4",
       "supports": [],
       "payload": {
@@ -63772,7 +63772,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "3 at 1/2 lb and 4 at 1/4 lb. Total?",
+      "prompt": "3 items weigh 1/2 lb each and 4 items weigh 1/4 lb each. What is the total weight?",
       "answer": "5/2",
       "supports": [],
       "payload": {
@@ -63809,7 +63809,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "2 at 1/8, 3 at 3/8, 1 at 5/8. Most common?",
+      "prompt": "2 points are at 1/8, 3 are at 3/8, and 1 is at 5/8. Which value is most common?",
       "answer": "3/8",
       "supports": [],
       "payload": {
@@ -63846,7 +63846,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Heaviest 3/4 lb, lightest 1/4 lb. Difference?",
+      "prompt": "The heaviest item is 3/4 lb and the lightest is 1/4 lb. What is the difference?",
       "answer": "1/2",
       "supports": [],
       "payload": {
@@ -63883,7 +63883,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Mean of 1/4, 1/2, 3/4?",
+      "prompt": "What is the mean of 1/4, 1/2, and 3/4?",
       "answer": "1/2",
       "supports": [],
       "payload": {
@@ -63920,7 +63920,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "2 at 1/3 and 4 at 2/3. Total?",
+      "prompt": "2 points are at 1/3 and 4 points are at 2/3. What is the total?",
       "answer": "10/3",
       "supports": [],
       "payload": {
@@ -63957,7 +63957,7 @@
       "skill": "line_plots_fractions",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Range: 7/8, 1/8, 3/8, 5/8?",
+      "prompt": "What is the range of these values: 7/8, 1/8, 3/8, 5/8?",
       "answer": "6/8",
       "supports": [],
       "payload": {
@@ -64180,7 +64180,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 2,
-      "prompt": "Dogs to cats is 3:2. If 12 dogs, how many cats?",
+      "prompt": "The ratio of dogs to cats is 3:2. If there are 12 dogs, how many cats are there?",
       "answer": "8",
       "supports": [],
       "payload": {
@@ -64304,7 +64304,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Ratio 5:3. First is 25. Second?",
+      "prompt": "The ratio is 5:3. The first number is 25. What is the second?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -64397,7 +64397,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 3,
-      "prompt": "Wins to losses 4:1. 20 wins = how many losses?",
+      "prompt": "The ratio of wins to losses is 4:1. If there are 20 wins, how many losses are there?",
       "answer": "5",
       "supports": [],
       "payload": {
@@ -64459,7 +64459,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Map: 1 inch = 5 miles. 4 inches = how many miles?",
+      "prompt": "On a map, 1 inch equals 5 miles. How many miles is 4 inches?",
       "answer": "20",
       "supports": [],
       "payload": {
@@ -64490,7 +64490,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Ratio 3:7. Total 50. How many in smaller group?",
+      "prompt": "The ratio is 3:7. The total is 50. How many are in the smaller group?",
       "answer": "15",
       "supports": [],
       "payload": {
@@ -64521,7 +64521,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "6 kids, 2 wear hats. 30 kids = how many hats?",
+      "prompt": "Out of 6 kids, 2 wear hats. If there are 30 kids, how many would wear hats?",
       "answer": "10",
       "supports": [],
       "payload": {
@@ -64552,7 +64552,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "60 miles per hour. In 3 hours?",
+      "prompt": "A car travels 60 miles per hour. How far does it go in 3 hours?",
       "answer": "180",
       "supports": [],
       "payload": {
@@ -64583,7 +64583,7 @@
       "skill": "pre_ratios",
       "format": "wordProblem",
       "difficulty": 4,
-      "prompt": "Pattern: 2 red, 1 blue, 1 green repeats. In 20 tiles how many red?",
+      "prompt": "A pattern of 2 red, 1 blue, and 1 green repeats. In 20 tiles, how many are red?",
       "answer": "10",
       "supports": [],
       "payload": {
@@ -64638,7 +64638,7 @@
       "skill": "fraction_of_whole",
       "concrete": "Partition the whole into equal groups first.",
       "strategy": "Find one part, then scale by numerator.",
-      "worked": "Compute whole ÷ denominator, then multiply by numerator."
+      "worked": "Compute whole \u00f7 denominator, then multiply by numerator."
     },
     {
       "skill": "mult_array_basic",
@@ -64668,7 +64668,7 @@
       "skill": "volume_prism",
       "concrete": "Think of layers of unit cubes.",
       "strategy": "Find area of one layer, then multiply by height.",
-      "worked": "Volume = length × width × height."
+      "worked": "Volume = length \u00d7 width \u00d7 height."
     },
     {
       "skill": "count_objects_10",
@@ -64680,7 +64680,7 @@
       "skill": "number_bond_10",
       "concrete": "Use a ten frame to fill in the missing part.",
       "strategy": "Think: what number plus the given number equals 10?",
-      "worked": "If one part is 7, count up from 7 to 10: 8, 9, 10 — that's 3 more."
+      "worked": "If one part is 7, count up from 7 to 10: 8, 9, 10 \u2014 that's 3 more."
     },
     {
       "skill": "add_within_5",
@@ -64756,7 +64756,7 @@
     },
     {
       "skill": "add_regroup",
-      "concrete": "Stack numbers. Add ones first — trade 10 ones for 1 ten if needed.",
+      "concrete": "Stack numbers. Add ones first \u2014 trade 10 ones for 1 ten if needed.",
       "strategy": "When ones add to 10+, carry 1 ten.",
       "worked": "48+35: 8+5=13, write 3 carry 1. 4+3+1=8. Answer: 83."
     },
@@ -64764,7 +64764,7 @@
       "skill": "sub_regroup",
       "concrete": "Use base-ten blocks. Trade 1 ten for 10 ones if you need more ones.",
       "strategy": "If top ones < bottom ones, borrow from tens.",
-      "worked": "72-27: borrow → 12-7=5, 6-2=4. Answer: 45."
+      "worked": "72-27: borrow \u2192 12-7=5, 6-2=4. Answer: 45."
     },
     {
       "skill": "equal_groups",
@@ -64774,7 +64774,7 @@
     },
     {
       "skill": "time_money",
-      "concrete": "Draw coins: dime=10¢, nickel=5¢, quarter=25¢, penny=1¢.",
+      "concrete": "Draw coins: dime=10\u00a2, nickel=5\u00a2, quarter=25\u00a2, penny=1\u00a2.",
       "strategy": "Count quarters first, then dimes, nickels, pennies.",
       "worked": "1 quarter + 2 dimes: 25+10+10=45 cents."
     },
@@ -64788,13 +64788,13 @@
       "skill": "division_meaning",
       "concrete": "Draw circles for groups. Deal objects one by one.",
       "strategy": "Think: what times divisor = dividend?",
-      "worked": "12÷3: 3×4=12, so answer is 4."
+      "worked": "12\u00f73: 3\u00d74=12, so answer is 4."
     },
     {
       "skill": "fraction_unit",
       "concrete": "Fold a strip into equal parts. Each part is one unit fraction.",
       "strategy": "1/n of a number means divide by n.",
-      "worked": "1/4 of 8: 8÷4=2."
+      "worked": "1/4 of 8: 8\u00f74=2."
     },
     {
       "skill": "fraction_compare_g3",
@@ -64805,8 +64805,8 @@
     {
       "skill": "area_concept",
       "concrete": "Cover the rectangle with unit tiles. Count all tiles.",
-      "strategy": "Area = length × width.",
-      "worked": "4 rows of 3: 4×3=12 square units."
+      "strategy": "Area = length \u00d7 width.",
+      "worked": "4 rows of 3: 4\u00d73=12 square units."
     },
     {
       "skill": "multi_step_g3",
@@ -64817,32 +64817,32 @@
     {
       "skill": "place_value_million",
       "concrete": "Write in a place-value chart with columns for each place.",
-      "strategy": "Each place is 10× the place to its right.",
+      "strategy": "Each place is 10\u00d7 the place to its right.",
       "worked": "In 275,000: the 7 is ten-thousands, value=70,000."
     },
     {
       "skill": "mult_multi_digit",
       "concrete": "Break the larger factor into tens and ones. Multiply each, then add.",
-      "strategy": "Area model: split into tens×ones, add partial products.",
-      "worked": "23×4: 20×4=80, 3×4=12, 80+12=92."
+      "strategy": "Area model: split into tens\u00d7ones, add partial products.",
+      "worked": "23\u00d74: 20\u00d74=80, 3\u00d74=12, 80+12=92."
     },
     {
       "skill": "division_partial_quotients",
       "concrete": "Subtract friendly multiples of the divisor, one chunk at a time.",
-      "strategy": "Take away 10×, 5×, 2× and add up quotients.",
-      "worked": "96÷8: 10×8=80(10), 2×8=16(2). Quotient=12."
+      "strategy": "Take away 10\u00d7, 5\u00d7, 2\u00d7 and add up quotients.",
+      "worked": "96\u00f78: 10\u00d78=80(10), 2\u00d78=16(2). Quotient=12."
     },
     {
       "skill": "fraction_add_sub_same",
       "concrete": "Use fraction strips. Shade first, then shade more (add) or cross off (subtract).",
       "strategy": "Same denominator: add/subtract numerators, keep denominator.",
-      "worked": "1/4+2/4: 1+2=3, keep 4 → 3/4."
+      "worked": "1/4+2/4: 1+2=3, keep 4 \u2192 3/4."
     },
     {
       "skill": "angle_measure",
       "concrete": "Place a protractor on the angle. Read where the ray points.",
-      "strategy": "Right=90°, straight=180°, full=360°. Acute<90°, obtuse>90°.",
-      "worked": "Right angle=90°. Two right angles=180°=straight."
+      "strategy": "Right=90\u00b0, straight=180\u00b0, full=360\u00b0. Acute<90\u00b0, obtuse>90\u00b0.",
+      "worked": "Right angle=90\u00b0. Two right angles=180\u00b0=straight."
     },
     {
       "skill": "fraction_add_sub_unlike",
@@ -64860,7 +64860,7 @@
       "skill": "pre_ratios",
       "concrete": "Draw a table with two rows. Fill in the pattern and extend.",
       "strategy": "Find the multiplier and apply to both quantities.",
-      "worked": "2:3. If 6 red (×3), blue=3×3=9."
+      "worked": "2:3. If 6 red (\u00d73), blue=3\u00d73=9."
     }
   ],
   "rewards": [
