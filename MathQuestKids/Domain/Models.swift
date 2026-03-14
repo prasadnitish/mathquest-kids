@@ -17,31 +17,54 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
     case g1FactFamilies
     case g2AddWithin100
     case g2SubWithin100
+    // New K-5 cases
+    case kCompareGroups
+    case kShapeAttributes
+    case g1AddSub100
+    case g1MeasureLength
+    case g2PlaceValue1000
+    case g2AddSubRegroup
+    case g2EqualGroups
+    case g2TimeMoney
+    case g2DataIntro
+    case g3DivMeaning
+    case g3FractionUnit
+    case g3FractionCompare
+    case g3AreaConcept
+    case g3MultiStep
+    case g4PlaceValueMillion
+    case g4MultMultiDigit
+    case g4DivPartialQuotients
+    case g4FractionAddSub
+    case g4AngleMeasure
+    case g5FractionAddSubUnlike
+    case g5LinePlotsFractions
+    case g5PreRatios
 
     var id: String { rawValue }
 
     static var learningPath: [UnitType] {
         [
-            // Kindergarten
-            .kCountObjects,
-            .kComposeDecompose,
-            .kAddWithin5,
-            .kAddWithin10,
-            // Grade 1
-            .g1AddWithin20,
-            .g1FactFamilies,
-            // Grade 2
-            .g2AddWithin100,
-            .g2SubWithin100,
-            // Existing Grade 1–5 (keep all existing)
-            .subtractionStories,
-            .teenPlaceValue,
-            .twoDigitComparison,
-            .threeDigitComparison,
-            .multiplicationArrays,
-            .fractionComparison,
-            .fractionOfWhole,
-            .volumeAndDecimals
+            // Kindergarten (8)
+            .kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
+            .subtractionStories, .kCompareGroups, .kShapeAttributes, .teenPlaceValue,
+            // Grade 1 (6)
+            .g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
+            .g1AddSub100, .g1MeasureLength,
+            // Grade 1-2 bridge
+            .g2AddWithin100, .g2SubWithin100,
+            // Grade 2 (6)
+            .threeDigitComparison, .g2PlaceValue1000, .g2AddSubRegroup,
+            .g2EqualGroups, .g2TimeMoney, .g2DataIntro,
+            // Grade 3 (6)
+            .multiplicationArrays, .g3DivMeaning, .g3FractionUnit,
+            .g3FractionCompare, .g3AreaConcept, .g3MultiStep,
+            // Grade 4 (6)
+            .fractionComparison, .g4PlaceValueMillion, .g4MultMultiDigit,
+            .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure,
+            // Grade 5 (5)
+            .fractionOfWhole, .volumeAndDecimals,
+            .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios,
         ]
     }
 
@@ -63,6 +86,28 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .g1FactFamilies:     return "Fact Families"
         case .g2AddWithin100:     return "Add Within 100"
         case .g2SubWithin100:     return "Subtract Within 100"
+        case .kCompareGroups:     return "Compare Groups"
+        case .kShapeAttributes:   return "Shape Attributes"
+        case .g1AddSub100:        return "Add & Subtract to 100"
+        case .g1MeasureLength:    return "Measure Length"
+        case .g2PlaceValue1000:   return "Place Value to 1,000"
+        case .g2AddSubRegroup:    return "Regroup to Add & Subtract"
+        case .g2EqualGroups:      return "Equal Groups"
+        case .g2TimeMoney:        return "Time & Money"
+        case .g2DataIntro:        return "Picture Graphs"
+        case .g3DivMeaning:       return "Meaning of Division"
+        case .g3FractionUnit:     return "Unit Fractions"
+        case .g3FractionCompare:  return "Compare Fractions"
+        case .g3AreaConcept:      return "Area as Tiling"
+        case .g3MultiStep:        return "Two-Step Problems"
+        case .g4PlaceValueMillion: return "Place Value to Millions"
+        case .g4MultMultiDigit:   return "Multi-Digit Multiply"
+        case .g4DivPartialQuotients: return "Long Division"
+        case .g4FractionAddSub:   return "Add & Subtract Fractions"
+        case .g4AngleMeasure:     return "Angles & Degrees"
+        case .g5FractionAddSubUnlike: return "Unlike Denominators"
+        case .g5LinePlotsFractions: return "Line Plots"
+        case .g5PreRatios:        return "Ratios & Patterns"
         }
     }
 
@@ -84,6 +129,28 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .g1FactFamilies:     return "Relate addition and subtraction"
         case .g2AddWithin100:     return "Add two-digit numbers"
         case .g2SubWithin100:     return "Subtract two-digit numbers"
+        case .kCompareGroups:     return "Compare which group has more, fewer, or the same"
+        case .kShapeAttributes:   return "Sort shapes by sides and corners"
+        case .g1AddSub100:        return "Add and subtract with tens and ones"
+        case .g1MeasureLength:    return "Measure objects using unit lengths"
+        case .g2PlaceValue1000:   return "Build numbers with hundreds, tens, ones"
+        case .g2AddSubRegroup:    return "Regroup when adding or subtracting"
+        case .g2EqualGroups:      return "Make equal groups to get ready for multiplication"
+        case .g2TimeMoney:        return "Tell time and count coins"
+        case .g2DataIntro:        return "Read and compare picture graphs"
+        case .g3DivMeaning:       return "Share equally and find how many groups"
+        case .g3FractionUnit:     return "Name fractions as parts of a whole"
+        case .g3FractionCompare:  return "Compare fractions with same denominator"
+        case .g3AreaConcept:      return "Count unit squares to find area"
+        case .g3MultiStep:        return "Solve two-step word problems"
+        case .g4PlaceValueMillion: return "Read and compare numbers to 1,000,000"
+        case .g4MultMultiDigit:   return "Multiply multi-digit numbers step by step"
+        case .g4DivPartialQuotients: return "Divide using partial quotients"
+        case .g4FractionAddSub:   return "Add and subtract fractions with like denominators"
+        case .g4AngleMeasure:     return "Estimate and measure angles in degrees"
+        case .g5FractionAddSubUnlike: return "Add and subtract fractions with different denominators"
+        case .g5LinePlotsFractions: return "Read line plots with fraction data"
+        case .g5PreRatios:        return "Find and extend ratio patterns"
         }
     }
 
@@ -100,6 +167,12 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10: return "K"
         case .g1AddWithin20, .g1FactFamilies: return "1"
         case .g2AddWithin100, .g2SubWithin100: return "2"
+        case .kCompareGroups, .kShapeAttributes: return "K"
+        case .g1AddSub100, .g1MeasureLength: return "1"
+        case .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups, .g2TimeMoney, .g2DataIntro: return "2"
+        case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare, .g3AreaConcept, .g3MultiStep: return "3"
+        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure: return "4"
+        case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios: return "5"
         }
     }
 }
