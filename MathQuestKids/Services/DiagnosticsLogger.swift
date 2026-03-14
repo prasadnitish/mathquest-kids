@@ -158,7 +158,7 @@ final class DiagnosticsLogger {
         }
 
         if !fileManager.fileExists(atPath: liveLogURL.path) {
-            let banner = "Sprout Math local diagnostics log\n"
+            let banner = "MathQuest Kids local diagnostics log\n"
             if let data = banner.data(using: .utf8) {
                 try? data.write(to: liveLogURL, options: .atomic)
             }
@@ -191,7 +191,7 @@ final class DiagnosticsLogger {
         let os = ProcessInfo.processInfo.operatingSystemVersionString
 
         return """
-        Sprout Math Diagnostics Snapshot
+        MathQuest Kids Diagnostics Snapshot
         GeneratedAt: \(generatedAt)
         BundleID: \(bundleID)
         Version: \(version)

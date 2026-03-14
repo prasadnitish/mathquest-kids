@@ -54,8 +54,8 @@ final class SFXService {
         case .axolotl: themeShift = -18
         case .rainbowUnicorn: themeShift = 22
         case .starsSpace: themeShift = -8
-        case .superhero: themeShift = 16
-        case .turboCars: themeShift = -12
+        case .superhero: themeShift = -14
+        case .turboCars: themeShift = 6
         }
 
         switch event {

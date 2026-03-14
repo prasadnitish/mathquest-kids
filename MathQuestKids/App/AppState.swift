@@ -30,7 +30,6 @@ final class AppState: ObservableObject {
     @Published var parentGateRequired = false
     @Published var parentGatePrompt = ParentGateChallenge.newChallenge()
     @Published var statusMessage: String?
-    private var statusDismissTask: Task<Void, Never>?
 
     @Published var selectedTheme: VisualTheme
     @Published var selectedCompanionID: String
@@ -182,16 +181,16 @@ final class AppState: ObservableObject {
             if shouldRequireDiagnostic(for: created.id) {
                 route = .diagnostic
                 startDiagnosticIfNeeded()
-                showStatus("Great. Quick diagnostic next to personalize lessons.")
+                statusMessage = "Great. Quick diagnostic next to personalize lessons."
                 diagnostics.info("Profile created; diagnostic required", metadata: ["childId": created.id.uuidString])
             } else {
                 route = .home
-                showStatus("Welcome, \(created.displayName)!")
+                statusMessage = "Welcome, \(created.displayName)!"
                 diagnostics.info("Profile created", metadata: ["childId": created.id.uuidString])
             }
         } catch {
             diagnostics.error("Profile creation failed", metadata: ["error": error.localizedDescription])
-            showStatus("Couldn't save profile. Please try again.")
+            statusMessage = "Couldn't save profile. Please try again."
         }
     }
 
@@ -236,7 +235,7 @@ final class AppState: ObservableObject {
         temporarilySkippedDiagnostic = true
         diagnosticSession = nil
         route = .home
-        showStatus("You can run the diagnostic anytime in Parent Settings.")
+        statusMessage = "You can run the diagnostic anytime in Parent Settings."
         diagnostics.info("Diagnostic skipped for now")
     }
 
@@ -259,7 +258,7 @@ final class AppState: ObservableObject {
         adaptivePath = adaptivePlanner.buildPath(result: result, catalog: curriculumCatalog)
         refreshDashboard()
         route = .home
-        showStatus("Placement complete: \(result.placedGrade.title).")
+        statusMessage = "Placement complete: \(result.placedGrade.title)."
         playSFX(.reward)
         diagnostics.info(
             "Diagnostic finished",
@@ -273,7 +272,7 @@ final class AppState: ObservableObject {
     func startSession(for unit: UnitType) {
         guard let profile else { return }
         guard isUnitUnlocked(unit) else {
-            showStatus("Complete the previous quest to unlock this unit.")
+            statusMessage = "Complete the previous quest to unlock this unit."
             diagnostics.warning("Attempted to start locked unit", metadata: ["unit": unit.rawValue])
             return
         }
@@ -299,13 +298,13 @@ final class AppState: ObservableObject {
             )
         } catch {
             diagnostics.error("Session composition failed", metadata: ["unit": unit.rawValue, "error": error.localizedDescription])
-            showStatus("Unable to start that quest right now.")
+            statusMessage = "Unable to start that quest right now."
         }
     }
 
     func startRecommendedSession() {
         guard let unit = recommendedUnit() else {
-            showStatus("No playable lesson is available yet for this path.")
+            statusMessage = "No playable lesson is available yet for this path."
             return
         }
         startSession(for: unit)
@@ -392,7 +391,7 @@ final class AppState: ObservableObject {
             } else {
                 currentSession = runtime
                 narrationService.speakFeedback(isCorrect ? PraiseLibrary.randomCorrectPraise() : PraiseLibrary.randomRetryPrompt(), style: narrationStyle)
-                if masteryState.status == .mastered { showStatus("Skill mastered!") }
+                statusMessage = masteryState.status == .mastered ? "Skill mastered!" : nil
                 playSFX(isCorrect ? .correct : .incorrect)
             }
         } catch {
@@ -404,7 +403,7 @@ final class AppState: ObservableObject {
                     "error": error.localizedDescription
                 ]
             )
-            showStatus("We couldn't save that attempt.")
+            statusMessage = "We couldn't save that attempt."
         }
     }
 
@@ -435,8 +434,14 @@ final class AppState: ObservableObject {
 
     func readQuestionIfEnabled() {
         guard autoReadQuestions else { return }
-        // Short delay so the child can see the new question before audio starts
+        // Wait for any feedback audio to finish, then a short visual pause
         Task {
+            // Wait up to 4 seconds for feedback audio to finish
+            for _ in 0..<40 {
+                if !narrationService.isSpeakingFeedback { break }
+                try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
+            }
+            // Short pause so the child can see the new question before audio starts
             try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
             replayPrompt()
         }
@@ -590,16 +595,6 @@ final class AppState: ObservableObject {
     private func saveDiagnosticResult(_ result: DiagnosticResult) {
         guard let encoded = try? JSONEncoder().encode(result) else { return }
         defaults.set(encoded, forKey: diagnosticStorageKey(for: result.childID))
-    }
-
-    private func showStatus(_ message: String, duration: TimeInterval = 4) {
-        statusDismissTask?.cancel()
-        statusMessage = message
-        statusDismissTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(duration))
-            guard !Task.isCancelled else { return }
-            self?.statusMessage = nil
-        }
     }
 
     private func playSFX(_ event: SFXEvent) {

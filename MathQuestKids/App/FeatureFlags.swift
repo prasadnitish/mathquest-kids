@@ -82,18 +82,6 @@ enum FeatureFlags {
             default:
                 target = 8
             }
-        case .kCompareGroups, .kShapeAttributes:
-            target = 5
-        case .g1AddSub100, .g1MeasureLength:
-            target = 6
-        case .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups, .g2TimeMoney, .g2DataIntro:
-            target = 7
-        case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare, .g3AreaConcept, .g3MultiStep:
-            target = 8
-        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure:
-            target = 8
-        case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios:
-            target = 9
         }
 
         return min(max(target, minimumSessionItems), maximumSessionItems)

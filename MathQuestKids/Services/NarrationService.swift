@@ -26,6 +26,11 @@ final class NarrationService {
     private var audioPlayer: AVAudioPlayer?
     private let audioIndex: [String: String]  // id → relative path
 
+    /// True while feedback audio is playing. Used to delay next question audio.
+    var isSpeakingFeedback: Bool {
+        (audioPlayer?.isPlaying ?? false) || synthesizer.isSpeaking
+    }
+
     // MARK: - Fallback TTS
 
     private let synthesizer = AVSpeechSynthesizer()
@@ -34,12 +39,26 @@ final class NarrationService {
 
     init() {
         // Load the audio index that maps IDs to file paths
-        if let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio"),
+        // Try subdirectory first (folder reference), then root (if copied to bundle root)
+        let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio")
+            ?? Bundle.main.url(forResource: "audio_index", withExtension: "json")
+
+        if let url,
            let data = try? Data(contentsOf: url),
            let index = try? JSONDecoder().decode([String: String].self, from: data) {
             audioIndex = index
+            print("[NarrationService] ✅ Loaded audio index: \(index.count) entries from \(url.lastPathComponent)")
         } else {
             audioIndex = [:]
+            print("[NarrationService] ⚠️ audio_index.json NOT found in bundle")
+            // Debug: list what's in the bundle
+            if let resourcePath = Bundle.main.resourcePath {
+                let fm = FileManager.default
+                if let items = try? fm.contentsOfDirectory(atPath: resourcePath) {
+                    let audioRelated = items.filter { $0.lowercased().contains("audio") }
+                    print("[NarrationService] Bundle items matching 'audio': \(audioRelated)")
+                }
+            }
         }
     }
 
@@ -53,8 +72,15 @@ final class NarrationService {
         }
 
         // Try pre-generated audio by item ID
-        if let itemID, playPreGenerated(id: itemID) {
-            return
+        if let itemID {
+            print("[NarrationService] Looking up itemID='\(itemID)' in audioIndex (\(audioIndex.count) entries)")
+            if playPreGenerated(id: itemID) {
+                print("[NarrationService] ✅ Playing pre-generated audio for '\(itemID)'")
+                return
+            }
+            print("[NarrationService] ❌ No pre-generated audio for '\(itemID)', falling back to TTS")
+        } else {
+            print("[NarrationService] No itemID provided, using TTS")
         }
 
         // Fallback to system TTS
@@ -67,13 +93,26 @@ final class NarrationService {
             stopAll()
         }
 
-        // Try known feedback audio by scanning for matching text
-        if playPreGeneratedByText(text, categories: ["feedback", "companion", "diagnostic"]) {
+        // Normalize contractions to match pre-generated audio
+        let normalized = text
+            .replacingOccurrences(of: "Let's", with: "Let us")
+            .replacingOccurrences(of: "let's", with: "let us")
+            .replacingOccurrences(of: "You're", with: "You are")
+            .replacingOccurrences(of: "you're", with: "you are")
+
+        // Try exact match first
+        if playPreGeneratedByText(normalized, categories: ["feedback", "companion", "diagnostic"]) {
+            return
+        }
+
+        // For compound strings (e.g. "encouragement + hint text"), try the first sentence
+        let firstSentence = normalized.components(separatedBy: ". ").first ?? normalized
+        if firstSentence != normalized, playPreGeneratedByText(firstSentence + ".", categories: ["feedback", "companion", "diagnostic"]) {
             return
         }
 
         // Fallback to system TTS
-        speakWithTTS(text, style: style, role: .feedback)
+        speakWithTTS(normalized, style: style, role: .feedback)
     }
 
     /// Preview voice for settings screen.
@@ -97,16 +136,32 @@ final class NarrationService {
     // MARK: - Pre-generated audio playback
 
     private func playPreGenerated(id: String) -> Bool {
-        guard let relativePath = audioIndex[id] else { return false }
-
-        // Audio files are in the bundle under Audio/
-        guard let url = Bundle.main.url(
-            forResource: (relativePath as NSString).deletingPathExtension,
-            withExtension: "mp3",
-            subdirectory: "Audio"
-        ) else {
+        guard let relativePath = audioIndex[id] else {
+            print("[NarrationService] ID '\(id)' not in audioIndex")
             return false
         }
+
+        // relativePath is like "questions/bnd-01.mp3"
+        let nsPath = relativePath as NSString
+        let filename = (nsPath.lastPathComponent as NSString).deletingPathExtension  // "bnd-01"
+        let subfolder = nsPath.deletingLastPathComponent                              // "questions"
+
+        // Try multiple bundle path strategies (depends on how Xcode bundles the folder)
+        let url: URL? =
+            // 1. Audio/questions/bnd-01.mp3 (folder reference preserves structure)
+            Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio/\(subfolder)")
+            // 2. Audio/bnd-01.mp3 (flat inside Audio/)
+            ?? Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: "Audio")
+            // 3. questions/bnd-01.mp3 (no Audio prefix)
+            ?? Bundle.main.url(forResource: filename, withExtension: "mp3", subdirectory: subfolder)
+            // 4. bnd-01.mp3 at bundle root (completely flat)
+            ?? Bundle.main.url(forResource: filename, withExtension: "mp3")
+
+        guard let url else {
+            print("[NarrationService] MP3 not found for '\(id)': tried Audio/\(subfolder)/\(filename).mp3 and variants")
+            return false
+        }
+        print("[NarrationService] Found MP3 at: \(url.lastPathComponent) via \(url.deletingLastPathComponent().lastPathComponent)/")
 
         do {
             #if os(iOS)

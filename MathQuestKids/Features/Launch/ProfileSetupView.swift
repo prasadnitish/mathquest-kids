@@ -2,10 +2,7 @@ import SwiftUI
 
 struct ProfileSetupView: View {
     @EnvironmentObject private var appState: AppState
-    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var name = ""
-
-    private var isCompact: Bool { sizeClass == .compact }
 
     var body: some View {
         VStack(spacing: 24) {
@@ -13,11 +10,11 @@ struct ProfileSetupView: View {
 
             VStack(spacing: 16) {
                 Image(systemName: appState.selectedTheme.heroSymbol)
-                    .font(.system(size: AppTheme.scaled(64, compact: isCompact), weight: .black))
+                    .font(.system(size: 64, weight: .black))
                     .foregroundStyle(appState.selectedTheme.primary)
 
-                Text("Sprout Math")
-                    .font(.system(size: AppTheme.scaled(46, compact: isCompact), weight: .bold, design: .rounded))
+                Text("MathQuest Kids")
+                    .font(.system(size: 46, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
 
                 Text("Create a profile, run a quick diagnostic, and unlock a premium adaptive K-5 math path.")

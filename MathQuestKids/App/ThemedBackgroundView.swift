@@ -8,26 +8,24 @@ struct ThemedBackgroundView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let fullWidth = proxy.size.width + proxy.safeAreaInsets.leading + proxy.safeAreaInsets.trailing
-            let fullHeight = proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom
-
             ZStack {
                 Image(theme.backgroundAssetName)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: fullWidth, height: fullHeight)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
                     .clipped()
                     .overlay(
                         LinearGradient(
                             colors: [
-                                Color.black.opacity(0.04),
-                                Color.black.opacity(0.10),
-                                Color.black.opacity(0.18)
+                                Color.black.opacity(0.06),
+                                Color.black.opacity(0.14),
+                                Color.black.opacity(0.24)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
+                    .ignoresSafeArea()
 
                 Circle()
                     .fill(Color.white.opacity(0.24))
@@ -45,7 +43,6 @@ struct ThemedBackgroundView: View {
             }
             .onAppear { drift = true }
         }
-        .ignoresSafeArea()
     }
 
     private func floatingParticles(size: CGSize) -> some View {

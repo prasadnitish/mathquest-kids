@@ -90,24 +90,6 @@ struct DeterministicHintEngine: HintEngine {
             return "Add the ones first, then add the tens."
         case .g2SubWithin100:
             return "Subtract the ones first, then subtract the tens."
-        case .kCompareGroups, .kShapeAttributes:
-            return "Look carefully at the picture. Count or compare one group at a time."
-        case .g1AddSub100, .g1MeasureLength:
-            return "Break the problem into smaller steps. Work with tens and ones."
-        case .g2PlaceValue1000, .g2AddSubRegroup:
-            return "Think about place value. Hundreds, tens, and ones each have their own column."
-        case .g2EqualGroups, .g2TimeMoney, .g2DataIntro:
-            return "Read the problem again slowly. What is it really asking?"
-        case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare:
-            return "Think about equal sharing. Draw a picture to help."
-        case .g3AreaConcept, .g3MultiStep:
-            return "Break this into two smaller problems and solve one at a time."
-        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients:
-            return "Use place value. Work from the largest place to the smallest."
-        case .g4FractionAddSub, .g4AngleMeasure:
-            return "Draw a model or picture to help you see the answer."
-        case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios:
-            return "Find what the parts have in common first, then solve."
         }
     }
 
@@ -164,24 +146,6 @@ struct DeterministicHintEngine: HintEngine {
             return "Break the numbers into tens and ones. Add tens with tens, ones with ones."
         case .g2SubWithin100:
             return "Break the numbers into tens and ones. Subtract ones first, then tens."
-        case .kCompareGroups, .kShapeAttributes:
-            return "Count each group, then see which has more or fewer."
-        case .g1AddSub100, .g1MeasureLength:
-            return "Use a number line. Jump by tens, then by ones."
-        case .g2PlaceValue1000, .g2AddSubRegroup:
-            return "Stack the numbers by place value and work column by column."
-        case .g2EqualGroups, .g2TimeMoney, .g2DataIntro:
-            return "Underline the key numbers and the question, then solve step by step."
-        case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare:
-            return "Draw equal groups or fraction strips to see the answer."
-        case .g3AreaConcept, .g3MultiStep:
-            return "Solve the first part, write it down, then use it for the next part."
-        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients:
-            return "Break the big number into parts. Solve each part, then combine."
-        case .g4FractionAddSub, .g4AngleMeasure:
-            return "Check if the parts are the same size first. If not, make them match."
-        case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios:
-            return "Find a common denominator or unit first, then solve."
         }
     }
 
@@ -262,24 +226,6 @@ struct DeterministicHintEngine: HintEngine {
             let a = context.payload.minuend ?? 0
             let b = context.payload.subtrahend ?? 0
             return "Subtract the ones first, then the tens. \(a) - \(b) = \(max(0, a - b))."
-        case .kCompareGroups, .kShapeAttributes:
-            return "Count each group carefully. The group with more objects is the bigger group."
-        case .g1AddSub100, .g1MeasureLength:
-            return "Break the numbers apart by tens and ones, then put them back together."
-        case .g2PlaceValue1000, .g2AddSubRegroup:
-            return "Line up the digits by place value. Add or subtract each column starting from the ones."
-        case .g2EqualGroups, .g2TimeMoney, .g2DataIntro:
-            return "Find the key numbers in the problem, then use the operation that matches."
-        case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare:
-            return "Divide into equal parts. Count how many are in each group."
-        case .g3AreaConcept, .g3MultiStep:
-            return "Solve one step at a time. Use your first answer in the second step."
-        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients:
-            return "Use partial products or partial quotients. Break the big numbers into friendly parts."
-        case .g4FractionAddSub, .g4AngleMeasure:
-            return "Make the denominators the same, then add or subtract the numerators."
-        case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios:
-            return "Find the least common denominator, rewrite both fractions, then solve."
         }
     }
 
