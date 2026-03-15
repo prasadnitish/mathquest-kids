@@ -313,26 +313,6 @@
           "isPlayableInApp": true,
           "linkedUnit": "g1AddWithin20",
           "activityPrompt": "Use a number line to add and record equations."
-        },
-        {
-          "id": "g1-fact-families",
-          "grade": "grade1",
-          "title": "Fact Families",
-          "domain": "operationsAlgebraicThinking",
-          "objective": "Find the missing addend using part-part-whole relationships.",
-          "standards": [
-            "CCSS.MATH.CONTENT.1.OA.B.3",
-            "CCSS.MATH.CONTENT.1.OA.D.8"
-          ],
-          "strategies": [
-            "numberBonds",
-            "variationTheory",
-            "errorAnalysis"
-          ],
-          "estimatedMinutes": 20,
-          "isPlayableInApp": true,
-          "linkedUnit": "g1FactFamilies",
-          "activityPrompt": "Complete number bond triangles and write all four related equations."
         }
       ]
     },

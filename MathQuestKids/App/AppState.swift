@@ -802,9 +802,9 @@ struct ParentGateChallenge {
     let answer: String
 
     static func newChallenge() -> ParentGateChallenge {
-        // Use multiplication with larger numbers so grade 3+ students can't easily solve it.
-        let left = Int.random(in: 12...29)
-        let right = Int.random(in: 7...19)
+        // Simple single-digit multiplication — easy for parents, hard for K-2 kids.
+        let left = Int.random(in: 6...9)
+        let right = Int.random(in: 6...9)
         return ParentGateChallenge(prompt: "Parent check: \(left) \u{00D7} \(right) = ?", answer: String(left * right))
     }
 }

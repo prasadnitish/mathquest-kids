@@ -228,6 +228,16 @@ enum SupportType: String, Codable {
     case areaModel
     case decimalGrid
     case visual
+    case barChart
+    case clock
+    case coins
+    case grid
+    case linePlot
+    case partialQuotients
+    case protractor
+    case ratioTable
+    case ruler
+    case shapeCards
 }
 
 struct ChildProfileRecord: Equatable {
