@@ -207,6 +207,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Character Pack")
                 .font(.title2.bold())
+                .foregroundStyle(AppTheme.textPrimary)
 
             HStack(alignment: .top, spacing: 12) {
                 ZStack {
@@ -231,6 +232,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(appState.activeCompanion.name)
                         .font(.title3.bold())
+                        .foregroundStyle(AppTheme.textPrimary)
                     Text(appState.activeCompanion.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppTheme.textSecondary)
@@ -284,7 +286,7 @@ struct HomeView: View {
                             .background(
                                 appState.selectedCompanionID == companion.id
                                     ? appState.selectedTheme.primary.opacity(0.22)
-                                    : Color.white.opacity(0.93),
+                                    : AppTheme.card,
                                 in: RoundedRectangle(cornerRadius: 12)
                             )
                             .overlay(
@@ -315,6 +317,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Momentum")
                 .font(.title2.bold())
+                .foregroundStyle(AppTheme.textPrimary)
             Text("Streak: \(appState.dashboard.streakDays) day\(appState.dashboard.streakDays == 1 ? "" : "s")")
                 .font(.body.weight(.semibold))
             Text("Sessions: \(appState.dashboard.completedSessions)  ·  Accuracy: \(Int(appState.dashboard.averageAccuracy * 100))%")

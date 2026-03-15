@@ -69,10 +69,10 @@ struct LessonPlanView: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Color.white.opacity(0.84), in: RoundedRectangle(cornerRadius: 16))
+            .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                    .stroke(AppTheme.textSecondary.opacity(0.2), lineWidth: 1)
             )
         }
     }
@@ -117,7 +117,7 @@ struct LessonPlanView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .background(
-                                isSelected ? appState.selectedTheme.primary.opacity(0.22) : Color.white.opacity(0.88),
+                                isSelected ? appState.selectedTheme.primary.opacity(0.22) : AppTheme.card,
                                 in: Capsule()
                             )
                             .overlay(
@@ -137,6 +137,7 @@ struct LessonPlanView: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(lesson.title)
                     .font(.title3.bold())
+                    .foregroundStyle(AppTheme.textPrimary)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
                 Spacer(minLength: 4)
@@ -172,7 +173,7 @@ struct LessonPlanView: View {
                             .font(.caption.bold())
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
-                            .background(Color.white.opacity(0.9), in: Capsule())
+                            .background(AppTheme.card, in: Capsule())
                             .overlay(
                                 Capsule().stroke(appState.selectedTheme.primary.opacity(0.25), lineWidth: 1)
                             )

@@ -111,25 +111,25 @@ enum CompanionPhrases {
 
     private static let correctionPools: [CompanionTone: [String]] = [
         .encouraging: [
-            "Let's learn this together!",
-            "Now you know for next time!",
-            "Every mistake helps you grow!",
-            "This is how we learn!",
-            "You'll get it next time!"
+            "You kept trying and solved it!",
+            "Nice try!",
+            "Almost there!",
+            "You can do it!",
+            "Keep going!"
         ],
         .energetic: [
-            "Ooh, tricky one! Now you know!",
-            "Level up! You learned something new!",
-            "Brain power unlocked!",
-            "Knowledge boost!",
-            "Now that's in your toolkit!"
+            "Not quite! You got this!",
+            "So close! Give it another shot!",
+            "Oops! Try once more!",
+            "Strong effort, nice job!",
+            "Nice math thinking!"
         ],
         .calm: [
-            "Now you've seen the answer.",
-            "Take a moment to remember this.",
-            "Learning takes practice.",
-            "This will click soon.",
-            "A good thing to know."
+            "Not quite. Try again.",
+            "Close. Think it through.",
+            "Let us try once more.",
+            "That was careful math work!",
+            "Good work."
         ]
     ]
 

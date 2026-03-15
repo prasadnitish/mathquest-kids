@@ -1246,7 +1246,7 @@ struct ShapeClassificationInteraction: View {
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: shapeSymbol).font(.system(size: 80)).foregroundStyle(AppTheme.primary.opacity(0.7)).frame(height: 120)
-            HStack(spacing: 8) {
+            VStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { opt in
                     ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
                 }
@@ -1586,7 +1586,7 @@ struct ChoiceButton: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 10)
-                .background(isSelected ? AppTheme.primary.opacity(0.24) : Color.white)
+                .background(isSelected ? AppTheme.primary.opacity(0.24) : AppTheme.card)
                 .foregroundStyle(AppTheme.textPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(

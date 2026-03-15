@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum VisualTheme: String, CaseIterable, Identifiable {
     case candyland
@@ -170,11 +171,29 @@ enum VisualTheme: String, CaseIterable, Identifiable {
 }
 
 enum AppTheme {
-    static var card: Color { Color.white.opacity(0.96) }
+    static var card: Color {
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 0.16, alpha: 0.96)
+                : UIColor(white: 1.0, alpha: 0.96)
+        })
+    }
     static var primary: Color { VisualTheme.loadPersisted().primary }
     static var accent: Color { VisualTheme.loadPersisted().accent }
     static var onPrimaryText: Color { VisualTheme.loadPersisted().onPrimaryText }
     static let error = Color(red: 0.75, green: 0.23, blue: 0.20)
-    static let textPrimary = Color(red: 0.08, green: 0.12, blue: 0.15)
-    static let textSecondary = Color(red: 0.28, green: 0.32, blue: 0.37)
+    static var textPrimary: Color {
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 0.93, alpha: 1.0)
+                : UIColor(red: 0.08, green: 0.12, blue: 0.15, alpha: 1.0)
+        })
+    }
+    static var textSecondary: Color {
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 0.65, alpha: 1.0)
+                : UIColor(red: 0.28, green: 0.32, blue: 0.37, alpha: 1.0)
+        })
+    }
 }
