@@ -87,8 +87,7 @@ final class AppState: ObservableObject {
         let diagnostics = diagnostics ?? DiagnosticsLogger.shared
 
         selectedTheme = VisualTheme.loadPersisted()
-        selectedCompanionID = UserDefaults.standard.string(forKey: "mathquest.selectedCompanion.\(VisualTheme.loadPersisted().rawValue)")
-            ?? CharacterPackLibrary.defaultCompanion(for: VisualTheme.loadPersisted()).id
+        selectedCompanionID = "" // placeholder — set after services are ready (line 142)
         autoReadQuestions = isUITest ? false : (UserDefaults.standard.object(forKey: "mathquest.autoReadQuestions") as? Bool ?? true)
         narrationStyle = NarrationStyle(rawValue: UserDefaults.standard.string(forKey: "mathquest.narrationStyle") ?? "") ?? .playful
         soundEffectsEnabled = isUITest ? false : (UserDefaults.standard.object(forKey: "mathquest.soundEffectsEnabled") as? Bool ?? true)
@@ -439,7 +438,8 @@ final class AppState: ObservableObject {
         runtime.acknowledgeCorrection()
 
         if runtime.isComplete {
-            finishSession(runtime, lastItem: runtime.items.last!, lastCorrect: false)
+            guard let lastItem = runtime.items.last else { return }
+            finishSession(runtime, lastItem: lastItem, lastCorrect: false)
         } else {
             currentSession = runtime
         }
@@ -523,6 +523,8 @@ final class AppState: ObservableObject {
                 if !narrationService.isSpeaking { break }
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
             }
+            // Abort if audio is still playing after timeout (avoid overlap)
+            guard !narrationService.isSpeaking else { return }
             // Short pause so the child can see the new question before audio starts
             try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
             replayPrompt()

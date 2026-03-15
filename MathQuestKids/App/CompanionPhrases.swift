@@ -131,6 +131,6 @@ enum CompanionPhrases {
     // MARK: - Helper
 
     private static func pool(for tone: CompanionTone, from pools: [CompanionTone: [String]]) -> [String] {
-        pools[tone] ?? pools[.encouraging]!
+        pools[tone] ?? pools[.encouraging] ?? pools.values.first ?? [""]
     }
 }

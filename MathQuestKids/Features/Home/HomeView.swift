@@ -27,6 +27,7 @@ struct HomeView: View {
                     .padding(.vertical, 8)
                     .background(.ultraThinMaterial, in: Capsule())
                     .padding(.top, 8)
+                    .accessibilityAddTraits(.updatesFrequently)
             }
         }
     }

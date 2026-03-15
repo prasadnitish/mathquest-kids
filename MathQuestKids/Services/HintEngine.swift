@@ -19,7 +19,7 @@ struct DeterministicHintEngine: HintEngine {
         let template = hintsBySkill[context.skillID]
 
         switch context.incorrectAttempts {
-        case ..<1:
+        case 0:
             return .showConcreteSupport(text: concreteHint(for: context) ?? template?.concrete ?? "Use a visual helper to think it through.")
         case 1:
             return .strategyPrompt(text: strategyHint(for: context) ?? template?.strategy ?? "Try the strategy step by step.")

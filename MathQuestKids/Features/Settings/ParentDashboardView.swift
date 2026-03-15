@@ -25,7 +25,7 @@ struct ParentDashboardView: View {
     }
 
     private var totalSessions: Int {
-        report.recentActivity.count
+        appState.dashboard.completedSessions
     }
 
     // MARK: - Body
@@ -153,6 +153,8 @@ struct ParentDashboardView: View {
         .padding(.vertical, 14)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
         .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label): \(value)")
     }
 
     // MARK: - Weak Spots Section

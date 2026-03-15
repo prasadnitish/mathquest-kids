@@ -146,6 +146,7 @@ final class NarrationService {
             audioPlayer?.play()
             return true
         } catch {
+            print("[NarrationService] AVAudioPlayer init failed for id: \(error.localizedDescription)")
             return false
         }
     }

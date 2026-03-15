@@ -128,6 +128,8 @@ struct SessionView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke((feedbackTone == .positive ? appState.selectedTheme.accent : appState.selectedTheme.primary).opacity(0.28), lineWidth: 1)
                     )
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.updatesFrequently)
                 }
 
                 // Read Aloud stays with the question
