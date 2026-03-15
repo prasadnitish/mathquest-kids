@@ -73,7 +73,9 @@ struct DeterministicHintEngine: HintEngine {
         case .kCountObjects:
             return "Count each object one by one and point to each as you count."
         case .kComposeDecompose:
-            return "Use a ten frame. Fill some spots and see how many are left empty."
+            let knownPart = context.payload.right ?? context.payload.left ?? 0
+            let whole = Int(context.payload.target ?? 10)
+            return "Use a ten frame. Fill \(knownPart) spots out of \(whole) and count how many are empty."
         case .kAddWithin5:
             let start = context.payload.minuend ?? 0
             let takeAway = context.payload.subtrahend ?? 0
@@ -297,8 +299,10 @@ struct DeterministicHintEngine: HintEngine {
         case .kCountObjects:
             return "Count each object one by one. The last number you say is the answer."
         case .kComposeDecompose:
-            let part = context.payload.subtrahend ?? 0
-            return "You need \(10 - part) more to make 10. So the missing part is \(10 - part)."
+            let knownPart = context.payload.right ?? context.payload.left ?? context.payload.subtrahend ?? 0
+            let whole = Int(context.payload.target ?? 10)
+            let missing = whole - knownPart
+            return "\(knownPart) and \(missing) make \(whole). So the missing part is \(missing)."
         case .kAddWithin5:
             let a = context.payload.minuend ?? 0
             let b = context.payload.subtrahend ?? 0

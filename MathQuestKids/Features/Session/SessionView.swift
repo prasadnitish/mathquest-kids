@@ -55,6 +55,7 @@ struct SessionView: View {
 
             topBar(runtime: runtime, progress: progress)
 
+            // Question card: prompt + Read Aloud
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 8) {
                     Text(item.unit.title)
@@ -129,23 +130,14 @@ struct SessionView: View {
                     )
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) {
-                        sessionActionButtons(item: item)
-                    }
-                    VStack(spacing: 8) {
-                        HStack(spacing: 12) {
-                            hintButton
-                            readAloudButton
-                        }
-                        submitButton(item: item)
-                    }
-                }
+                // Read Aloud stays with the question
+                readAloudButton
             }
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
 
+            // Options / manipulative area
             if runtime.pendingCorrection {
                 correctionOverlay(item: item)
             } else {
@@ -153,6 +145,13 @@ struct SessionView: View {
                     .disabled(choicesDisabledTemporarily)
                     .opacity(choicesDisabledTemporarily ? 0.6 : 1.0)
             }
+
+            // Hint + Submit below options
+            HStack(spacing: 12) {
+                hintButton
+                submitButton(item: item)
+            }
+            .padding(.horizontal, 4)
 
             Spacer(minLength: 0)
         }

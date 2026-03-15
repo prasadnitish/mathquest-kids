@@ -111,23 +111,18 @@ enum CompanionPhrases {
 
     private static let correctionPools: [CompanionTone: [String]] = [
         .encouraging: [
-            "You kept trying and solved it!",
             "Nice try!",
             "Almost there!",
             "You can do it!",
             "Keep going!"
         ],
         .energetic: [
-            "Not quite! You got this!",
-            "So close! Give it another shot!",
-            "Oops! Try once more!",
+            "Nice math thinking!",
             "Strong effort, nice job!",
-            "Nice math thinking!"
+            "Not quite! You got this!"
         ],
         .calm: [
-            "Not quite. Try again.",
             "Close. Think it through.",
-            "Let us try once more.",
             "That was careful math work!",
             "Good work."
         ]
