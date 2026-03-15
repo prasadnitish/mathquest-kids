@@ -9,7 +9,7 @@ import urllib.request
 import urllib.error
 
 # ── Config ──────────────────────────────────────────────────────────────────
-ELEVENLABS_API_KEY = "***REMOVED***"
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
 VOICE_ID = "tapn1QwocNXk3viVSowa"  # Sparkles for Kids
 MODEL_ID = "eleven_turbo_v2_5"
 VOICE_SETTINGS = {
