@@ -1339,291 +1339,81 @@
   "fact-030": "questions/fact-030.mp3",
   "fact-04": "questions/fact-04.mp3",
   "fact-05": "questions/fact-05.mp3",
-  "fas-001": {
-    "file": "questions/fas-001.mp3",
-    "text": "5/6 + 1/6 = ?"
-  },
-  "fas-002": {
-    "file": "questions/fas-002.mp3",
-    "text": "3/5 + 2/5 = ?"
-  },
-  "fas-003": {
-    "file": "questions/fas-003.mp3",
-    "text": "4/6 + 2/6 = ?"
-  },
-  "fas-004": {
-    "file": "questions/fas-004.mp3",
-    "text": "5/8 + 1/8 = ?"
-  },
-  "fas-005": {
-    "file": "questions/fas-005.mp3",
-    "text": "6/8 + 2/8 = ?"
-  },
-  "fas-006": {
-    "file": "questions/fas-006.mp3",
-    "text": "2/3 + 1/3 = ?"
-  },
-  "fas-007": {
-    "file": "questions/fas-007.mp3",
-    "text": "6/7 + 1/7 = ?"
-  },
-  "fas-008": {
-    "file": "questions/fas-008.mp3",
-    "text": "3/5 + 1/5 = ?"
-  },
-  "fas-009": {
-    "file": "questions/fas-009.mp3",
-    "text": "1/5 + 2/5 = ?"
-  },
-  "fas-010": {
-    "file": "questions/fas-010.mp3",
-    "text": "3/4 + 1/4 = ?"
-  },
-  "fas-011": {
-    "file": "questions/fas-011.mp3",
-    "text": "4/5 + 1/5 = ?"
-  },
-  "fas-012": {
-    "file": "questions/fas-012.mp3",
-    "text": "3/7 + 1/7 = ?"
-  },
-  "fas-013": {
-    "file": "questions/fas-013.mp3",
-    "text": "2/4 + 2/4 = ?"
-  },
-  "fas-014": {
-    "file": "questions/fas-014.mp3",
-    "text": "1/4 + 1/4 = ?"
-  },
-  "fas-015": {
-    "file": "questions/fas-015.mp3",
-    "text": "1/4 + 2/4 = ?"
-  },
-  "fas-016": {
-    "file": "questions/fas-016.mp3",
-    "text": "1/3 + 2/3 = ?"
-  },
-  "fas-017": {
-    "file": "questions/fas-017.mp3",
-    "text": "2/7 + 5/7 = ?"
-  },
-  "fas-018": {
-    "file": "questions/fas-018.mp3",
-    "text": "2/6 + 2/6 = ?"
-  },
-  "fas-019": {
-    "file": "questions/fas-019.mp3",
-    "text": "4/8 + 1/8 = ?"
-  },
-  "fas-020": {
-    "file": "questions/fas-020.mp3",
-    "text": "3/6 + 3/6 = ?"
-  },
-  "fas-021": {
-    "file": "questions/fas-021.mp3",
-    "text": "3/8 - 2/8 = ?"
-  },
-  "fas-022": {
-    "file": "questions/fas-022.mp3",
-    "text": "4/7 - 3/7 = ?"
-  },
-  "fas-023": {
-    "file": "questions/fas-023.mp3",
-    "text": "3/6 - 1/6 = ?"
-  },
-  "fas-024": {
-    "file": "questions/fas-024.mp3",
-    "text": "3/5 - 1/5 = ?"
-  },
-  "fas-025": {
-    "file": "questions/fas-025.mp3",
-    "text": "4/5 - 3/5 = ?"
-  },
-  "fas-026": {
-    "file": "questions/fas-026.mp3",
-    "text": "5/6 - 3/6 = ?"
-  },
-  "fas-027": {
-    "file": "questions/fas-027.mp3",
-    "text": "5/6 - 2/6 = ?"
-  },
-  "fas-028": {
-    "file": "questions/fas-028.mp3",
-    "text": "2/4 - 1/4 = ?"
-  },
-  "fas-029": {
-    "file": "questions/fas-029.mp3",
-    "text": "2/3 - 1/3 = ?"
-  },
-  "fas-030": {
-    "file": "questions/fas-030.mp3",
-    "text": "2/7 - 1/7 = ?"
-  },
-  "fas-031": {
-    "file": "questions/fas-031.mp3",
-    "text": "2/5 - 1/5 = ?"
-  },
-  "fas-032": {
-    "file": "questions/fas-032.mp3",
-    "text": "2/6 - 1/6 = ?"
-  },
-  "fas-033": {
-    "file": "questions/fas-033.mp3",
-    "text": "4/6 - 1/6 = ?"
-  },
-  "fas-034": {
-    "file": "questions/fas-034.mp3",
-    "text": "4/7 - 1/7 = ?"
-  },
-  "fas-035": {
-    "file": "questions/fas-035.mp3",
-    "text": "3/6 - 2/6 = ?"
-  },
+  "fas-001": "questions/fas-001.mp3",
+  "fas-002": "questions/fas-002.mp3",
+  "fas-003": "questions/fas-003.mp3",
+  "fas-004": "questions/fas-004.mp3",
+  "fas-005": "questions/fas-005.mp3",
+  "fas-006": "questions/fas-006.mp3",
+  "fas-007": "questions/fas-007.mp3",
+  "fas-008": "questions/fas-008.mp3",
+  "fas-009": "questions/fas-009.mp3",
+  "fas-010": "questions/fas-010.mp3",
+  "fas-011": "questions/fas-011.mp3",
+  "fas-012": "questions/fas-012.mp3",
+  "fas-013": "questions/fas-013.mp3",
+  "fas-014": "questions/fas-014.mp3",
+  "fas-015": "questions/fas-015.mp3",
+  "fas-016": "questions/fas-016.mp3",
+  "fas-017": "questions/fas-017.mp3",
+  "fas-018": "questions/fas-018.mp3",
+  "fas-019": "questions/fas-019.mp3",
+  "fas-020": "questions/fas-020.mp3",
+  "fas-021": "questions/fas-021.mp3",
+  "fas-022": "questions/fas-022.mp3",
+  "fas-023": "questions/fas-023.mp3",
+  "fas-024": "questions/fas-024.mp3",
+  "fas-025": "questions/fas-025.mp3",
+  "fas-026": "questions/fas-026.mp3",
+  "fas-027": "questions/fas-027.mp3",
+  "fas-028": "questions/fas-028.mp3",
+  "fas-029": "questions/fas-029.mp3",
+  "fas-030": "questions/fas-030.mp3",
+  "fas-031": "questions/fas-031.mp3",
+  "fas-032": "questions/fas-032.mp3",
+  "fas-033": "questions/fas-033.mp3",
+  "fas-034": "questions/fas-034.mp3",
+  "fas-035": "questions/fas-035.mp3",
   "fas-036": "questions/fas-036.mp3",
   "fas-037": "questions/fas-037.mp3",
   "fas-038": "questions/fas-038.mp3",
   "fas-039": "questions/fas-039.mp3",
   "fas-040": "questions/fas-040.mp3",
-  "fau-001": {
-    "file": "questions/fau-001.mp3",
-    "text": "1/6 + 4/8 = ?"
-  },
-  "fau-002": {
-    "file": "questions/fau-002.mp3",
-    "text": "2/4 + 1/2 = ?"
-  },
-  "fau-003": {
-    "file": "questions/fau-003.mp3",
-    "text": "2/6 + 1/4 = ?"
-  },
-  "fau-004": {
-    "file": "questions/fau-004.mp3",
-    "text": "2/4 + 2/6 = ?"
-  },
-  "fau-005": {
-    "file": "questions/fau-005.mp3",
-    "text": "1/3 + 1/2 = ?"
-  },
-  "fau-006": {
-    "file": "questions/fau-006.mp3",
-    "text": "3/6 + 1/5 = ?"
-  },
-  "fau-007": {
-    "file": "questions/fau-007.mp3",
-    "text": "1/2 + 1/4 = ?"
-  },
-  "fau-008": {
-    "file": "questions/fau-008.mp3",
-    "text": "2/5 + 2/4 = ?"
-  },
-  "fau-009": {
-    "file": "questions/fau-009.mp3",
-    "text": "3/8 + 3/5 = ?"
-  },
-  "fau-010": {
-    "file": "questions/fau-010.mp3",
-    "text": "1/4 + 1/2 = ?"
-  },
-  "fau-011": {
-    "file": "questions/fau-011.mp3",
-    "text": "3/8 + 2/4 = ?"
-  },
-  "fau-012": {
-    "file": "questions/fau-012.mp3",
-    "text": "1/4 + 3/5 = ?"
-  },
-  "fau-013": {
-    "file": "questions/fau-013.mp3",
-    "text": "1/2 + 2/5 = ?"
-  },
-  "fau-014": {
-    "file": "questions/fau-014.mp3",
-    "text": "1/2 + 1/3 = ?"
-  },
-  "fau-015": {
-    "file": "questions/fau-015.mp3",
-    "text": "3/4 + 1/5 = ?"
-  },
-  "fau-016": {
-    "file": "questions/fau-016.mp3",
-    "text": "1/4 + 2/5 = ?"
-  },
-  "fau-017": {
-    "file": "questions/fau-017.mp3",
-    "text": "2/8 + 1/4 = ?"
-  },
-  "fau-018": {
-    "file": "questions/fau-018.mp3",
-    "text": "3/6 + 1/2 = ?"
-  },
-  "fau-019": {
-    "file": "questions/fau-019.mp3",
-    "text": "2/8 + 3/5 = ?"
-  },
-  "fau-020": {
-    "file": "questions/fau-020.mp3",
-    "text": "2/8 + 1/5 = ?"
-  },
-  "fau-021": {
-    "file": "questions/fau-021.mp3",
-    "text": "2/3 - 1/2 = ?"
-  },
-  "fau-022": {
-    "file": "questions/fau-022.mp3",
-    "text": "6/8 - 1/4 = ?"
-  },
-  "fau-023": {
-    "file": "questions/fau-023.mp3",
-    "text": "3/6 - 3/8 = ?"
-  },
-  "fau-024": {
-    "file": "questions/fau-024.mp3",
-    "text": "2/3 - 5/8 = ?"
-  },
-  "fau-025": {
-    "file": "questions/fau-025.mp3",
-    "text": "5/6 - 1/3 = ?"
-  },
-  "fau-026": {
-    "file": "questions/fau-026.mp3",
-    "text": "3/8 - 2/6 = ?"
-  },
-  "fau-027": {
-    "file": "questions/fau-027.mp3",
-    "text": "1/3 - 1/5 = ?"
-  },
-  "fau-028": {
-    "file": "questions/fau-028.mp3",
-    "text": "3/6 - 1/3 = ?"
-  },
-  "fau-029": {
-    "file": "questions/fau-029.mp3",
-    "text": "2/3 - 2/6 = ?"
-  },
-  "fau-030": {
-    "file": "questions/fau-030.mp3",
-    "text": "1/2 - 2/6 = ?"
-  },
-  "fau-031": {
-    "file": "questions/fau-031.mp3",
-    "text": "5/6 - 1/5 = ?"
-  },
-  "fau-032": {
-    "file": "questions/fau-032.mp3",
-    "text": "3/5 - 3/6 = ?"
-  },
-  "fau-033": {
-    "file": "questions/fau-033.mp3",
-    "text": "4/5 - 2/3 = ?"
-  },
-  "fau-034": {
-    "file": "questions/fau-034.mp3",
-    "text": "4/5 - 4/8 = ?"
-  },
-  "fau-035": {
-    "file": "questions/fau-035.mp3",
-    "text": "6/8 - 2/4 = ?"
-  },
+  "fau-001": "questions/fau-001.mp3",
+  "fau-002": "questions/fau-002.mp3",
+  "fau-003": "questions/fau-003.mp3",
+  "fau-004": "questions/fau-004.mp3",
+  "fau-005": "questions/fau-005.mp3",
+  "fau-006": "questions/fau-006.mp3",
+  "fau-007": "questions/fau-007.mp3",
+  "fau-008": "questions/fau-008.mp3",
+  "fau-009": "questions/fau-009.mp3",
+  "fau-010": "questions/fau-010.mp3",
+  "fau-011": "questions/fau-011.mp3",
+  "fau-012": "questions/fau-012.mp3",
+  "fau-013": "questions/fau-013.mp3",
+  "fau-014": "questions/fau-014.mp3",
+  "fau-015": "questions/fau-015.mp3",
+  "fau-016": "questions/fau-016.mp3",
+  "fau-017": "questions/fau-017.mp3",
+  "fau-018": "questions/fau-018.mp3",
+  "fau-019": "questions/fau-019.mp3",
+  "fau-020": "questions/fau-020.mp3",
+  "fau-021": "questions/fau-021.mp3",
+  "fau-022": "questions/fau-022.mp3",
+  "fau-023": "questions/fau-023.mp3",
+  "fau-024": "questions/fau-024.mp3",
+  "fau-025": "questions/fau-025.mp3",
+  "fau-026": "questions/fau-026.mp3",
+  "fau-027": "questions/fau-027.mp3",
+  "fau-028": "questions/fau-028.mp3",
+  "fau-029": "questions/fau-029.mp3",
+  "fau-030": "questions/fau-030.mp3",
+  "fau-031": "questions/fau-031.mp3",
+  "fau-032": "questions/fau-032.mp3",
+  "fau-033": "questions/fau-033.mp3",
+  "fau-034": "questions/fau-034.mp3",
+  "fau-035": "questions/fau-035.mp3",
   "fau-036": "questions/fau-036.mp3",
   "fau-037": "questions/fau-037.mp3",
   "fau-038": "questions/fau-038.mp3",
@@ -2070,126 +1860,36 @@
   "frau-033": "questions/frau-033.mp3",
   "frau-034": "questions/frau-034.mp3",
   "frau-035": "questions/frau-035.mp3",
-  "frc-001": {
-    "file": "questions/frc-001.mp3",
-    "text": "Which is greater: 4/7 or 1/7?"
-  },
-  "frc-002": {
-    "file": "questions/frc-002.mp3",
-    "text": "Which is greater: 2/7 or 3/7?"
-  },
-  "frc-003": {
-    "file": "questions/frc-003.mp3",
-    "text": "Which is greater: 7/8 or 6/8?"
-  },
-  "frc-004": {
-    "file": "questions/frc-004.mp3",
-    "text": "Which is greater: 2/6 or 4/6?"
-  },
-  "frc-005": {
-    "file": "questions/frc-005.mp3",
-    "text": "Which is greater: 5/6 or 3/6?"
-  },
-  "frc-006": {
-    "file": "questions/frc-006.mp3",
-    "text": "Which is greater: 1/5 or 4/5?"
-  },
-  "frc-007": {
-    "file": "questions/frc-007.mp3",
-    "text": "Which is greater: 3/7 or 6/7?"
-  },
-  "frc-008": {
-    "file": "questions/frc-008.mp3",
-    "text": "Which is greater: 3/5 or 4/5?"
-  },
-  "frc-009": {
-    "file": "questions/frc-009.mp3",
-    "text": "Which is greater: 7/8 or 2/8?"
-  },
-  "frc-010": {
-    "file": "questions/frc-010.mp3",
-    "text": "Which is greater: 4/5 or 3/5?"
-  },
-  "frc-011": {
-    "file": "questions/frc-011.mp3",
-    "text": "Which is greater: 1/7 or 2/7?"
-  },
-  "frc-012": {
-    "file": "questions/frc-012.mp3",
-    "text": "Which is greater: 2/4 or 3/4?"
-  },
-  "frc-013": {
-    "file": "questions/frc-013.mp3",
-    "text": "Which is greater: 7/8 or 5/8?"
-  },
-  "frc-014": {
-    "file": "questions/frc-014.mp3",
-    "text": "Which is greater: 5/7 or 4/7?"
-  },
-  "frc-015": {
-    "file": "questions/frc-015.mp3",
-    "text": "Which is greater: 1/5 or 2/5?"
-  },
-  "frc-016": {
-    "file": "questions/frc-016.mp3",
-    "text": "Which is greater: 3/6 or 5/6?"
-  },
-  "frc-017": {
-    "file": "questions/frc-017.mp3",
-    "text": "Which is greater: 4/8 or 6/8?"
-  },
-  "frc-018": {
-    "file": "questions/frc-018.mp3",
-    "text": "Which is greater: 3/4 or 1/4?"
-  },
-  "frc-019": {
-    "file": "questions/frc-019.mp3",
-    "text": "Which is greater: 5/7 or 2/7?"
-  },
-  "frc-020": {
-    "file": "questions/frc-020.mp3",
-    "text": "Which is greater: 1/6 or 5/6?"
-  },
-  "frc-021": {
-    "file": "questions/frc-021.mp3",
-    "text": "Which is greater: 1/8 or 4/8?"
-  },
-  "frc-022": {
-    "file": "questions/frc-022.mp3",
-    "text": "Which is greater: 3/7 or 5/7?"
-  },
-  "frc-023": {
-    "file": "questions/frc-023.mp3",
-    "text": "Which is greater: 3/7 or 4/7?"
-  },
-  "frc-024": {
-    "file": "questions/frc-024.mp3",
-    "text": "Which is greater: 2/3 or 1/3?"
-  },
-  "frc-025": {
-    "file": "questions/frc-025.mp3",
-    "text": "Which is greater: 1/8 or 3/8?"
-  },
-  "frc-026": {
-    "file": "questions/frc-026.mp3",
-    "text": "Which is greater: 4/6 or 2/6?"
-  },
-  "frc-027": {
-    "file": "questions/frc-027.mp3",
-    "text": "Which is greater: 2/8 or 6/8?"
-  },
-  "frc-028": {
-    "file": "questions/frc-028.mp3",
-    "text": "Which is greater: 7/8 or 4/8?"
-  },
-  "frc-029": {
-    "file": "questions/frc-029.mp3",
-    "text": "Which is greater: 6/7 or 2/7?"
-  },
-  "frc-030": {
-    "file": "questions/frc-030.mp3",
-    "text": "Which is greater: 1/8 or 7/8?"
-  },
+  "frc-001": "questions/frc-001.mp3",
+  "frc-002": "questions/frc-002.mp3",
+  "frc-003": "questions/frc-003.mp3",
+  "frc-004": "questions/frc-004.mp3",
+  "frc-005": "questions/frc-005.mp3",
+  "frc-006": "questions/frc-006.mp3",
+  "frc-007": "questions/frc-007.mp3",
+  "frc-008": "questions/frc-008.mp3",
+  "frc-009": "questions/frc-009.mp3",
+  "frc-010": "questions/frc-010.mp3",
+  "frc-011": "questions/frc-011.mp3",
+  "frc-012": "questions/frc-012.mp3",
+  "frc-013": "questions/frc-013.mp3",
+  "frc-014": "questions/frc-014.mp3",
+  "frc-015": "questions/frc-015.mp3",
+  "frc-016": "questions/frc-016.mp3",
+  "frc-017": "questions/frc-017.mp3",
+  "frc-018": "questions/frc-018.mp3",
+  "frc-019": "questions/frc-019.mp3",
+  "frc-020": "questions/frc-020.mp3",
+  "frc-021": "questions/frc-021.mp3",
+  "frc-022": "questions/frc-022.mp3",
+  "frc-023": "questions/frc-023.mp3",
+  "frc-024": "questions/frc-024.mp3",
+  "frc-025": "questions/frc-025.mp3",
+  "frc-026": "questions/frc-026.mp3",
+  "frc-027": "questions/frc-027.mp3",
+  "frc-028": "questions/frc-028.mp3",
+  "frc-029": "questions/frc-029.mp3",
+  "frc-030": "questions/frc-030.mp3",
   "frc-031": "questions/frcmp-031.mp3",
   "frc-032": "questions/frcmp-032.mp3",
   "frc-033": "questions/frcmp-033.mp3",
@@ -2284,62 +1984,20 @@
   "grp-019": "questions/grp-019.mp3",
   "grp-020": "questions/grp-020.mp3",
   "grp-021": "questions/grp-021.mp3",
-  "grp-022": {
-    "file": "questions/grp-022.mp3",
-    "text": "Group A has 8. Group B has 9. Does Group A have more, fewer, or the same?"
-  },
-  "grp-023": {
-    "file": "questions/grp-023.mp3",
-    "text": "Group A has 5. Group B has 10. Does Group A have more, fewer, or the same?"
-  },
-  "grp-024": {
-    "file": "questions/grp-024.mp3",
-    "text": "Group A has 4. Group B has 2. Does Group A have more, fewer, or the same?"
-  },
-  "grp-025": {
-    "file": "questions/grp-025.mp3",
-    "text": "Group A has 1. Group B has 4. Does Group A have more, fewer, or the same?"
-  },
-  "grp-026": {
-    "file": "questions/grp-026.mp3",
-    "text": "Group A has 5. Group B has 2. Does Group A have more, fewer, or the same?"
-  },
-  "grp-027": {
-    "file": "questions/grp-027.mp3",
-    "text": "Group A has 7. Group B has 5. Does Group A have more, fewer, or the same?"
-  },
-  "grp-028": {
-    "file": "questions/grp-028.mp3",
-    "text": "Group A has 8. Group B has 6. Does Group A have more, fewer, or the same?"
-  },
-  "grp-029": {
-    "file": "questions/grp-029.mp3",
-    "text": "Group A has 3. Group B has 6. Does Group A have more, fewer, or the same?"
-  },
-  "grp-030": {
-    "file": "questions/grp-030.mp3",
-    "text": "Group A has 6. Group B has 4. Does Group A have more, fewer, or the same?"
-  },
-  "grp-031": {
-    "file": "questions/grp-031.mp3",
-    "text": "Group A has 10. Group B has 3. Does Group A have more, fewer, or the same?"
-  },
-  "grp-032": {
-    "file": "questions/grp-032.mp3",
-    "text": "Group A has 9. Group B has 4. Does Group A have more, fewer, or the same?"
-  },
-  "grp-033": {
-    "file": "questions/grp-033.mp3",
-    "text": "Group A has 3. Group B has 8. Does Group A have more, fewer, or the same?"
-  },
-  "grp-034": {
-    "file": "questions/grp-034.mp3",
-    "text": "Group A has 6. Group B has 1. Does Group A have more, fewer, or the same?"
-  },
-  "grp-035": {
-    "file": "questions/grp-035.mp3",
-    "text": "Group A has 4. Group B has 1. Does Group A have more, fewer, or the same?"
-  },
+  "grp-022": "questions/grp-022.mp3",
+  "grp-023": "questions/grp-023.mp3",
+  "grp-024": "questions/grp-024.mp3",
+  "grp-025": "questions/grp-025.mp3",
+  "grp-026": "questions/grp-026.mp3",
+  "grp-027": "questions/grp-027.mp3",
+  "grp-028": "questions/grp-028.mp3",
+  "grp-029": "questions/grp-029.mp3",
+  "grp-030": "questions/grp-030.mp3",
+  "grp-031": "questions/grp-031.mp3",
+  "grp-032": "questions/grp-032.mp3",
+  "grp-033": "questions/grp-033.mp3",
+  "grp-034": "questions/grp-034.mp3",
+  "grp-035": "questions/grp-035.mp3",
   "grp-036": "questions/grp-036.mp3",
   "grp-037": "questions/grp-037.mp3",
   "grp-038": "questions/grp-038.mp3",
@@ -2390,126 +2048,36 @@
   "lp-030": "questions/lp-030.mp3",
   "lp-031": "questions/lp-031.mp3",
   "lp-032": "questions/lp-032.mp3",
-  "lpf-001": {
-    "file": "questions/lpf-001.mp3",
-    "text": "How many data points at 1/4?"
-  },
-  "lpf-002": {
-    "file": "questions/lpf-002.mp3",
-    "text": "How many data points at 2/4?"
-  },
-  "lpf-003": {
-    "file": "questions/lpf-003.mp3",
-    "text": "How many data points at 3/4?"
-  },
-  "lpf-004": {
-    "file": "questions/lpf-004.mp3",
-    "text": "How many data points at 1/8?"
-  },
-  "lpf-005": {
-    "file": "questions/lpf-005.mp3",
-    "text": "How many data points at 2/8?"
-  },
-  "lpf-006": {
-    "file": "questions/lpf-006.mp3",
-    "text": "How many data points at 3/8?"
-  },
-  "lpf-007": {
-    "file": "questions/lpf-007.mp3",
-    "text": "How many data points at 4/8?"
-  },
-  "lpf-008": {
-    "file": "questions/lpf-008.mp3",
-    "text": "How many data points at 1/3?"
-  },
-  "lpf-009": {
-    "file": "questions/lpf-009.mp3",
-    "text": "How many data points at 2/3?"
-  },
-  "lpf-010": {
-    "file": "questions/lpf-010.mp3",
-    "text": "How many data points at 1/6?"
-  },
-  "lpf-011": {
-    "file": "questions/lpf-011.mp3",
-    "text": "How many data points at 2/6?"
-  },
-  "lpf-012": {
-    "file": "questions/lpf-012.mp3",
-    "text": "How many data points at 3/6?"
-  },
-  "lpf-013": {
-    "file": "questions/lpf-013.mp3",
-    "text": "How many data points at 4/6?"
-  },
-  "lpf-014": {
-    "file": "questions/lpf-014.mp3",
-    "text": "How many data points at 5/6?"
-  },
-  "lpf-015": {
-    "file": "questions/lpf-015.mp3",
-    "text": "Which fraction has the most data points?"
-  },
-  "lpf-016": {
-    "file": "questions/lpf-016.mp3",
-    "text": "Which fraction has the most data points?"
-  },
-  "lpf-017": {
-    "file": "questions/lpf-017.mp3",
-    "text": "Which fraction has the most data points?"
-  },
-  "lpf-018": {
-    "file": "questions/lpf-018.mp3",
-    "text": "Which fraction has the most data points?"
-  },
-  "lpf-019": {
-    "file": "questions/lpf-019.mp3",
-    "text": "How many data points at 2/4?"
-  },
-  "lpf-020": {
-    "file": "questions/lpf-020.mp3",
-    "text": "How many data points at 4/6?"
-  },
-  "lpf-021": {
-    "file": "questions/lpf-021.mp3",
-    "text": "How many data points at 2/3?"
-  },
-  "lpf-022": {
-    "file": "questions/lpf-022.mp3",
-    "text": "How many data points at 5/6?"
-  },
-  "lpf-023": {
-    "file": "questions/lpf-023.mp3",
-    "text": "How many data points at 2/3?"
-  },
-  "lpf-024": {
-    "file": "questions/lpf-024.mp3",
-    "text": "How many data points at 2/8?"
-  },
-  "lpf-025": {
-    "file": "questions/lpf-025.mp3",
-    "text": "How many data points at 4/8?"
-  },
-  "lpf-026": {
-    "file": "questions/lpf-026.mp3",
-    "text": "How many data points at 2/3?"
-  },
-  "lpf-027": {
-    "file": "questions/lpf-027.mp3",
-    "text": "How many data points at 2/8?"
-  },
-  "lpf-028": {
-    "file": "questions/lpf-028.mp3",
-    "text": "How many data points at 2/3?"
-  },
-  "lpf-029": {
-    "file": "questions/lpf-029.mp3",
-    "text": "How many data points at 4/8?"
-  },
-  "lpf-030": {
-    "file": "questions/lpf-030.mp3",
-    "text": "How many data points at 3/8?"
-  },
+  "lpf-001": "questions/lpf-001.mp3",
+  "lpf-002": "questions/lpf-002.mp3",
+  "lpf-003": "questions/lpf-003.mp3",
+  "lpf-004": "questions/lpf-004.mp3",
+  "lpf-005": "questions/lpf-005.mp3",
+  "lpf-006": "questions/lpf-006.mp3",
+  "lpf-007": "questions/lpf-007.mp3",
+  "lpf-008": "questions/lpf-008.mp3",
+  "lpf-009": "questions/lpf-009.mp3",
+  "lpf-010": "questions/lpf-010.mp3",
+  "lpf-011": "questions/lpf-011.mp3",
+  "lpf-012": "questions/lpf-012.mp3",
+  "lpf-013": "questions/lpf-013.mp3",
+  "lpf-014": "questions/lpf-014.mp3",
+  "lpf-015": "questions/lpf-015.mp3",
+  "lpf-016": "questions/lpf-016.mp3",
+  "lpf-017": "questions/lpf-017.mp3",
+  "lpf-018": "questions/lpf-018.mp3",
+  "lpf-019": "questions/lpf-019.mp3",
+  "lpf-020": "questions/lpf-020.mp3",
+  "lpf-021": "questions/lpf-021.mp3",
+  "lpf-022": "questions/lpf-022.mp3",
+  "lpf-023": "questions/lpf-023.mp3",
+  "lpf-024": "questions/lpf-024.mp3",
+  "lpf-025": "questions/lpf-025.mp3",
+  "lpf-026": "questions/lpf-026.mp3",
+  "lpf-027": "questions/lpf-027.mp3",
+  "lpf-028": "questions/lpf-028.mp3",
+  "lpf-029": "questions/lpf-029.mp3",
+  "lpf-030": "questions/lpf-030.mp3",
   "lpf-031": "questions/lp-031.mp3",
   "lpf-032": "questions/lp-032.mp3",
   "mlen-001": "questions/mlen-001.mp3",
@@ -2547,134 +2115,41 @@
   "mlen-033": "questions/mlen-033.mp3",
   "mlen-034": "questions/mlen-034.mp3",
   "mlen-035": "questions/mlen-035.mp3",
-  "mmd-001": {
-    "file": "questions/mmd-001.mp3",
-    "text": "29 × 9 = ?"
-  },
-  "mmd-002": {
-    "file": "questions/mmd-002.mp3",
-    "text": "38 × 3 = ?"
-  },
-  "mmd-003": {
-    "file": "questions/mmd-003.mp3",
-    "text": "54 × 7 = ?"
-  },
-  "mmd-004": {
-    "file": "questions/mmd-004.mp3",
-    "text": "24 × 6 = ?"
-  },
-  "mmd-005": {
-    "file": "questions/mmd-005.mp3",
-    "text": "83 × 5 = ?"
-  },
-  "mmd-006": {
-    "file": "questions/mmd-006.mp3",
-    "text": "64 × 2 = ?"
-  },
-  "mmd-007": {
-    "file": "questions/mmd-007.mp3",
-    "text": "87 × 6 = ?"
-  },
-  "mmd-008": {
-    "file": "questions/mmd-008.mp3",
-    "text": "13 × 4 = ?"
-  },
-  "mmd-009": {
-    "file": "questions/mmd-009.mp3",
-    "text": "44 × 6 = ?"
-  },
-  "mmd-010": {
-    "file": "questions/mmd-010.mp3",
-    "text": "53 × 7 = ?"
-  },
-  "mmd-011": {
-    "file": "questions/mmd-011.mp3",
-    "text": "10 × 4 = ?"
-  },
-  "mmd-012": {
-    "file": "questions/mmd-012.mp3",
-    "text": "28 × 8 = ?"
-  },
-  "mmd-013": {
-    "file": "questions/mmd-013.mp3",
-    "text": "18 × 4 = ?"
-  },
-  "mmd-014": {
-    "file": "questions/mmd-014.mp3",
-    "text": "91 × 2 = ?"
-  },
-  "mmd-015": {
-    "file": "questions/mmd-015.mp3",
-    "text": "21 × 5 = ?"
-  },
+  "mmd-001": "questions/mmd-001.mp3",
+  "mmd-002": "questions/mmd-002.mp3",
+  "mmd-003": "questions/mmd-003.mp3",
+  "mmd-004": "questions/mmd-004.mp3",
+  "mmd-005": "questions/mmd-005.mp3",
+  "mmd-006": "questions/mmd-006.mp3",
+  "mmd-007": "questions/mmd-007.mp3",
+  "mmd-008": "questions/mmd-008.mp3",
+  "mmd-009": "questions/mmd-009.mp3",
+  "mmd-010": "questions/mmd-010.mp3",
+  "mmd-011": "questions/mmd-011.mp3",
+  "mmd-012": "questions/mmd-012.mp3",
+  "mmd-013": "questions/mmd-013.mp3",
+  "mmd-014": "questions/mmd-014.mp3",
+  "mmd-015": "questions/mmd-015.mp3",
   "mmd-016": "questions/mmd-016.mp3",
   "mmd-017": "questions/mmd-017.mp3",
   "mmd-018": "questions/mmd-018.mp3",
   "mmd-019": "questions/mmd-019.mp3",
-  "mmd-020": {
-    "file": "questions/mmd-020.mp3",
-    "text": "82 × 3 = ?"
-  },
-  "mmd-021": {
-    "file": "questions/mmd-021.mp3",
-    "text": "16 × 4 = ?"
-  },
-  "mmd-022": {
-    "file": "questions/mmd-022.mp3",
-    "text": "30 × 2 = ?"
-  },
-  "mmd-023": {
-    "file": "questions/mmd-023.mp3",
-    "text": "96 × 3 = ?"
-  },
-  "mmd-024": {
-    "file": "questions/mmd-024.mp3",
-    "text": "44 × 9 = ?"
-  },
-  "mmd-025": {
-    "file": "questions/mmd-025.mp3",
-    "text": "94 × 8 = ?"
-  },
-  "mmd-026": {
-    "file": "questions/mmd-026.mp3",
-    "text": "72 × 9 = ?"
-  },
-  "mmd-027": {
-    "file": "questions/mmd-027.mp3",
-    "text": "63 × 6 = ?"
-  },
-  "mmd-028": {
-    "file": "questions/mmd-028.mp3",
-    "text": "37 × 3 = ?"
-  },
-  "mmd-029": {
-    "file": "questions/mmd-029.mp3",
-    "text": "54 × 8 = ?"
-  },
-  "mmd-030": {
-    "file": "questions/mmd-030.mp3",
-    "text": "96 × 9 = ?"
-  },
-  "mmd-031": {
-    "file": "questions/mmd-031.mp3",
-    "text": "77 × 6 = ?"
-  },
-  "mmd-032": {
-    "file": "questions/mmd-032.mp3",
-    "text": "15 × 5 = ?"
-  },
-  "mmd-033": {
-    "file": "questions/mmd-033.mp3",
-    "text": "60 × 2 = ?"
-  },
-  "mmd-034": {
-    "file": "questions/mmd-034.mp3",
-    "text": "10 × 5 = ?"
-  },
-  "mmd-035": {
-    "file": "questions/mmd-035.mp3",
-    "text": "48 × 5 = ?"
-  },
+  "mmd-020": "questions/mmd-020.mp3",
+  "mmd-021": "questions/mmd-021.mp3",
+  "mmd-022": "questions/mmd-022.mp3",
+  "mmd-023": "questions/mmd-023.mp3",
+  "mmd-024": "questions/mmd-024.mp3",
+  "mmd-025": "questions/mmd-025.mp3",
+  "mmd-026": "questions/mmd-026.mp3",
+  "mmd-027": "questions/mmd-027.mp3",
+  "mmd-028": "questions/mmd-028.mp3",
+  "mmd-029": "questions/mmd-029.mp3",
+  "mmd-030": "questions/mmd-030.mp3",
+  "mmd-031": "questions/mmd-031.mp3",
+  "mmd-032": "questions/mmd-032.mp3",
+  "mmd-033": "questions/mmd-033.mp3",
+  "mmd-034": "questions/mmd-034.mp3",
+  "mmd-035": "questions/mmd-035.mp3",
   "mmd-036": "questions/mmd-036.mp3",
   "mmd-037": "questions/mmd-037.mp3",
   "mmd-038": "questions/mmd-038.mp3",
@@ -2715,251 +2190,71 @@
   "mmult-033": "questions/mmult-033.mp3",
   "mmult-034": "questions/mmult-034.mp3",
   "mmult-035": "questions/mmult-035.mp3",
-  "msr-001": {
-    "file": "questions/msr-001.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-002": {
-    "file": "questions/msr-002.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-003": {
-    "file": "questions/msr-003.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-004": {
-    "file": "questions/msr-004.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-005": {
-    "file": "questions/msr-005.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-006": {
-    "file": "questions/msr-006.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-007": {
-    "file": "questions/msr-007.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-008": {
-    "file": "questions/msr-008.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-009": {
-    "file": "questions/msr-009.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-010": {
-    "file": "questions/msr-010.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-011": {
-    "file": "questions/msr-011.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-012": {
-    "file": "questions/msr-012.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-013": {
-    "file": "questions/msr-013.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-014": {
-    "file": "questions/msr-014.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-015": {
-    "file": "questions/msr-015.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-016": {
-    "file": "questions/msr-016.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-017": {
-    "file": "questions/msr-017.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-018": {
-    "file": "questions/msr-018.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-019": {
-    "file": "questions/msr-019.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-020": {
-    "file": "questions/msr-020.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-021": {
-    "file": "questions/msr-021.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-022": {
-    "file": "questions/msr-022.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-023": {
-    "file": "questions/msr-023.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-024": {
-    "file": "questions/msr-024.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-025": {
-    "file": "questions/msr-025.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-026": {
-    "file": "questions/msr-026.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-027": {
-    "file": "questions/msr-027.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-028": {
-    "file": "questions/msr-028.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-029": {
-    "file": "questions/msr-029.mp3",
-    "text": "How many units long is this object?"
-  },
-  "msr-030": {
-    "file": "questions/msr-030.mp3",
-    "text": "How many units long is this object?"
-  },
+  "msr-001": "questions/msr-001.mp3",
+  "msr-002": "questions/msr-002.mp3",
+  "msr-003": "questions/msr-003.mp3",
+  "msr-004": "questions/msr-004.mp3",
+  "msr-005": "questions/msr-005.mp3",
+  "msr-006": "questions/msr-006.mp3",
+  "msr-007": "questions/msr-007.mp3",
+  "msr-008": "questions/msr-008.mp3",
+  "msr-009": "questions/msr-009.mp3",
+  "msr-010": "questions/msr-010.mp3",
+  "msr-011": "questions/msr-011.mp3",
+  "msr-012": "questions/msr-012.mp3",
+  "msr-013": "questions/msr-013.mp3",
+  "msr-014": "questions/msr-014.mp3",
+  "msr-015": "questions/msr-015.mp3",
+  "msr-016": "questions/msr-016.mp3",
+  "msr-017": "questions/msr-017.mp3",
+  "msr-018": "questions/msr-018.mp3",
+  "msr-019": "questions/msr-019.mp3",
+  "msr-020": "questions/msr-020.mp3",
+  "msr-021": "questions/msr-021.mp3",
+  "msr-022": "questions/msr-022.mp3",
+  "msr-023": "questions/msr-023.mp3",
+  "msr-024": "questions/msr-024.mp3",
+  "msr-025": "questions/msr-025.mp3",
+  "msr-026": "questions/msr-026.mp3",
+  "msr-027": "questions/msr-027.mp3",
+  "msr-028": "questions/msr-028.mp3",
+  "msr-029": "questions/msr-029.mp3",
+  "msr-030": "questions/msr-030.mp3",
   "msr-031": "questions/mlen-031.mp3",
   "msr-032": "questions/mlen-032.mp3",
   "msr-033": "questions/mlen-033.mp3",
   "msr-034": "questions/mlen-034.mp3",
   "msr-035": "questions/mlen-035.mp3",
-  "mst-001": {
-    "file": "questions/mst-001.mp3",
-    "text": "Sam has 24 apples. He gets 17 more. Then gives away 15. How many now?"
-  },
-  "mst-002": {
-    "file": "questions/mst-002.mp3",
-    "text": "Sam has 45 apples. He gets 16 more. Then gives away 4. How many now?"
-  },
-  "mst-003": {
-    "file": "questions/mst-003.mp3",
-    "text": "Sam has 35 apples. He gets 5 more. Then gives away 7. How many now?"
-  },
-  "mst-004": {
-    "file": "questions/mst-004.mp3",
-    "text": "Sam has 44 apples. He gets 8 more. Then gives away 10. How many now?"
-  },
-  "mst-005": {
-    "file": "questions/mst-005.mp3",
-    "text": "Sam has 33 apples. He gets 13 more. Then gives away 12. How many now?"
-  },
-  "mst-006": {
-    "file": "questions/mst-006.mp3",
-    "text": "Sam has 34 apples. He gets 16 more. Then gives away 4. How many now?"
-  },
-  "mst-007": {
-    "file": "questions/mst-007.mp3",
-    "text": "Sam has 24 apples. He gets 20 more. Then gives away 3. How many now?"
-  },
-  "mst-008": {
-    "file": "questions/mst-008.mp3",
-    "text": "Sam has 49 apples. He gets 15 more. Then gives away 12. How many now?"
-  },
-  "mst-009": {
-    "file": "questions/mst-009.mp3",
-    "text": "Sam has 24 apples. He gets 7 more. Then gives away 13. How many now?"
-  },
-  "mst-010": {
-    "file": "questions/mst-010.mp3",
-    "text": "Sam has 39 apples. He gets 14 more. Then gives away 13. How many now?"
-  },
-  "mst-011": {
-    "file": "questions/mst-011.mp3",
-    "text": "Sam has 36 apples. He gets 8 more. Then gives away 5. How many now?"
-  },
-  "mst-012": {
-    "file": "questions/mst-012.mp3",
-    "text": "Sam has 12 apples. He gets 6 more. Then gives away 7. How many now?"
-  },
-  "mst-013": {
-    "file": "questions/mst-013.mp3",
-    "text": "Sam has 41 apples. He gets 8 more. Then gives away 4. How many now?"
-  },
-  "mst-014": {
-    "file": "questions/mst-014.mp3",
-    "text": "Sam has 25 apples. He gets 9 more. Then gives away 9. How many now?"
-  },
-  "mst-015": {
-    "file": "questions/mst-015.mp3",
-    "text": "Sam has 39 apples. He gets 16 more. Then gives away 13. How many now?"
-  },
-  "mst-016": {
-    "file": "questions/mst-016.mp3",
-    "text": "Sam has 44 apples. He gives away 18. Then gets 12 more. How many now?"
-  },
-  "mst-017": {
-    "file": "questions/mst-017.mp3",
-    "text": "Sam has 19 apples. He gives away 18. Then gets 13 more. How many now?"
-  },
-  "mst-018": {
-    "file": "questions/mst-018.mp3",
-    "text": "Sam has 36 apples. He gives away 13. Then gets 3 more. How many now?"
-  },
-  "mst-019": {
-    "file": "questions/mst-019.mp3",
-    "text": "Sam has 33 apples. He gives away 11. Then gets 10 more. How many now?"
-  },
-  "mst-020": {
-    "file": "questions/mst-020.mp3",
-    "text": "Sam has 38 apples. He gives away 12. Then gets 8 more. How many now?"
-  },
-  "mst-021": {
-    "file": "questions/mst-021.mp3",
-    "text": "Sam has 16 apples. He gives away 16. Then gets 11 more. How many now?"
-  },
-  "mst-022": {
-    "file": "questions/mst-022.mp3",
-    "text": "Sam has 32 apples. He gives away 6. Then gets 9 more. How many now?"
-  },
-  "mst-023": {
-    "file": "questions/mst-023.mp3",
-    "text": "Sam has 27 apples. He gives away 11. Then gets 4 more. How many now?"
-  },
-  "mst-024": {
-    "file": "questions/mst-024.mp3",
-    "text": "Sam has 39 apples. He gives away 7. Then gets 13 more. How many now?"
-  },
-  "mst-025": {
-    "file": "questions/mst-025.mp3",
-    "text": "Sam has 23 apples. He gives away 5. Then gets 3 more. How many now?"
-  },
-  "mst-026": {
-    "file": "questions/mst-026.mp3",
-    "text": "Sam has 31 apples. He gives away 12. Then gets 5 more. How many now?"
-  },
-  "mst-027": {
-    "file": "questions/mst-027.mp3",
-    "text": "Sam has 46 apples. He gives away 11. Then gets 4 more. How many now?"
-  },
-  "mst-028": {
-    "file": "questions/mst-028.mp3",
-    "text": "Sam has 45 apples. He gives away 11. Then gets 12 more. How many now?"
-  },
-  "mst-029": {
-    "file": "questions/mst-029.mp3",
-    "text": "Sam has 23 apples. He gives away 12. Then gets 8 more. How many now?"
-  },
-  "mst-030": {
-    "file": "questions/mst-030.mp3",
-    "text": "Sam has 19 apples. He gives away 5. Then gets 7 more. How many now?"
-  },
+  "mst-001": "questions/mst-001.mp3",
+  "mst-002": "questions/mst-002.mp3",
+  "mst-003": "questions/mst-003.mp3",
+  "mst-004": "questions/mst-004.mp3",
+  "mst-005": "questions/mst-005.mp3",
+  "mst-006": "questions/mst-006.mp3",
+  "mst-007": "questions/mst-007.mp3",
+  "mst-008": "questions/mst-008.mp3",
+  "mst-009": "questions/mst-009.mp3",
+  "mst-010": "questions/mst-010.mp3",
+  "mst-011": "questions/mst-011.mp3",
+  "mst-012": "questions/mst-012.mp3",
+  "mst-013": "questions/mst-013.mp3",
+  "mst-014": "questions/mst-014.mp3",
+  "mst-015": "questions/mst-015.mp3",
+  "mst-016": "questions/mst-016.mp3",
+  "mst-017": "questions/mst-017.mp3",
+  "mst-018": "questions/mst-018.mp3",
+  "mst-019": "questions/mst-019.mp3",
+  "mst-020": "questions/mst-020.mp3",
+  "mst-021": "questions/mst-021.mp3",
+  "mst-022": "questions/mst-022.mp3",
+  "mst-023": "questions/mst-023.mp3",
+  "mst-024": "questions/mst-024.mp3",
+  "mst-025": "questions/mst-025.mp3",
+  "mst-026": "questions/mst-026.mp3",
+  "mst-027": "questions/mst-027.mp3",
+  "mst-028": "questions/mst-028.mp3",
+  "mst-029": "questions/mst-029.mp3",
+  "mst-030": "questions/mst-030.mp3",
   "mst-031": "questions/mstep-031.mp3",
   "mst-032": "questions/mstep-032.mp3",
   "mst-033": "questions/mstep-033.mp3",
@@ -3284,271 +2579,76 @@
   "pvM-033": "questions/pvM-033.mp3",
   "pvM-034": "questions/pvM-034.mp3",
   "pvM-035": "questions/pvM-035.mp3",
-  "pvm-001": {
-    "file": "questions/pvm-001.mp3",
-    "text": "Which is greater: 3,129 or 9,850?"
-  },
-  "pvm-002": {
-    "file": "questions/pvm-002.mp3",
-    "text": "Which is greater: 32,871 or 24,408?"
-  },
-  "pvm-003": {
-    "file": "questions/pvm-003.mp3",
-    "text": "Which is greater: 127,032 or 238,205?"
-  },
-  "pvm-004": {
-    "file": "questions/pvm-004.mp3",
-    "text": "Which is greater: 6,869 or 4,898?"
-  },
-  "pvm-005": {
-    "file": "questions/pvm-005.mp3",
-    "text": "Which is greater: 439,498 or 116,547?"
-  },
-  "pvm-006": {
-    "file": "questions/pvm-006.mp3",
-    "text": "Which is greater: 5,347 or 1,858?"
-  },
-  "pvm-007": {
-    "file": "questions/pvm-007.mp3",
-    "text": "Which is greater: 7,897 or 9,619?"
-  },
-  "pvm-008": {
-    "file": "questions/pvm-008.mp3",
-    "text": "Which is greater: 2,041 or 8,802?"
-  },
-  "pvm-009": {
-    "file": "questions/pvm-009.mp3",
-    "text": "Which is greater: 57,453 or 77,271?"
-  },
-  "pvm-010": {
-    "file": "questions/pvm-010.mp3",
-    "text": "Which is greater: 214,351 or 573,962?"
-  },
-  "pvm-011": {
-    "file": "questions/pvm-011.mp3",
-    "text": "Which is greater: 332,311 or 744,986?"
-  },
-  "pvm-012": {
-    "file": "questions/pvm-012.mp3",
-    "text": "Which is greater: 9,543 or 5,941?"
-  },
-  "pvm-013": {
-    "file": "questions/pvm-013.mp3",
-    "text": "Which is greater: 94,323 or 14,082?"
-  },
-  "pvm-014": {
-    "file": "questions/pvm-014.mp3",
-    "text": "Which is greater: 8,847 or 7,580?"
-  },
-  "pvm-015": {
-    "file": "questions/pvm-015.mp3",
-    "text": "Which is greater: 99,928 or 24,150?"
-  },
-  "pvm-016": {
-    "file": "questions/pvm-016.mp3",
-    "text": "Which is greater: 68,138 or 19,632?"
-  },
-  "pvm-017": {
-    "file": "questions/pvm-017.mp3",
-    "text": "Which is greater: 6,277 or 3,430?"
-  },
-  "pvm-018": {
-    "file": "questions/pvm-018.mp3",
-    "text": "Which is greater: 3,067 or 5,505?"
-  },
-  "pvm-019": {
-    "file": "questions/pvm-019.mp3",
-    "text": "Which is greater: 763,829 or 713,799?"
-  },
-  "pvm-020": {
-    "file": "questions/pvm-020.mp3",
-    "text": "Which is greater: 846,746 or 440,981?"
-  },
-  "pvm-021": {
-    "file": "questions/pvm-021.mp3",
-    "text": "Which is greater: 88,301 or 79,541?"
-  },
-  "pvm-022": {
-    "file": "questions/pvm-022.mp3",
-    "text": "Which is greater: 69,469 or 76,263?"
-  },
-  "pvm-023": {
-    "file": "questions/pvm-023.mp3",
-    "text": "Which is greater: 551,096 or 203,996?"
-  },
-  "pvm-024": {
-    "file": "questions/pvm-024.mp3",
-    "text": "Which is greater: 219,971 or 994,217?"
-  },
-  "pvm-025": {
-    "file": "questions/pvm-025.mp3",
-    "text": "Which is greater: 782,535 or 906,315?"
-  },
-  "pvm-026": {
-    "file": "questions/pvm-026.mp3",
-    "text": "Which is greater: 855,855 or 325,468?"
-  },
-  "pvm-027": {
-    "file": "questions/pvm-027.mp3",
-    "text": "Which is greater: 69,186 or 39,949?"
-  },
-  "pvm-028": {
-    "file": "questions/pvm-028.mp3",
-    "text": "Which is greater: 54,424 or 69,441?"
-  },
-  "pvm-029": {
-    "file": "questions/pvm-029.mp3",
-    "text": "Which is greater: 64,524 or 22,463?"
-  },
-  "pvm-030": {
-    "file": "questions/pvm-030.mp3",
-    "text": "Which is greater: 65,936 or 50,963?"
-  },
-  "pvm-031": {
-    "file": "questions/pvm-031.mp3",
-    "text": "Which is greater: 367,271 or 492,483?"
-  },
-  "pvm-032": {
-    "file": "questions/pvm-032.mp3",
-    "text": "Which is greater: 8,770 or 2,099?"
-  },
-  "pvm-033": {
-    "file": "questions/pvm-033.mp3",
-    "text": "Which is greater: 2,398 or 2,527?"
-  },
-  "pvm-034": {
-    "file": "questions/pvm-034.mp3",
-    "text": "Which is greater: 22,656 or 58,843?"
-  },
-  "pvm-035": {
-    "file": "questions/pvm-035.mp3",
-    "text": "Which is greater: 1,982 or 6,400?"
-  },
+  "pvm-001": "questions/pvm-001.mp3",
+  "pvm-002": "questions/pvm-002.mp3",
+  "pvm-003": "questions/pvm-003.mp3",
+  "pvm-004": "questions/pvm-004.mp3",
+  "pvm-005": "questions/pvm-005.mp3",
+  "pvm-006": "questions/pvm-006.mp3",
+  "pvm-007": "questions/pvm-007.mp3",
+  "pvm-008": "questions/pvm-008.mp3",
+  "pvm-009": "questions/pvm-009.mp3",
+  "pvm-010": "questions/pvm-010.mp3",
+  "pvm-011": "questions/pvm-011.mp3",
+  "pvm-012": "questions/pvm-012.mp3",
+  "pvm-013": "questions/pvm-013.mp3",
+  "pvm-014": "questions/pvm-014.mp3",
+  "pvm-015": "questions/pvm-015.mp3",
+  "pvm-016": "questions/pvm-016.mp3",
+  "pvm-017": "questions/pvm-017.mp3",
+  "pvm-018": "questions/pvm-018.mp3",
+  "pvm-019": "questions/pvm-019.mp3",
+  "pvm-020": "questions/pvm-020.mp3",
+  "pvm-021": "questions/pvm-021.mp3",
+  "pvm-022": "questions/pvm-022.mp3",
+  "pvm-023": "questions/pvm-023.mp3",
+  "pvm-024": "questions/pvm-024.mp3",
+  "pvm-025": "questions/pvm-025.mp3",
+  "pvm-026": "questions/pvm-026.mp3",
+  "pvm-027": "questions/pvm-027.mp3",
+  "pvm-028": "questions/pvm-028.mp3",
+  "pvm-029": "questions/pvm-029.mp3",
+  "pvm-030": "questions/pvm-030.mp3",
+  "pvm-031": "questions/pvm-031.mp3",
+  "pvm-032": "questions/pvm-032.mp3",
+  "pvm-033": "questions/pvm-033.mp3",
+  "pvm-034": "questions/pvm-034.mp3",
+  "pvm-035": "questions/pvm-035.mp3",
   "pvm-036": "questions/pvm-036.mp3",
   "pvm-037": "questions/pvm-037.mp3",
   "pvm-038": "questions/pvm-038.mp3",
   "pvm-039": "questions/pvm-039.mp3",
   "pvm-040": "questions/pvm-040.mp3",
-  "rat-001": {
-    "file": "questions/rat-001.mp3",
-    "text": "If the pattern is 3:6, what comes next for A?"
-  },
-  "rat-002": {
-    "file": "questions/rat-002.mp3",
-    "text": "If the pattern is 2:6, what comes next for A?"
-  },
-  "rat-003": {
-    "file": "questions/rat-003.mp3",
-    "text": "If the pattern is 6:4, what comes next for A?"
-  },
-  "rat-004": {
-    "file": "questions/rat-004.mp3",
-    "text": "If the pattern is 3:4, what comes next for A?"
-  },
-  "rat-005": {
-    "file": "questions/rat-005.mp3",
-    "text": "If the pattern is 3:5, what comes next for A?"
-  },
-  "rat-006": {
-    "file": "questions/rat-006.mp3",
-    "text": "If the pattern is 6:3, what comes next for A?"
-  },
-  "rat-007": {
-    "file": "questions/rat-007.mp3",
-    "text": "If the pattern is 3:1, what comes next for A?"
-  },
-  "rat-008": {
-    "file": "questions/rat-008.mp3",
-    "text": "If the pattern is 5:6, what comes next for A?"
-  },
-  "rat-009": {
-    "file": "questions/rat-009.mp3",
-    "text": "If the pattern is 5:4, what comes next for A?"
-  },
-  "rat-010": {
-    "file": "questions/rat-010.mp3",
-    "text": "If the pattern is 4:3, what comes next for A?"
-  },
-  "rat-011": {
-    "file": "questions/rat-011.mp3",
-    "text": "If the pattern is 2:3, what comes next for A?"
-  },
-  "rat-012": {
-    "file": "questions/rat-012.mp3",
-    "text": "If the pattern is 1:3, what comes next for A?"
-  },
-  "rat-013": {
-    "file": "questions/rat-013.mp3",
-    "text": "If the pattern is 6:1, what comes next for A?"
-  },
-  "rat-014": {
-    "file": "questions/rat-014.mp3",
-    "text": "If the pattern is 5:3, what comes next for A?"
-  },
-  "rat-015": {
-    "file": "questions/rat-015.mp3",
-    "text": "If the pattern is 3:2, what comes next for A?"
-  },
-  "rat-016": {
-    "file": "questions/rat-016.mp3",
-    "text": "If the pattern is 1:5, what comes next for A?"
-  },
-  "rat-017": {
-    "file": "questions/rat-017.mp3",
-    "text": "If the pattern is 6:5, what comes next for A?"
-  },
-  "rat-018": {
-    "file": "questions/rat-018.mp3",
-    "text": "If the pattern is 1:6, what comes next for A?"
-  },
-  "rat-019": {
-    "file": "questions/rat-019.mp3",
-    "text": "If the pattern is 5:2, what comes next for A?"
-  },
-  "rat-020": {
-    "file": "questions/rat-020.mp3",
-    "text": "If the pattern is 6:2, what comes next for A?"
-  },
-  "rat-021": {
-    "file": "questions/rat-021.mp3",
-    "text": "If the pattern is 2:1, what comes next for A?"
-  },
-  "rat-022": {
-    "file": "questions/rat-022.mp3",
-    "text": "If the pattern is 4:6, what comes next for A?"
-  },
-  "rat-023": {
-    "file": "questions/rat-023.mp3",
-    "text": "If the pattern is 2:5, what comes next for A?"
-  },
-  "rat-024": {
-    "file": "questions/rat-024.mp3",
-    "text": "If the pattern is 1:2, what comes next for A?"
-  },
-  "rat-025": {
-    "file": "questions/rat-025.mp3",
-    "text": "If the pattern is 4:2, what comes next for A?"
-  },
-  "rat-026": {
-    "file": "questions/rat-026.mp3",
-    "text": "If the pattern is 1:4, what comes next for A?"
-  },
-  "rat-027": {
-    "file": "questions/rat-027.mp3",
-    "text": "If the pattern is 5:1, what comes next for A?"
-  },
-  "rat-028": {
-    "file": "questions/rat-028.mp3",
-    "text": "If the pattern is 4:5, what comes next for A?"
-  },
-  "rat-029": {
-    "file": "questions/rat-029.mp3",
-    "text": "If the pattern is 2:4, what comes next for A?"
-  },
-  "rat-030": {
-    "file": "questions/rat-030.mp3",
-    "text": "If the pattern is 4:1, what comes next for A?"
-  },
+  "rat-001": "questions/rat-001.mp3",
+  "rat-002": "questions/rat-002.mp3",
+  "rat-003": "questions/rat-003.mp3",
+  "rat-004": "questions/rat-004.mp3",
+  "rat-005": "questions/rat-005.mp3",
+  "rat-006": "questions/rat-006.mp3",
+  "rat-007": "questions/rat-007.mp3",
+  "rat-008": "questions/rat-008.mp3",
+  "rat-009": "questions/rat-009.mp3",
+  "rat-010": "questions/rat-010.mp3",
+  "rat-011": "questions/rat-011.mp3",
+  "rat-012": "questions/rat-012.mp3",
+  "rat-013": "questions/rat-013.mp3",
+  "rat-014": "questions/rat-014.mp3",
+  "rat-015": "questions/rat-015.mp3",
+  "rat-016": "questions/rat-016.mp3",
+  "rat-017": "questions/rat-017.mp3",
+  "rat-018": "questions/rat-018.mp3",
+  "rat-019": "questions/rat-019.mp3",
+  "rat-020": "questions/rat-020.mp3",
+  "rat-021": "questions/rat-021.mp3",
+  "rat-022": "questions/rat-022.mp3",
+  "rat-023": "questions/rat-023.mp3",
+  "rat-024": "questions/rat-024.mp3",
+  "rat-025": "questions/rat-025.mp3",
+  "rat-026": "questions/rat-026.mp3",
+  "rat-027": "questions/rat-027.mp3",
+  "rat-028": "questions/rat-028.mp3",
+  "rat-029": "questions/rat-029.mp3",
+  "rat-030": "questions/rat-030.mp3",
   "rat-031": "questions/ratio-031.mp3",
   "rat-032": "questions/ratio-032.mp3",
   "rat-033": "questions/ratio-033.mp3",
@@ -3595,146 +2695,41 @@
   "retry-03": "feedback/retry-03.mp3",
   "retry-04": "feedback/retry-04.mp3",
   "retry-05": "feedback/retry-05.mp3",
-  "rgrp-001": {
-    "file": "questions/rgrp-001.mp3",
-    "text": "38 + 42 = ?"
-  },
-  "rgrp-002": {
-    "file": "questions/rgrp-002.mp3",
-    "text": "29 + 27 = ?"
-  },
-  "rgrp-003": {
-    "file": "questions/rgrp-003.mp3",
-    "text": "38 + 28 = ?"
-  },
-  "rgrp-004": {
-    "file": "questions/rgrp-004.mp3",
-    "text": "23 + 49 = ?"
-  },
-  "rgrp-005": {
-    "file": "questions/rgrp-005.mp3",
-    "text": "23 + 18 = ?"
-  },
-  "rgrp-006": {
-    "file": "questions/rgrp-006.mp3",
-    "text": "57 + 45 = ?"
-  },
-  "rgrp-007": {
-    "file": "questions/rgrp-007.mp3",
-    "text": "52 + 48 = ?"
-  },
-  "rgrp-008": {
-    "file": "questions/rgrp-008.mp3",
-    "text": "74 + 26 = ?"
-  },
-  "rgrp-009": {
-    "file": "questions/rgrp-009.mp3",
-    "text": "24 + 19 = ?"
-  },
-  "rgrp-010": {
-    "file": "questions/rgrp-010.mp3",
-    "text": "57 + 17 = ?"
-  },
-  "rgrp-011": {
-    "file": "questions/rgrp-011.mp3",
-    "text": "46 + 48 = ?"
-  },
-  "rgrp-012": {
-    "file": "questions/rgrp-012.mp3",
-    "text": "49 + 35 = ?"
-  },
-  "rgrp-013": {
-    "file": "questions/rgrp-013.mp3",
-    "text": "79 + 19 = ?"
-  },
-  "rgrp-014": {
-    "file": "questions/rgrp-014.mp3",
-    "text": "59 + 21 = ?"
-  },
-  "rgrp-015": {
-    "file": "questions/rgrp-015.mp3",
-    "text": "24 + 49 = ?"
-  },
-  "rgrp-016": {
-    "file": "questions/rgrp-016.mp3",
-    "text": "33 + 47 = ?"
-  },
-  "rgrp-017": {
-    "file": "questions/rgrp-017.mp3",
-    "text": "79 + 37 = ?"
-  },
-  "rgrp-018": {
-    "file": "questions/rgrp-018.mp3",
-    "text": "76 + 19 = ?"
-  },
-  "rgrp-019": {
-    "file": "questions/rgrp-019.mp3",
-    "text": "73 + 49 = ?"
-  },
-  "rgrp-020": {
-    "file": "questions/rgrp-020.mp3",
-    "text": "59 + 48 = ?"
-  },
-  "rgrp-021": {
-    "file": "questions/rgrp-021.mp3",
-    "text": "39 + 21 = ?"
-  },
-  "rgrp-022": {
-    "file": "questions/rgrp-022.mp3",
-    "text": "29 + 32 = ?"
-  },
-  "rgrp-023": {
-    "file": "questions/rgrp-023.mp3",
-    "text": "65 + 36 = ?"
-  },
-  "rgrp-024": {
-    "file": "questions/rgrp-024.mp3",
-    "text": "36 + 18 = ?"
-  },
-  "rgrp-025": {
-    "file": "questions/rgrp-025.mp3",
-    "text": "55 + 15 = ?"
-  },
-  "rgrp-026": {
-    "file": "questions/rgrp-026.mp3",
-    "text": "27 + 19 = ?"
-  },
-  "rgrp-027": {
-    "file": "questions/rgrp-027.mp3",
-    "text": "54 + 17 = ?"
-  },
-  "rgrp-028": {
-    "file": "questions/rgrp-028.mp3",
-    "text": "73 + 38 = ?"
-  },
-  "rgrp-029": {
-    "file": "questions/rgrp-029.mp3",
-    "text": "29 + 42 = ?"
-  },
-  "rgrp-030": {
-    "file": "questions/rgrp-030.mp3",
-    "text": "28 + 17 = ?"
-  },
-  "rgrp-031": {
-    "file": "questions/rgrp-031.mp3",
-    "text": "39 + 38 = ?"
-  },
-  "rgrp-032": {
-    "file": "questions/rgrp-032.mp3",
-    "text": "77 + 17 = ?"
-  },
-  "rgrp-033": {
-    "file": "questions/rgrp-033.mp3",
-    "text": "77 + 37 = ?"
-  },
-  "rgrp-034": {
-    "file": "questions/rgrp-034.mp3",
-    "text": "59 + 24 = ?"
-  },
-  "rgrp-035": {
-    "file": "questions/rgrp-035.mp3",
-    "text": "75 + 25 = ?"
-  },
+  "rgrp-001": "questions/rgrp-001.mp3",
+  "rgrp-002": "questions/rgrp-002.mp3",
+  "rgrp-003": "questions/rgrp-003.mp3",
+  "rgrp-004": "questions/rgrp-004.mp3",
+  "rgrp-005": "questions/rgrp-005.mp3",
+  "rgrp-006": "questions/rgrp-006.mp3",
+  "rgrp-007": "questions/rgrp-007.mp3",
+  "rgrp-008": "questions/rgrp-008.mp3",
+  "rgrp-009": "questions/rgrp-009.mp3",
+  "rgrp-010": "questions/rgrp-010.mp3",
+  "rgrp-011": "questions/rgrp-011.mp3",
+  "rgrp-012": "questions/rgrp-012.mp3",
+  "rgrp-013": "questions/rgrp-013.mp3",
+  "rgrp-014": "questions/rgrp-014.mp3",
+  "rgrp-015": "questions/rgrp-015.mp3",
+  "rgrp-016": "questions/rgrp-016.mp3",
+  "rgrp-017": "questions/rgrp-017.mp3",
+  "rgrp-018": "questions/rgrp-018.mp3",
+  "rgrp-019": "questions/rgrp-019.mp3",
+  "rgrp-020": "questions/rgrp-020.mp3",
+  "rgrp-021": "questions/rgrp-021.mp3",
+  "rgrp-022": "questions/rgrp-022.mp3",
+  "rgrp-023": "questions/rgrp-023.mp3",
+  "rgrp-024": "questions/rgrp-024.mp3",
+  "rgrp-025": "questions/rgrp-025.mp3",
+  "rgrp-026": "questions/rgrp-026.mp3",
+  "rgrp-027": "questions/rgrp-027.mp3",
+  "rgrp-028": "questions/rgrp-028.mp3",
+  "rgrp-029": "questions/rgrp-029.mp3",
+  "rgrp-030": "questions/rgrp-030.mp3",
+  "rgrp-031": "questions/rgrp-031.mp3",
+  "rgrp-032": "questions/rgrp-032.mp3",
+  "rgrp-033": "questions/rgrp-033.mp3",
+  "rgrp-034": "questions/rgrp-034.mp3",
+  "rgrp-035": "questions/rgrp-035.mp3",
   "rgrp-036": "questions/rgrp-036.mp3",
   "rgrp-037": "questions/rgrp-037.mp3",
   "rgrp-038": "questions/rgrp-038.mp3",

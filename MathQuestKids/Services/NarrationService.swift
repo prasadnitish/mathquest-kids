@@ -45,9 +45,18 @@ final class NarrationService {
 
         if let url,
            let data = try? Data(contentsOf: url),
-           let index = try? JSONDecoder().decode([String: String].self, from: data) {
-            audioIndex = index
-            print("[NarrationService] Loaded audio index: \(index.count) entries")
+           let raw = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            // Support both flat strings ("id": "path") and dicts ("id": {"file": "path", ...})
+            var resolved: [String: String] = [:]
+            for (key, value) in raw {
+                if let str = value as? String {
+                    resolved[key] = str
+                } else if let dict = value as? [String: Any], let file = dict["file"] as? String {
+                    resolved[key] = file
+                }
+            }
+            audioIndex = resolved
+            print("[NarrationService] Loaded audio index: \(resolved.count) entries")
         } else {
             audioIndex = [:]
             print("[NarrationService] audio_index.json not found in bundle")
