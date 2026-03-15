@@ -264,7 +264,7 @@ private struct ThemeCard: View {
                     .foregroundStyle(AppTheme.textPrimary)
             }
             .padding(8)
-            .background(isSelected ? theme.primary.opacity(0.18) : Color.white.opacity(0.75), in: RoundedRectangle(cornerRadius: 14))
+            .background(isSelected ? theme.primary.opacity(0.18) : AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(isSelected ? theme.primary : Color.clear, lineWidth: 2)
@@ -336,10 +336,10 @@ private struct CompanionCard: View {
                             Image(theme.backgroundAssetName)
                                 .resizable()
                                 .scaledToFill()
-                            Color.white.opacity(0.84)
+                            AppTheme.card.opacity(0.92)
                         }
                     } else {
-                        Color.white.opacity(0.92)
+                        AppTheme.card
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 14))

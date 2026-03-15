@@ -186,7 +186,7 @@ struct SessionView: View {
     private func topBar(runtime: SessionRuntime, progress: Double) -> some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white.opacity(0.90))
+                .fill(AppTheme.card)
 
             GeometryReader { proxy in
                 RoundedRectangle(cornerRadius: 18)
@@ -232,7 +232,7 @@ struct SessionView: View {
         .frame(height: 64)
         .overlay(
             RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                .stroke(AppTheme.card.opacity(0.45), lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
     }
@@ -601,7 +601,7 @@ struct AdditionStoryInteraction: View {
                             .fill(AppTheme.accent.opacity(0.8))
                             .frame(width: addDotSize, height: addDotSize)
                     }
-                    ForEach(0..<max(right, 0), id: \.self) { idx in
+                    ForEach(left..<(left + max(right, 0)), id: \.self) { _ in
                         Circle()
                             .fill(AppTheme.primary.opacity(0.7))
                             .frame(width: addDotSize, height: addDotSize)
@@ -677,9 +677,9 @@ struct NumberBondInteraction: View {
         VStack(spacing: 20) {
             // Whole circle
             Circle()
-                .fill(Color.white)
+                .fill(AppTheme.card)
                 .overlay(Circle().stroke(AppTheme.primary, lineWidth: 2))
-                .overlay(Text("\(Int(item.payload.target ?? 10))").font(.title.bold()))
+                .overlay(Text("\(Int(item.payload.target ?? 10))").font(.title.bold()).foregroundStyle(AppTheme.textPrimary))
                 .frame(width: 72, height: 72)
 
             // Dividing line
@@ -692,9 +692,9 @@ struct NumberBondInteraction: View {
                 let rightLabel = item.payload.right.map { "\($0)" } ?? "?"
                 ForEach([leftLabel, rightLabel], id: \.self) { label in
                     Circle()
-                        .fill(label == "?" ? AppTheme.accent.opacity(0.2) : Color.white)
+                        .fill(label == "?" ? AppTheme.accent.opacity(0.2) : AppTheme.card)
                         .overlay(Circle().stroke(AppTheme.primary, lineWidth: 2))
-                        .overlay(Text(label).font(.title2.bold()))
+                        .overlay(Text(label).font(.title2.bold()).foregroundStyle(AppTheme.textPrimary))
                         .frame(width: 64, height: 64)
                 }
             }
@@ -844,7 +844,7 @@ struct PlaceValueBucket: View {
                     .foregroundStyle(AppTheme.textSecondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
-                    .background(Color.white.opacity(0.72), in: Capsule())
+                    .background(AppTheme.card.opacity(0.85), in: Capsule())
             }
             Text("\(count)")
                 .font(.largeTitle.bold())
@@ -885,7 +885,7 @@ struct PlaceValueBucket: View {
             }
             .frame(maxWidth: .infinity, minHeight: 126)
             .padding(.vertical, 8)
-            .background(Color.white.opacity(0.82), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card.opacity(0.9), in: RoundedRectangle(cornerRadius: 12))
         } else {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 22, maximum: 28))], spacing: 6) {
                 ForEach(0..<min(count, 20), id: \.self) { _ in
@@ -896,7 +896,7 @@ struct PlaceValueBucket: View {
             }
             .frame(maxWidth: .infinity, minHeight: 126)
             .padding(.vertical, 8)
-            .background(Color.white.opacity(0.82), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card.opacity(0.9), in: RoundedRectangle(cornerRadius: 12))
         }
     }
 
@@ -906,7 +906,7 @@ struct PlaceValueBucket: View {
                 .font(.system(size: 26, weight: .bold))
                 .foregroundStyle(kind == .ten ? Color.green.opacity(0.85) : Color.blue.opacity(0.85))
                 .frame(width: 44, height: 44)
-                .background(Color.white.opacity(0.9), in: Circle())
+                .background(AppTheme.card, in: Circle())
         }
         .buttonStyle(.plain)
     }
@@ -978,7 +978,7 @@ struct MultiplicationArrayInteraction: View {
                 }
             }
             .padding(12)
-            .background(Color.white.opacity(0.84), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card.opacity(0.9), in: RoundedRectangle(cornerRadius: 12))
 
             HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { option in
@@ -1188,7 +1188,7 @@ struct MetricBadge: View {
         }
         .padding(10)
         .frame(width: 56)
-        .background(Color.white.opacity(0.88), in: RoundedRectangle(cornerRadius: 12))
+        .background(AppTheme.card.opacity(0.95), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -1223,7 +1223,7 @@ struct GroupComparisonInteraction: View {
             }.frame(minHeight: 40)
         }
         .padding(10)
-        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -1339,7 +1339,7 @@ struct AreaTilingInteraction: View {
                     }
                 }
             }
-            .padding(8).background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .padding(8).background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
             HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { opt in
                     ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
@@ -1450,7 +1450,7 @@ struct DataPlotInteraction: View {
                     }
                 }
             }.frame(height: 140).padding()
-            .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
             HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { opt in
                     ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
@@ -1547,7 +1547,7 @@ struct RatioTableInteraction: View {
                 ratioRow(cells: ["A", "\(ratioL)", "\(ratioL * 2)", "\(ratioL * 3)", "?"], header: false)
                 ratioRow(cells: ["B", "\(ratioR)", "\(ratioR * 2)", "\(ratioR * 3)", "\(ratioR * 4)"], header: false)
             }
-            .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.primary.opacity(0.2), lineWidth: 1))
             HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { opt in

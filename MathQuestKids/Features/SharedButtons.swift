@@ -34,7 +34,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
             .frame(minWidth: 44, minHeight: 44)
-            .background(Color.white.opacity(configuration.isPressed ? 0.72 : 0.88), in: RoundedRectangle(cornerRadius: 12))
+            .background(AppTheme.card.opacity(configuration.isPressed ? 0.85 : 1.0), in: RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(AppTheme.primary.opacity(0.30), lineWidth: 1)

@@ -62,7 +62,7 @@ struct HomeView: View {
         .padding(22)
         .background(
             LinearGradient(
-                colors: [Color.white.opacity(0.97), appState.selectedTheme.accent.opacity(0.12)],
+                colors: [AppTheme.card, appState.selectedTheme.accent.opacity(0.12)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             ),
@@ -367,7 +367,7 @@ struct HomeView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color.white.opacity(0.92), in: RoundedRectangle(cornerRadius: 14))
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
                 .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
@@ -425,9 +425,9 @@ struct UnitCardView: View {
         .background {
             ZStack {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.white.opacity(unlocked ? 0.96 : 0.94))
+                    .fill(AppTheme.card.opacity(unlocked ? 1.0 : 0.96))
                 LinearGradient(
-                    colors: [appState.selectedTheme.primary.opacity(0.12), Color.white.opacity(0.0)],
+                    colors: [appState.selectedTheme.primary.opacity(0.12), Color.clear],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )

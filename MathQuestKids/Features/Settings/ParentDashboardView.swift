@@ -102,7 +102,7 @@ struct ParentDashboardView: View {
             Spacer()
         }
         .padding(18)
-        .background(.white, in: RoundedRectangle(cornerRadius: 16))
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
 
@@ -151,7 +151,7 @@ struct ParentDashboardView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(.white, in: RoundedRectangle(cornerRadius: 14))
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
         .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
     }
 
@@ -203,7 +203,7 @@ struct ParentDashboardView: View {
                     }
                 }
             }
-            .background(.white, in: RoundedRectangle(cornerRadius: 14))
+            .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
             .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
         }
     }
