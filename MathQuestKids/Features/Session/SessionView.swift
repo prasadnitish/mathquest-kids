@@ -743,58 +743,82 @@ struct TeenPlaceValueInteraction: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.textSecondary)
 
-            HStack(spacing: 12) {
-                PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten) {
-                    adjust(.ten, delta: 1)
-                } onRemove: {
-                    adjust(.ten, delta: -1)
-                }
-                PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one) {
-                    adjust(.one, delta: 1)
-                } onRemove: {
-                    adjust(.one, delta: -1)
-                }
-            }
+            ZStack(alignment: .center) {
+                HStack(spacing: 12) {
+                    // Tens column: bucket + stepper
+                    VStack(spacing: 10) {
+                        PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten)
 
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                Button {
-                    adjust(.ten, delta: 1)
-                } label: {
-                    Label("+1 Ten", systemImage: "plus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
+                        HStack(spacing: 0) {
+                            Button { adjust(.ten, delta: -1) } label: {
+                                Image(systemName: "minus")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(width: 44, height: 44)
+                            }
+                            .disabled(tens == 0)
 
-                Button {
-                    adjust(.one, delta: 1)
-                } label: {
-                    Label("+1 One", systemImage: "plus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
+                            Text("Tens")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(minWidth: 44)
 
-                Button {
-                    adjust(.ten, delta: -1)
-                } label: {
-                    Label("-1 Ten", systemImage: "minus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(tens == 0)
+                            Button { adjust(.ten, delta: 1) } label: {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(width: 44, height: 44)
+                            }
+                        }
+                        .foregroundStyle(Color.green.opacity(0.9))
+                        .background(Color.green.opacity(0.10), in: Capsule())
+                        .overlay(Capsule().stroke(Color.green.opacity(0.25), lineWidth: 1))
+                    }
 
-                Button {
-                    adjust(.one, delta: -1)
-                } label: {
-                    Label("-1 One", systemImage: "minus.circle.fill")
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .disabled(ones == 0)
+                    // Ones column: bucket + stepper
+                    VStack(spacing: 10) {
+                        PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one)
 
-                Button {
-                    tens = 0
-                    ones = 0
-                    refreshSelection()
-                } label: {
-                    Label("Reset", systemImage: "arrow.counterclockwise")
+                        HStack(spacing: 0) {
+                            Button { adjust(.one, delta: -1) } label: {
+                                Image(systemName: "minus")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(width: 44, height: 44)
+                            }
+                            .disabled(ones == 0)
+
+                            Text("Ones")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(minWidth: 44)
+
+                            Button { adjust(.one, delta: 1) } label: {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(width: 44, height: 44)
+                            }
+                        }
+                        .foregroundStyle(Color.blue.opacity(0.9))
+                        .background(Color.blue.opacity(0.10), in: Capsule())
+                        .overlay(Capsule().stroke(Color.blue.opacity(0.25), lineWidth: 1))
+                    }
                 }
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(.plain)
+
+                // Reset button floats centered in the gap between columns
+                VStack {
+                    Spacer()
+                    Button {
+                        tens = 0
+                        ones = 0
+                        refreshSelection()
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .frame(width: 40, height: 40)
+                            .background(AppTheme.card, in: Circle())
+                            .overlay(Circle().stroke(AppTheme.textSecondary.opacity(0.25), lineWidth: 1))
+                            .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
         .padding()
@@ -832,8 +856,6 @@ struct PlaceValueBucket: View {
     let count: Int
     let targetCount: Int
     let kind: TokenKind
-    let onAdd: () -> Void
-    let onRemove: () -> Void
 
     var body: some View {
         VStack(spacing: 10) {
@@ -853,12 +875,6 @@ struct PlaceValueBucket: View {
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)
             blockPreview
-
-            HStack(spacing: 10) {
-                stepButton(systemName: "minus.circle.fill", action: onRemove)
-                    .disabled(count == 0)
-                stepButton(systemName: "plus.circle.fill", action: onAdd)
-            }
         }
         .padding(14)
         .frame(maxWidth: .infinity)
@@ -902,16 +918,6 @@ struct PlaceValueBucket: View {
         }
     }
 
-    private func stepButton(systemName: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 26, weight: .bold))
-                .foregroundStyle(kind == .ten ? Color.green.opacity(0.85) : Color.blue.opacity(0.85))
-                .frame(width: 44, height: 44)
-                .background(AppTheme.card, in: Circle())
-        }
-        .buttonStyle(.plain)
-    }
 }
 
 enum TokenKind {

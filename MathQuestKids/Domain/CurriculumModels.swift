@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum GradeBand: String, Codable, CaseIterable, Identifiable, Comparable {
     case kindergarten
@@ -139,6 +140,32 @@ enum LessonDomain: String, Codable, CaseIterable, Identifiable {
         case .measurementData: return "Measurement & Data"
         case .geometry: return "Geometry"
         case .ratiosExpressions: return "Ratios & Expressions Foundations"
+        }
+    }
+
+    /// Accent color for domain-based left border and badges
+    var accentColor: Color {
+        switch self {
+        case .countingCardinality: return .orange
+        case .operationsAlgebraicThinking: return .purple
+        case .numberOperationsBaseTen: return .blue
+        case .fractions: return .red
+        case .measurementData: return .green
+        case .geometry: return .teal
+        case .ratiosExpressions: return .indigo
+        }
+    }
+
+    /// Short label for compact display
+    var shortTitle: String {
+        switch self {
+        case .countingCardinality: return "Counting"
+        case .operationsAlgebraicThinking: return "Algebra"
+        case .numberOperationsBaseTen: return "Base Ten"
+        case .fractions: return "Fractions"
+        case .measurementData: return "Measurement"
+        case .geometry: return "Geometry"
+        case .ratiosExpressions: return "Ratios"
         }
     }
 }
