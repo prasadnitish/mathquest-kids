@@ -10,28 +10,40 @@ struct ProfileSetupView: View {
 
             VStack(spacing: 16) {
                 Image(systemName: appState.selectedTheme.heroSymbol)
-                    .font(.system(size: 64, weight: .black))
+                    .font(.system(size: 64, weight: .black)) // SF Symbol decorative icon
                     .foregroundStyle(appState.selectedTheme.primary)
 
                 Text("Sprout Math")
-                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .kidText(.display)
                     .foregroundStyle(AppTheme.textPrimary)
 
                 Text("Create a profile, run a quick diagnostic, and unlock a premium adaptive K-5 math path.")
-                    .font(.title3)
+                    .kidText(.h2)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                     .foregroundStyle(.secondary)
 
+                // WS7.4: Mascot welcome — use first companion of the current theme as fallback
+                // (user hasn't completed profile yet, so no companion is selected)
+                let setupCompanion = CharacterPackLibrary.companions(for: appState.selectedTheme).first
+                    ?? CharacterPackLibrary.defaultCompanion(for: appState.selectedTheme)
+                MascotBlock(
+                    companion: setupCompanion,
+                    context: .homeGreeting,
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
+
                 TextField("Child name", text: $name)
                     .textFieldStyle(.roundedBorder)
-                    .font(.title3)
+                    .kidText(.h2)
                     .accessibilityLabel("Child name")
 
                 Button("Start Adventure") {
                     appState.createProfile(name: name)
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .accessibilityLabel("Start Adventure")
             }

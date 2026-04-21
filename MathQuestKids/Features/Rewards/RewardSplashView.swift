@@ -6,75 +6,36 @@ struct RewardSplashView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @EnvironmentObject private var appState: AppState
-    @State private var appeared = false
-    @State private var showParticles = false
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.55)
-                .ignoresSafeArea()
-                .onTapGesture { onDismiss() }
-
-            VStack(spacing: 22) {
-                Text("You earned a sticker!")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
-
-                stickerIconView(sticker.icon(for: appState.selectedTheme))
-                    .frame(width: 120, height: 120)
-                .scaleEffect(appeared ? 1.0 : (reduceMotion ? 0.95 : 0.2))
-                .opacity(appeared ? 1.0 : 0.0)
-                .animation(
-                    reduceMotion
-                        ? .easeIn(duration: 0.25)
-                        : .spring(response: 0.5, dampingFraction: 0.65),
-                    value: appeared
-                )
-
-                Text(sticker.title)
-                    .font(.title3.bold())
-                    .foregroundStyle(.white)
-
-                companionCelebration
-
-                Button("Awesome!") { onDismiss() }
-                    .font(.title3.bold())
-                    .padding(.horizontal, 32)
-                    .padding(.vertical, 14)
-                    .background(AppTheme.accent, in: Capsule())
-                    .foregroundStyle(.white)
-                    .accessibilityLabel("Dismiss sticker reward")
+            CelebrationModal(
+                theme: appState.selectedTheme,
+                companion: appState.activeCompanion,
+                title: "You earned a sticker!",
+                subtitle: sticker.title,
+                ctaTitle: "Awesome!",
+                onDismiss: onDismiss
+            ) {
+                // Sticker asset image (64pt, centred, themed background tile).
+                stickerImageView(sticker.icon(for: appState.selectedTheme))
             }
-            .padding(28)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28))
-            .overlay(
-                RoundedRectangle(cornerRadius: 28)
-                    .stroke(.white.opacity(0.2), lineWidth: 1)
-            )
-            .padding(.horizontal, 24)
 
-            if showParticles && !reduceMotion {
+            // Particle burst — preserved from original view; layered above modal.
+            if !reduceMotion {
                 ParticleBurstView()
                     .allowsHitTesting(false)
             }
         }
         .onAppear {
-            appeared = true
-            if !reduceMotion {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    showParticles = true
-                }
-            }
-            let companionPhrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
-            // Pass just the companion phrase for pre-generated audio match;
-            // sticker title and companion name are shown on screen.
-            appState.narrationService.speakFeedback(companionPhrase, style: appState.narrationStyle, interrupt: true)
+            // TTS narration — preserved from original view.
+            let phrase = CompanionPhrases.stickerEarned(tone: appState.activeCompanion.tone)
+            appState.narrationService.speakFeedback(phrase, style: appState.narrationStyle, interrupt: true)
         }
         .accessibilityAddTraits(.isModal)
     }
 
-    private func stickerIconView(_ icon: StickerIcon) -> some View {
+    private func stickerImageView(_ icon: StickerIcon) -> some View {
         Image(icon.imageName)
             .resizable()
             .scaledToFit()
@@ -85,42 +46,6 @@ struct RewardSplashView: View {
                     .stroke(.white.opacity(0.3), lineWidth: 1)
             )
             .shadow(color: .black.opacity(0.2), radius: 12, y: 4)
-    }
-
-    private var companionCelebration: some View {
-        let companion = appState.activeCompanion
-        let phrase = CompanionPhrases.stickerEarned(tone: companion.tone)
-
-        return HStack(spacing: 10) {
-            Group {
-                if !companion.imageName.isEmpty {
-                    Image(companion.imageName)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 48, height: 48)
-                        .clipShape(Circle())
-                } else {
-                    Image(systemName: companion.symbol)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
-                        .background(appState.selectedTheme.primary.opacity(0.85), in: Circle())
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(companion.name)
-                    .font(.caption.bold())
-                    .foregroundStyle(.white.opacity(0.7))
-                Text(phrase)
-                    .font(.headline.bold())
-                    .foregroundStyle(.white)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
-        }
     }
 }
 

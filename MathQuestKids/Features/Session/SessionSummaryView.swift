@@ -11,7 +11,7 @@ struct SessionSummaryView: View {
             Spacer()
 
             Text("Quest Complete")
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+                .kidText(.display)
                 .foregroundStyle(AppTheme.textPrimary)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 18)
@@ -23,28 +23,38 @@ struct SessionSummaryView: View {
                 )
 
             if let summary = appState.latestSummary {
+                let summaryContext: MascotVoice.Context = (appState.dashboard.streakDays > 0) ? .streakMilestone : .rewardEarned
+                MascotBlock(
+                    companion: appState.activeCompanion,
+                    context: summaryContext,
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
+
                 VStack(spacing: 12) {
                     Image(systemName: "star.circle.fill")
-                        .font(.system(size: 72))
+                        .font(.system(size: 72)) // SF Symbol decorative icon — intentional size
                         .foregroundStyle(AppTheme.accent)
                         .scaleEffect(animateBadge ? 1.0 : 0.82)
                         .opacity(animateBadge ? 1.0 : 0.7)
+                        // TODO(WS10.3): bespoke — repeatCount(2) pulse not covered by Motion tokens; leave as-is.
                         .animation(
                             reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7).repeatCount(2, autoreverses: true),
                             value: animateBadge
                         )
                     Text("\(summary.correctItems) of \(summary.totalItems) correct")
-                        .font(.title2.bold())
+                        .kidText(.h2)
                     Text("Reward: \(summary.rewardTitle)")
-                        .font(.title3)
+                        .kidText(.h2)
                     Text(summary.nextRecommendation)
-                        .font(.body)
+                        .kidText(.body)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
 
                     if let nextLesson = appState.adaptivePath.recommendedLessons.first {
                         Text("Next adaptive lesson: \(nextLesson.title)")
-                            .font(.subheadline.weight(.semibold))
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary)
                     }
                 }
@@ -58,27 +68,27 @@ struct SessionSummaryView: View {
                             Image(systemName: "lightbulb.fill")
                                 .foregroundStyle(.orange)
                             Text("Questions to Review")
-                                .font(.headline.bold())
+                                .kidText(.body)
                                 .foregroundStyle(AppTheme.textPrimary)
                         }
 
                         ForEach(summary.missedItems) { missed in
                             HStack(alignment: .top, spacing: 10) {
                                 Image(systemName: "arrow.turn.down.right")
-                                    .font(.caption.bold())
+                                    .kidText(.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                     .padding(.top, 3)
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(missed.prompt)
-                                        .font(.subheadline)
+                                        .kidText(.body)
                                         .foregroundStyle(AppTheme.textPrimary)
                                         .fixedSize(horizontal: false, vertical: true)
                                     HStack(spacing: 4) {
                                         Text("Answer:")
-                                            .font(.subheadline.weight(.semibold))
+                                            .kidText(.body)
                                             .foregroundStyle(AppTheme.textSecondary)
                                         Text(missed.correctAnswer)
-                                            .font(.subheadline.bold())
+                                            .kidText(.body)
                                             .foregroundStyle(.green)
                                     }
                                 }
@@ -94,7 +104,7 @@ struct SessionSummaryView: View {
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 12) {
                     Button("Start Next Quest") { appState.startRecommendedSession() }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
                         .accessibilityLabel("Start next recommended quest")
                     Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
@@ -102,7 +112,7 @@ struct SessionSummaryView: View {
                 }
                 VStack(spacing: 8) {
                     Button("Start Next Quest") { appState.startRecommendedSession() }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
                         .accessibilityLabel("Start next recommended quest")
                     Button("Back to Home") { appState.goHome() }
                         .buttonStyle(SecondaryButtonStyle())
@@ -126,6 +136,6 @@ struct SessionSummaryView: View {
                 .zIndex(10)
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: appState.pendingStickerReward != nil)
+        .animation(Motion.stateChange, value: appState.pendingStickerReward != nil)
     }
 }

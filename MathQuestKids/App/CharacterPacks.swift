@@ -1,6 +1,6 @@
 import Foundation
 
-enum CompanionTone: String {
+enum CompanionTone: String, CaseIterable {
     case encouraging // warm, supportive
     case energetic   // punchy, action-oriented
     case calm        // gentle, patient

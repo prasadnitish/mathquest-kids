@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ThemedBackgroundView: View {
     let theme: VisualTheme
+    var mode: Mode = .imageWithGradient
+
+    enum Mode { case imageWithGradient, gradientOnly }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var drift = false
@@ -9,39 +12,43 @@ struct ThemedBackgroundView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                Image(theme.backgroundAssetName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: proxy.size.width, height: proxy.size.height)
-                    .clipped()
-                    .overlay(
-                        LinearGradient(
-                            colors: [
-                                Color.black.opacity(0.06),
-                                Color.black.opacity(0.14),
-                                Color.black.opacity(0.24)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                switch mode {
+                case .imageWithGradient:
+                    Image(theme.backgroundAssetName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                        .clipped()
+                        .overlay(darkOverlay)
+                        .ignoresSafeArea()
+                case .gradientOnly:
+                    LinearGradient(
+                        colors: [theme.bg1, theme.bg2],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
                     .ignoresSafeArea()
+                }
 
-                Circle()
-                    .fill(Color.white.opacity(0.24))
-                    .frame(width: proxy.size.width * 0.85)
-                    .blur(radius: 60)
-                    .offset(x: -proxy.size.width * 0.35, y: -proxy.size.height * 0.38)
-
-                Circle()
-                    .fill(theme.accent.opacity(0.20))
-                    .frame(width: proxy.size.width * 0.9)
-                    .blur(radius: 76)
-                    .offset(x: proxy.size.width * 0.28, y: proxy.size.height * 0.45)
-
+                accentBlobs(proxy: proxy)
                 floatingParticles(size: proxy.size)
             }
             .onAppear { drift = true }
+        }
+    }
+
+    private var darkOverlay: some View {
+        LinearGradient(colors: [Color.black.opacity(0.06), Color.black.opacity(0.14), Color.black.opacity(0.24)], startPoint: .top, endPoint: .bottom)
+    }
+
+    private func accentBlobs(proxy: GeometryProxy) -> some View {
+        ZStack {
+            Circle().fill(Color.white.opacity(0.24))
+                .frame(width: proxy.size.width * 0.85).blur(radius: 60)
+                .offset(x: -proxy.size.width * 0.35, y: -proxy.size.height * 0.38)
+            Circle().fill(theme.accent.opacity(0.20))
+                .frame(width: proxy.size.width * 0.9).blur(radius: 76)
+                .offset(x: proxy.size.width * 0.28, y: proxy.size.height * 0.45)
         }
     }
 
@@ -56,10 +63,7 @@ struct ThemedBackgroundView: View {
                         x: particleX(index: index, width: size.width) + (drift ? 6 : -6),
                         y: particleY(index: index, height: size.height) + (drift ? -8 : 8)
                     )
-                    .animation(
-                        reduceMotion ? nil : .easeInOut(duration: 3.8 + Double(index) * 0.2).repeatForever(autoreverses: true),
-                        value: drift
-                    )
+                    .animation(reduceMotion ? nil : .easeInOut(duration: 3.8 + Double(index) * 0.2).repeatForever(autoreverses: true), value: drift)
             }
         }
     }

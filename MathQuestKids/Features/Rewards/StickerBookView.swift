@@ -6,13 +6,13 @@ struct StickerBookView: View {
 
     private let columns = [GridItem(.adaptive(minimum: 100, maximum: 140))]
 
+    /// Maximum number of locked-but-not-yet-earned sticker slots shown in the grid.
+    /// The rest collapse into a single MysteryTile to keep the reward loop feeling achievable.
+    private let maxVisibleLocked = 4
+
     var body: some View {
         ZStack {
-            ThemedBackgroundView(theme: appState.selectedTheme)
-                .ignoresSafeArea()
-
-            // Translucent overlay for readability
-            Color(.systemBackground).opacity(0.7)
+            ThemedBackgroundView(theme: appState.selectedTheme, mode: .gradientOnly)
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -21,9 +21,9 @@ struct StickerBookView: View {
                     Button(action: { appState.goHome() }) {
                         HStack(spacing: 6) {
                             Image(systemName: "chevron.left")
-                                .font(.body.weight(.semibold))
+                                .kidText(.body)
                             Text("Done")
-                                .font(.body.weight(.semibold))
+                                .kidText(.body)
                         }
                     }
                     .accessibilityLabel("Close sticker book")
@@ -36,17 +36,32 @@ struct StickerBookView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
+                        MascotBlock(
+                            companion: appState.activeCompanion,
+                            context: .rewardEarned,
+                            theme: appState.selectedTheme
+                        )
+                        .padding(.horizontal, DesignTokens.Spacing.sp4)
+                        .padding(.bottom, DesignTokens.Spacing.sp4)
+
                         Text("Sticker Book")
-                            .font(.largeTitle.bold())
+                            .kidText(.display)
                             .padding(.horizontal, 20)
 
                         Text("\(appState.stickerCollection.earnedCount) of \(appState.stickerCollection.totalCount) stickers earned")
-                            .font(.subheadline.weight(.medium))
+                            .kidText(.body)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 20)
 
                         LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(appState.stickerCollection.stickers) { sticker in
+                            // All unlocked stickers — shown in full
+                            let unlocked = appState.stickerCollection.stickers.filter { $0.isUnlocked }
+                            // Locked stickers — preserved in learning-path order
+                            let locked = appState.stickerCollection.stickers.filter { !$0.isUnlocked }
+                            let visibleLocked = Array(locked.prefix(maxVisibleLocked))
+                            let hiddenLockedCount = max(0, locked.count - visibleLocked.count)
+
+                            ForEach(unlocked + visibleLocked) { sticker in
                                 StickerSlotView(
                                     sticker: sticker,
                                     theme: appState.selectedTheme
@@ -60,19 +75,24 @@ struct StickerBookView: View {
                                     }
                                 }
                             }
+
+                            if hiddenLockedCount > 0 {
+                                MysteryTile(count: hiddenLockedCount)
+                            }
                         }
                         .padding(.horizontal, 16)
                     }
                     .padding(.top, 4)
                     .padding(.bottom, 40)
                 }
+                .scrollContentBackground(.hidden)
             }
 
             // Feedback overlay for locked sticker taps
             if let message = lockedTapMessage {
                 VStack {
                     Text(message)
-                        .font(.subheadline.weight(.semibold))
+                        .kidText(.body)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
@@ -91,7 +111,7 @@ struct StickerBookView: View {
                     Spacer()
                 }
                 .padding(.top, 60)
-                .animation(.easeInOut(duration: 0.25), value: lockedTapMessage != nil)
+                .animation(Motion.stateChange, value: lockedTapMessage != nil)
             }
         }
     }
@@ -128,7 +148,7 @@ struct StickerSlotView: View {
                 }
 
                 Text(sticker.unitType.title)
-                    .font(.caption2.weight(.semibold))
+                    .kidText(.caption)
                     .foregroundStyle(sticker.isUnlocked ? .primary : .secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
@@ -136,7 +156,7 @@ struct StickerSlotView: View {
 
                 if showDate, let date = sticker.dateEarned {
                     Text(date.formatted(date: .abbreviated, time: .omitted))
-                        .font(.caption2)
+                        .kidText(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }
@@ -146,5 +166,31 @@ struct StickerSlotView: View {
             ? "\(sticker.title) earned"
             : "Locked. Complete \(sticker.unitType.title) to unlock.")
         .opacity(sticker.isUnlocked ? 1 : 0.6)
+    }
+}
+
+/// Collapses all remaining locked stickers into a single encouraging tile
+/// so children see a bounded reward loop rather than an endless wall of grey locks.
+private struct MysteryTile: View {
+    let count: Int
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("✨")
+                .font(.system(size: 32))
+            Text("More coming!")
+                .kidText(.caption)
+        }
+        .frame(maxWidth: .infinity, minHeight: 110)
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                .stroke(
+                    Color.white.opacity(0.4),
+                    style: StrokeStyle(lineWidth: 2, dash: [6, 4])
+                )
+        )
+        .foregroundStyle(.white)
+        .accessibilityLabel("More surprises coming — \(count) sticker\(count == 1 ? "" : "s") still to earn")
     }
 }

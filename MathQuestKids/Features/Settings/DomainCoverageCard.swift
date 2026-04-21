@@ -3,10 +3,9 @@ import SwiftUI
 struct DomainCoverageCard: View {
     let report: DomainReport
     @State private var expanded = false
-    @EnvironmentObject private var appState: AppState
 
     private var progressColor: Color {
-        report.isWeakSpot ? .orange : appState.selectedTheme.primary
+        report.isWeakSpot ? .orange : .green
     }
 
     var body: some View {
@@ -17,7 +16,7 @@ struct DomainCoverageCard: View {
                     // Domain icon
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(progressColor.opacity(0.12))
+                            .fill(progressColor.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: domainIcon)
                             .font(.subheadline.weight(.semibold))
@@ -26,11 +25,11 @@ struct DomainCoverageCard: View {
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(report.domain.title)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AppTheme.textPrimary)
+                            .parentText(.data)
+                            .foregroundStyle(.white)
                         Text("\(report.skillsCovered) of \(report.skillsTotal) skills")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
+                            .parentText(.caption)
+                            .foregroundStyle(DesignTokens.parentMuted)
                     }
 
                     Spacer()
@@ -43,7 +42,7 @@ struct DomainCoverageCard: View {
 
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(DesignTokens.parentMuted)
                         .rotationEffect(.degrees(expanded ? 90 : 0))
                 }
             }
@@ -53,7 +52,7 @@ struct DomainCoverageCard: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.gray.opacity(0.12))
+                        .fill(DesignTokens.parentMuted.opacity(0.2))
                         .frame(height: 8)
                     RoundedRectangle(cornerRadius: 5)
                         .fill(
@@ -65,7 +64,13 @@ struct DomainCoverageCard: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: max(geo.size.width * report.coverageFraction, report.coverageFraction > 0 ? 8 : 0), height: 8)
+                        .frame(
+                            width: max(
+                                geo.size.width * report.coverageFraction,
+                                report.coverageFraction > 0 ? 8 : 0
+                            ),
+                            height: 8
+                        )
                 }
             }
             .frame(height: 8)
@@ -73,7 +78,7 @@ struct DomainCoverageCard: View {
             // Weak spot label
             if report.isWeakSpot {
                 Text("Needs more practice")
-                    .font(.caption.bold())
+                    .parentText(.caption)
                     .foregroundStyle(.orange)
             }
 
@@ -88,23 +93,24 @@ struct DomainCoverageCard: View {
                                 .frame(width: 20)
 
                             Text(skill.title)
-                                .font(.subheadline)
-                                .foregroundStyle(AppTheme.textPrimary)
+                                .parentText(.data)
+                                .foregroundStyle(.white)
 
                             Spacer()
 
                             Text(statusLabel(skill.masteryStatus))
-                                .font(.caption2.weight(.medium))
+                                .parentText(.caption)
                                 .foregroundStyle(statusColor(skill.masteryStatus))
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(statusColor(skill.masteryStatus).opacity(0.1), in: Capsule())
+                                .background(statusColor(skill.masteryStatus).opacity(0.15), in: Capsule())
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 4)
 
                         if index < report.perSkillStatus.count - 1 {
                             Divider()
+                                .background(DesignTokens.parentMuted.opacity(0.3))
                                 .padding(.leading, 34)
                         }
                     }
@@ -113,12 +119,14 @@ struct DomainCoverageCard: View {
             }
         }
         .padding(16)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
+        .background(
+            DesignTokens.parentCard,
+            in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+        )
         .overlay(
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
                 .stroke(
-                    report.isWeakSpot ? Color.orange.opacity(0.35) : Color.clear,
+                    report.isWeakSpot ? Color.orange.opacity(0.45) : Color.clear,
                     lineWidth: 1.5
                 )
         )
@@ -152,8 +160,8 @@ struct DomainCoverageCard: View {
     private func statusColor(_ status: MasteryStatus) -> Color {
         switch status {
         case .mastered: return .green
-        case .practicing: return appState.selectedTheme.primary
-        case .learning: return .secondary
+        case .practicing: return DesignTokens.parentMuted
+        case .learning: return DesignTokens.parentMuted.opacity(0.6)
         case .reviewDue: return .orange
         }
     }

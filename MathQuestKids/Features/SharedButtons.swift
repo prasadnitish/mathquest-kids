@@ -1,45 +1,106 @@
 import SwiftUI
 
-struct PrimaryButtonStyle: ButtonStyle {
+// MARK: - CTA (primary action; ONE per screen)
+
+struct CTAButtonStyle: ButtonStyle {
+    let theme: VisualTheme
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline.weight(.semibold))
-            .foregroundStyle(AppTheme.onPrimaryText)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
-            .frame(minWidth: 44, minHeight: 44)
-            .background(
-                LinearGradient(
-                    colors: [AppTheme.primary, AppTheme.accent.opacity(0.9)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ),
-                in: RoundedRectangle(cornerRadius: 14)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(configuration.isPressed ? 0.06 : 0.16), radius: configuration.isPressed ? 4 : 10, x: 0, y: configuration.isPressed ? 2 : 6)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .contentShape(RoundedRectangle(cornerRadius: 14))
+            .kidText(.h2)
+            .foregroundStyle(theme.ctaText)
+            .padding(.horizontal, 36)
+            .padding(.vertical, 16)
+            .frame(minHeight: DesignTokens.Layout.minTapTarget)
+            .background(theme.cta, in: Capsule())
+            .shadow(color: .black.opacity(configuration.isPressed ? 0.10 : 0.18),
+                    radius: configuration.isPressed ? 6 : 20, x: 0, y: configuration.isPressed ? 2 : 6)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .animation(Motion.press, value: configuration.isPressed)
     }
 }
+
+// MARK: - Secondary (white pill)
 
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline.weight(.semibold))
+            .kidText(.body)
             .foregroundStyle(AppTheme.textPrimary)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .frame(minWidth: 44, minHeight: 44)
-            .background(AppTheme.card.opacity(configuration.isPressed ? 0.85 : 1.0), in: RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(AppTheme.primary.opacity(0.30), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(configuration.isPressed ? 0.04 : 0.08), radius: configuration.isPressed ? 2 : 6, x: 0, y: configuration.isPressed ? 1 : 3)
-            .scaleEffect(configuration.isPressed ? 0.99 : 1)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 14)
+            .frame(minHeight: DesignTokens.Layout.minTapTarget)
+            .background(Color.white, in: Capsule())
+            .overlay(Capsule().stroke(Color.black.opacity(0.08), lineWidth: 2))
+            .shadow(color: .black.opacity(configuration.isPressed ? 0.06 : 0.1),
+                    radius: configuration.isPressed ? 4 : 12, x: 0, y: 2)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(Motion.press, value: configuration.isPressed)
     }
 }
+
+// MARK: - Play (used inside lesson cards)
+
+struct PlayButtonStyle: ButtonStyle {
+    let theme: VisualTheme
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .kidText(.body)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 12)
+            .frame(minHeight: DesignTokens.Layout.minTapTarget)
+            .background(theme.primary, in: Capsule())
+            .shadow(color: .black.opacity(0.18), radius: 14, x: 0, y: 3)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(Motion.press, value: configuration.isPressed)
+    }
+}
+
+// MARK: - Ghost (translucent; used on themed backgrounds)
+
+struct GhostButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .kidText(.body)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 22)
+            .padding(.vertical, 10)
+            .frame(minHeight: DesignTokens.Layout.minTapTarget)
+            .background(.ultraThinMaterial, in: Capsule())
+            .overlay(Capsule().stroke(Color.white.opacity(0.4), lineWidth: 1.5))
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(Motion.press, value: configuration.isPressed)
+    }
+}
+
+// MARK: - Icon (circular 52x52)
+
+struct IconButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .kidText(.h2)
+            .foregroundStyle(AppTheme.textPrimary)
+            .frame(width: 52, height: 52)
+            .background(Color.white, in: Circle())
+            .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 2)
+            .scaleEffect(configuration.isPressed ? 0.94 : 1)
+            .animation(Motion.press, value: configuration.isPressed)
+    }
+}
+
+// MARK: - Disabled / Loading
+
+struct DisabledButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .kidText(.h2)
+            .foregroundStyle(Color.white.opacity(0.4))
+            .padding(.horizontal, 36)
+            .padding(.vertical, 16)
+            .frame(minHeight: DesignTokens.Layout.minTapTarget)
+            .background(Color.white.opacity(0.3), in: Capsule())
+    }
+}
+
