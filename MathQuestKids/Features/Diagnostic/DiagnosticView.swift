@@ -76,57 +76,27 @@ struct DiagnosticView: View {
                         )
                 }
 
-                ForEach(Array(question.choices.enumerated()), id: \.offset) { index, choice in
-                    Button {
-                        appState.submitDiagnosticChoice(index)
-                    } label: {
-                        HStack(alignment: .firstTextBaseline, spacing: 10) {
-                            Text(optionLetter(index))
-                                .kidText(.answer)
-                                .foregroundStyle(appState.selectedTheme.primary)
-                            Text(choice)
-                                .kidText(.answer)
-                                .foregroundStyle(AppTheme.textPrimary)
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.7)
-                            Spacer()
-                        }
-                        .padding(16)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 16))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(appState.selectedTheme.primary.opacity(0.24), lineWidth: 1)
+                VStack(spacing: DesignTokens.Spacing.sp2) {
+                    ForEach(Array(question.choices.enumerated()), id: \.offset) { index, choice in
+                        AnswerButton(
+                            index: index,
+                            title: choice,
+                            state: .default,
+                            theme: appState.selectedTheme,
+                            action: { appState.submitDiagnosticChoice(index) }
                         )
+                        .disabled(appState.diagnosticInteractionDisabled)
                     }
-                    .buttonStyle(.plain)
-                    .disabled(appState.diagnosticInteractionDisabled)
-                    .accessibilityLabel("Option \(optionLetter(index)): \(choice)")
-                }
 
-                Button {
-                    appState.submitDiagnosticDontKnow()
-                } label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "questionmark.circle.fill")
-                            .kidText(.answer)
-                            .foregroundStyle(appState.selectedTheme.primary)
-                        Text("I don't know yet")
-                            .kidText(.answer)
-                            .foregroundStyle(AppTheme.textPrimary)
-                        Spacer()
-                    }
-                    .padding(16)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(appState.selectedTheme.primary.opacity(0.28), style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
+                    AnswerButton(
+                        index: 0,
+                        title: "I don't know yet",
+                        state: .idk,
+                        theme: appState.selectedTheme,
+                        action: { handleDefer() }
                     )
+                    .disabled(appState.diagnosticInteractionDisabled)
                 }
-                .buttonStyle(.plain)
-                .disabled(appState.diagnosticInteractionDisabled)
-                .accessibilityLabel("I don't know yet")
             }
             .padding(20)
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 24))
@@ -156,9 +126,10 @@ struct DiagnosticView: View {
         }
     }
 
-    private func optionLetter(_ index: Int) -> String {
-        let letters = ["A", "B", "C", "D", "E"]
-        return letters.indices.contains(index) ? letters[index] : "A"
+    private func handleDefer() {
+        // Records a "skip/unknown" response (index -1) — distinct from a wrong answer,
+        // giving the diagnostic better placement signal.
+        appState.submitDiagnosticDontKnow()
     }
 
     private func chip(title: String) -> some View {
