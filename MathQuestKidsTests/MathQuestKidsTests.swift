@@ -144,6 +144,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "9 - 4",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(left: nil, right: nil, minuend: 9, subtrahend: 4, target: 5, tens: nil, ones: nil)
@@ -213,6 +214,7 @@ struct MathQuestKidsTests {
             skillID: "sub_within_10",
             format: .subtractionStory,
             prompt: "9 - 4",
+            spokenForm: nil,
             answer: "5",
             supports: [.counters],
             payload: ItemPayload(left: nil, right: nil, minuend: 9, subtrahend: 4, target: 5, tens: nil, ones: nil),
@@ -226,6 +228,7 @@ struct MathQuestKidsTests {
             skillID: "sub_within_10",
             format: .subtractionStory,
             prompt: "8 - 3",
+            spokenForm: nil,
             answer: "5",
             supports: [.counters],
             payload: ItemPayload(left: nil, right: nil, minuend: 8, subtrahend: 3, target: 5, tens: nil, ones: nil),
@@ -273,6 +276,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "9 - 4",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(left: nil, right: nil, minuend: 9, subtrahend: 4, target: 5, tens: nil, ones: nil)
@@ -284,6 +288,7 @@ struct MathQuestKidsTests {
                     format: .teenPlaceValue,
                     difficulty: 1,
                     prompt: "Build 14",
+                    spokenForm: nil,
                     answer: "1|4",
                     supports: [.placeValueMat],
                     payload: ItemPayload(left: nil, right: nil, minuend: nil, subtrahend: nil, target: 14, tens: 1, ones: 4)
@@ -465,6 +470,7 @@ struct MathQuestKidsTests {
                     format: .volumePrism,
                     difficulty: 1,
                     prompt: "2 x 3 x 4",
+                    spokenForm: nil,
                     answer: "24",
                     supports: [.areaModel],
                     payload: ItemPayload(target: 24, length: 2, width: 3, height: 4)
@@ -476,6 +482,7 @@ struct MathQuestKidsTests {
                     format: .decimalComparison,
                     difficulty: 1,
                     prompt: "Compare 0.450 and 0.405",
+                    spokenForm: nil,
                     answer: ">",
                     supports: [.decimalGrid],
                     payload: ItemPayload(decimalLeft: 0.450, decimalRight: 0.405)
@@ -487,6 +494,7 @@ struct MathQuestKidsTests {
                     format: .fractionComparison,
                     difficulty: 1,
                     prompt: "Compare 3/4 and 2/3",
+                    spokenForm: nil,
                     answer: ">",
                     supports: [.fractionStrip],
                     payload: ItemPayload(numeratorA: 3, denominatorA: 4, numeratorB: 2, denominatorB: 3)
@@ -543,6 +551,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "9 - 4",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(minuend: 9, subtrahend: 4, target: 5)
@@ -554,6 +563,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "8 - 3",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(minuend: 8, subtrahend: 3, target: 5)
@@ -565,6 +575,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "7 - 2",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(minuend: 7, subtrahend: 2, target: 5)
@@ -576,6 +587,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "6 - 1",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(minuend: 6, subtrahend: 1, target: 5)
@@ -587,6 +599,7 @@ struct MathQuestKidsTests {
                     format: .subtractionStory,
                     difficulty: 1,
                     prompt: "10 - 5",
+                    spokenForm: nil,
                     answer: "5",
                     supports: [.counters],
                     payload: ItemPayload(minuend: 10, subtrahend: 5, target: 5)
@@ -598,6 +611,7 @@ struct MathQuestKidsTests {
                     format: .teenPlaceValue,
                     difficulty: 1,
                     prompt: "Build 14",
+                    spokenForm: nil,
                     answer: "1|4",
                     supports: [.placeValueMat],
                     payload: ItemPayload(target: 14, tens: 1, ones: 4)
