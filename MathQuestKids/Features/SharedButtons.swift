@@ -104,10 +104,3 @@ struct DisabledButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - Motion stub (temporary — removed when WS10 lands real Motion.swift)
-
-#if !WS10_MOTION_AVAILABLE
-enum Motion {
-    static let press: Animation = .easeInOut(duration: 0.12)
-}
-#endif
