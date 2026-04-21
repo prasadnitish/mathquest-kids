@@ -28,11 +28,17 @@ struct SemanticThemeTests {
 
     @Test
     func ctaTextHasReadableContrastOnCTA() {
-        // Spot-check: lighter CTAs get dark text, darker CTAs get white.
-        // We assert the value is either .white or AppTheme.textPrimary (dark).
+        // ctaText is either .white (saturated CTA) or AppTheme.textPrimary (light CTA
+        // needing dark text). Color == is unreliable for UIColor-backed adaptive colors,
+        // so verify the semantic intent via per-theme expectations.
         for theme in VisualTheme.allCases {
             let text = theme.ctaText
-            #expect(text == .white || text == AppTheme.textPrimary)
+            switch theme {
+            case .axolotl, .rainbowUnicorn:
+                #expect(text == Color.white)
+            case .candyland, .turboCars, .starsSpace, .superhero:
+                #expect(text != Color.white)
+            }
         }
     }
 }
