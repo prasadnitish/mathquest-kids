@@ -23,6 +23,18 @@ struct ProfileSetupView: View {
                     .padding(.horizontal, 20)
                     .foregroundStyle(.secondary)
 
+                // WS7.4: Mascot welcome — use first companion of the current theme as fallback
+                // (user hasn't completed profile yet, so no companion is selected)
+                let setupCompanion = CharacterPackLibrary.companions(for: appState.selectedTheme).first
+                    ?? CharacterPackLibrary.defaultCompanion(for: appState.selectedTheme)
+                MascotBlock(
+                    companion: setupCompanion,
+                    context: .homeGreeting,
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
+
                 TextField("Child name", text: $name)
                     .textFieldStyle(.roundedBorder)
                     .kidText(.h2)

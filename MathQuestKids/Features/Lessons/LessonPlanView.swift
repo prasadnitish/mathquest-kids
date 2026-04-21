@@ -13,6 +13,13 @@ struct LessonPlanView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     header
+                    MascotBlock(
+                        companion: appState.activeCompanion,
+                        context: .lessonStart,
+                        theme: appState.selectedTheme
+                    )
+                    .padding(.horizontal, DesignTokens.Spacing.sp4)
+                    .padding(.bottom, DesignTokens.Spacing.sp4)
                     gradeSelector
 
                     if appState.adaptivePath.hasRecommendations {

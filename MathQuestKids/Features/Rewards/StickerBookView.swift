@@ -32,6 +32,14 @@ struct StickerBookView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
+                        MascotBlock(
+                            companion: appState.activeCompanion,
+                            context: .rewardEarned,
+                            theme: appState.selectedTheme
+                        )
+                        .padding(.horizontal, DesignTokens.Spacing.sp4)
+                        .padding(.bottom, DesignTokens.Spacing.sp4)
+
                         Text("Sticker Book")
                             .kidText(.display)
                             .padding(.horizontal, 20)

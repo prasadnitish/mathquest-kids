@@ -23,6 +23,15 @@ struct SessionSummaryView: View {
                 )
 
             if let summary = appState.latestSummary {
+                let summaryContext: MascotVoice.Context = (appState.dashboard.streakDays > 0) ? .streakMilestone : .rewardEarned
+                MascotBlock(
+                    companion: appState.activeCompanion,
+                    context: summaryContext,
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
+
                 VStack(spacing: 12) {
                     Image(systemName: "star.circle.fill")
                         .font(.system(size: 72)) // SF Symbol decorative icon — intentional size

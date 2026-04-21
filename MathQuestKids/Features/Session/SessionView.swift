@@ -233,6 +233,10 @@ struct SessionView: View {
         .accessibilityElement(children: .combine)
     }
 
+    // TODO: WS7.4-followup — wire MascotBlock reactions here:
+    // show MascotBlock(companion: appState.activeCompanion, context: .questionHint, ...)
+    // on hint reveal, and .answerCorrect / .answerWrong / .answerIdk on feedback.
+    // Requires transient overlay state + animation — deferred from WS7.4.
     private var hintButton: some View {
         Button {
             activeHint = appState.requestHint()

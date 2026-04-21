@@ -9,6 +9,13 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 header
+                MascotBlock(
+                    companion: appState.activeCompanion,
+                    context: .homeGreeting,
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
                 adaptiveMission
                 companionSpotlight
                 SkillTrailView(trail: appState.skillTrail)
