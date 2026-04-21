@@ -76,7 +76,7 @@ struct LessonPlanView: View {
                 ForEach(GradeBand.allCases) { grade in
                     let isSelected = selectedGrade == grade
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
+                        withAnimation(Motion.stateChange) {
                             selectedGrade = grade
                         }
                     } label: {
@@ -241,7 +241,7 @@ struct LessonPlanView: View {
                     if !lesson.standards.isEmpty {
                         let isExpanded = expandedStandards.contains(lesson.id)
                         Button {
-                            withAnimation(.easeInOut(duration: 0.2)) {
+                            withAnimation(Motion.stateChange) {
                                 if isExpanded {
                                     expandedStandards.remove(lesson.id)
                                 } else {

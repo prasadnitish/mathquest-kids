@@ -111,7 +111,7 @@ struct StickerBookView: View {
                     Spacer()
                 }
                 .padding(.top, 60)
-                .animation(.easeInOut(duration: 0.25), value: lockedTapMessage != nil)
+                .animation(Motion.stateChange, value: lockedTapMessage != nil)
             }
         }
     }

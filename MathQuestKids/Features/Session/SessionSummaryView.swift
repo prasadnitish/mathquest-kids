@@ -38,6 +38,7 @@ struct SessionSummaryView: View {
                         .foregroundStyle(AppTheme.accent)
                         .scaleEffect(animateBadge ? 1.0 : 0.82)
                         .opacity(animateBadge ? 1.0 : 0.7)
+                        // TODO(WS10.3): bespoke — repeatCount(2) pulse not covered by Motion tokens; leave as-is.
                         .animation(
                             reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7).repeatCount(2, autoreverses: true),
                             value: animateBadge
@@ -135,6 +136,6 @@ struct SessionSummaryView: View {
                 .zIndex(10)
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: appState.pendingStickerReward != nil)
+        .animation(Motion.stateChange, value: appState.pendingStickerReward != nil)
     }
 }

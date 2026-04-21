@@ -15,7 +15,6 @@ struct CelebrationModal<StickerContent: View>: View {
     let onDismiss: () -> Void
     @ViewBuilder let stickerContent: () -> StickerContent
 
-    // NOTE: .spring inline values intentional — WS10 will replace with Motion.kidPopIn.
     @State private var hasPopped = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -37,7 +36,7 @@ struct CelebrationModal<StickerContent: View>: View {
                     .animation(
                         reduceMotion
                             ? .easeIn(duration: 0.2)
-                            : .spring(response: 0.5, dampingFraction: 0.55),
+                            : Motion.kidPopIn,
                         value: hasPopped
                     )
 

@@ -197,7 +197,7 @@ struct SessionView: View {
                         )
                     )
                     .frame(width: max(0, proxy.size.width * progress))
-                    .animation(.easeInOut(duration: 0.4), value: progress)
+                    .animation(Motion.transition, value: progress)
                     .overlay(alignment: .trailing) {
                         Image(systemName: appState.selectedTheme.heroSymbol)
                             .kidText(.h2)
