@@ -17,7 +17,7 @@ struct RewardSplashView: View {
 
             VStack(spacing: 22) {
                 Text("You earned a sticker!")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .kidText(.h1)
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
@@ -33,13 +33,13 @@ struct RewardSplashView: View {
                 )
 
                 Text(sticker.title)
-                    .font(.title3.bold())
+                    .kidText(.h2)
                     .foregroundStyle(.white)
 
                 companionCelebration
 
                 Button("Awesome!") { onDismiss() }
-                    .font(.title3.bold())
+                    .kidText(.h2)
                     .padding(.horizontal, 32)
                     .padding(.vertical, 14)
                     .background(AppTheme.accent, in: Capsule())
@@ -101,7 +101,7 @@ struct RewardSplashView: View {
                         .clipShape(Circle())
                 } else {
                     Image(systemName: companion.symbol)
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: 22, weight: .bold)) // SF Symbol icon size
                         .foregroundStyle(.white)
                         .frame(width: 48, height: 48)
                         .background(appState.selectedTheme.primary.opacity(0.85), in: Circle())
@@ -110,10 +110,10 @@ struct RewardSplashView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(companion.name)
-                    .font(.caption.bold())
+                    .kidText(.caption)
                     .foregroundStyle(.white.opacity(0.7))
                 Text(phrase)
-                    .font(.headline.bold())
+                    .kidText(.body)
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
             }

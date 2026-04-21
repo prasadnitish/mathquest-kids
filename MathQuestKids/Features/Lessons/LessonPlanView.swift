@@ -41,9 +41,9 @@ struct LessonPlanView: View {
             Button(action: { appState.closeLessonPlans() }) {
                 HStack(spacing: 5) {
                     Image(systemName: "chevron.left")
-                        .font(.body.weight(.semibold))
+                        .kidText(.body)
                     Text("Back")
-                        .font(.body.weight(.semibold))
+                        .kidText(.body)
                 }
                 .foregroundStyle(appState.selectedTheme.primary)
             }
@@ -51,10 +51,10 @@ struct LessonPlanView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Lesson Roadmap")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .kidText(.h1)
                     .foregroundStyle(AppTheme.textPrimary)
                 Text("Standards-aligned curriculum · K through 5")
-                    .font(.subheadline)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
             }
         }
@@ -73,7 +73,7 @@ struct LessonPlanView: View {
                         }
                     } label: {
                         Text(grade.shortLabel)
-                            .font(.subheadline.weight(isSelected ? .bold : .medium))
+                            .kidText(.body)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
                             .foregroundStyle(isSelected ? .white : AppTheme.textPrimary)
@@ -110,17 +110,17 @@ struct LessonPlanView: View {
                     .stroke(appState.selectedTheme.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 Text("\(Int(appState.adaptivePath.confidence * 100))%")
-                    .font(.caption2.bold().monospacedDigit())
+                    .kidText(.caption)
                     .foregroundStyle(appState.selectedTheme.primary)
             }
             .frame(width: 48, height: 48)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text("Adaptive Placement")
-                    .font(.subheadline.weight(.semibold))
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
                 Text("Placed at **\(appState.adaptivePath.placedGrade.title)** based on diagnostic results")
-                    .font(.caption)
+                    .kidText(.caption)
                     .foregroundStyle(AppTheme.textSecondary)
             }
 
@@ -139,17 +139,17 @@ struct LessonPlanView: View {
     private func overviewSection(_ plan: GradePlan) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(plan.overview)
-                .font(.subheadline)
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
 
             ForEach(plan.bigIdeas, id: \.self) { idea in
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.caption)
+                        .kidText(.caption)
                         .foregroundStyle(appState.selectedTheme.primary.opacity(0.7))
                         .padding(.top, 2)
                     Text(idea)
-                        .font(.subheadline.weight(.medium))
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textPrimary)
                 }
             }
@@ -177,7 +177,7 @@ struct LessonPlanView: View {
                 // Left: domain color bar + number
                 VStack(spacing: 6) {
                     Text("\(number)")
-                        .font(.caption.bold().monospacedDigit())
+                        .kidText(.caption)
                         .foregroundStyle(.white)
                         .frame(width: 26, height: 26)
                         .background(lesson.domain.accentColor.opacity(0.85), in: Circle())
@@ -190,13 +190,13 @@ struct LessonPlanView: View {
                     // Title row
                     HStack(alignment: .firstTextBaseline) {
                         Text(lesson.title)
-                            .font(.headline)
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary)
                             .lineLimit(2)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 4)
                         Text("\(lesson.estimatedMinutes) min")
-                            .font(.caption2.weight(.semibold))
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
@@ -205,7 +205,7 @@ struct LessonPlanView: View {
 
                     // Domain tag
                     Text(lesson.domain.shortTitle)
-                        .font(.caption2.weight(.semibold))
+                        .kidText(.caption)
                         .foregroundStyle(lesson.domain.accentColor)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -213,7 +213,7 @@ struct LessonPlanView: View {
 
                     // Objective
                     Text(lesson.objective)
-                        .font(.subheadline)
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
 
@@ -221,7 +221,7 @@ struct LessonPlanView: View {
                     FlowLayout(spacing: 6) {
                         ForEach(lesson.strategies) { strategy in
                             Text(strategy.title)
-                                .font(.caption2.weight(.medium))
+                                .kidText(.caption)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
                                 .foregroundStyle(AppTheme.textSecondary)
@@ -243,9 +243,9 @@ struct LessonPlanView: View {
                         } label: {
                             HStack(spacing: 4) {
                                 Text("Standards")
-                                    .font(.caption2.weight(.medium))
+                                    .kidText(.caption)
                                 Image(systemName: "chevron.right")
-                                    .font(.caption2.weight(.semibold))
+                                    .kidText(.caption)
                                     .rotationEffect(.degrees(isExpanded ? 90 : 0))
                             }
                             .foregroundStyle(AppTheme.textSecondary.opacity(0.6))
@@ -254,7 +254,7 @@ struct LessonPlanView: View {
 
                         if isExpanded {
                             Text(lesson.standards.joined(separator: ", "))
-                                .font(.caption2)
+                                .kidText(.caption)
                                 .foregroundStyle(AppTheme.textSecondary.opacity(0.5))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .transition(.opacity.combined(with: .move(edge: .top)))
@@ -269,9 +269,9 @@ struct LessonPlanView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: unlocked ? "play.fill" : "lock.fill")
-                                    .font(.caption2)
+                                    .kidText(.caption)
                                 Text(unlocked ? "Play" : "Locked")
-                                    .font(.subheadline.weight(.semibold))
+                                    .kidText(.body)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)

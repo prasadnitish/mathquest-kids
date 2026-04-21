@@ -11,7 +11,7 @@ struct SessionSummaryView: View {
             Spacer()
 
             Text("Quest Complete")
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+                .kidText(.display)
                 .foregroundStyle(AppTheme.textPrimary)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 18)
@@ -25,7 +25,7 @@ struct SessionSummaryView: View {
             if let summary = appState.latestSummary {
                 VStack(spacing: 12) {
                     Image(systemName: "star.circle.fill")
-                        .font(.system(size: 72))
+                        .font(.system(size: 72)) // SF Symbol decorative icon — intentional size
                         .foregroundStyle(AppTheme.accent)
                         .scaleEffect(animateBadge ? 1.0 : 0.82)
                         .opacity(animateBadge ? 1.0 : 0.7)
@@ -34,17 +34,17 @@ struct SessionSummaryView: View {
                             value: animateBadge
                         )
                     Text("\(summary.correctItems) of \(summary.totalItems) correct")
-                        .font(.title2.bold())
+                        .kidText(.h2)
                     Text("Reward: \(summary.rewardTitle)")
-                        .font(.title3)
+                        .kidText(.h2)
                     Text(summary.nextRecommendation)
-                        .font(.body)
+                        .kidText(.body)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
 
                     if let nextLesson = appState.adaptivePath.recommendedLessons.first {
                         Text("Next adaptive lesson: \(nextLesson.title)")
-                            .font(.subheadline.weight(.semibold))
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary)
                     }
                 }
@@ -58,27 +58,27 @@ struct SessionSummaryView: View {
                             Image(systemName: "lightbulb.fill")
                                 .foregroundStyle(.orange)
                             Text("Questions to Review")
-                                .font(.headline.bold())
+                                .kidText(.body)
                                 .foregroundStyle(AppTheme.textPrimary)
                         }
 
                         ForEach(summary.missedItems) { missed in
                             HStack(alignment: .top, spacing: 10) {
                                 Image(systemName: "arrow.turn.down.right")
-                                    .font(.caption.bold())
+                                    .kidText(.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                     .padding(.top, 3)
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(missed.prompt)
-                                        .font(.subheadline)
+                                        .kidText(.body)
                                         .foregroundStyle(AppTheme.textPrimary)
                                         .fixedSize(horizontal: false, vertical: true)
                                     HStack(spacing: 4) {
                                         Text("Answer:")
-                                            .font(.subheadline.weight(.semibold))
+                                            .kidText(.body)
                                             .foregroundStyle(AppTheme.textSecondary)
                                         Text(missed.correctAnswer)
-                                            .font(.subheadline.bold())
+                                            .kidText(.body)
                                             .foregroundStyle(.green)
                                     }
                                 }

@@ -50,10 +50,10 @@ struct SettingsView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 14) {
                             Text("Parent Settings")
-                                .font(.largeTitle.bold())
+                                .kidText(.display)
 
                             Text("Themes")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Choose a visual world with custom background art and colors.")
                                 .foregroundStyle(.secondary)
 
@@ -68,7 +68,7 @@ struct SettingsView: View {
                             }
 
                             Text("Character Packs")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Each theme includes mentor characters with unique coaching style.")
                                 .foregroundStyle(.secondary)
 
@@ -89,7 +89,7 @@ struct SettingsView: View {
                             Divider()
 
                             Text("Adaptive Learning")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Placement: \(appState.adaptivePath.placedGrade.title)")
                                 .foregroundStyle(.secondary)
 
@@ -121,7 +121,7 @@ struct SettingsView: View {
                             Divider()
 
                             Text("Narration")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Make the voice more lively and auto-read each new question.")
                                 .foregroundStyle(.secondary)
 
@@ -154,7 +154,7 @@ struct SettingsView: View {
                             Divider()
 
                             Text("Sound Effects")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Theme-based layered sound cues for tap, hint, success, and rewards.")
                                 .foregroundStyle(.secondary)
 
@@ -174,12 +174,12 @@ struct SettingsView: View {
                             Divider()
 
                             Text("Privacy")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Sprout Math stores progress only on this device in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
                                 .foregroundStyle(.secondary)
 
                             Text("Safety")
-                                .font(.title2.bold())
+                                .kidText(.h2)
                             Text("Supportive feedback, short sessions, and deterministic offline content.")
                                 .foregroundStyle(.secondary)
 
@@ -253,14 +253,14 @@ private struct ThemeCard: View {
                         endPoint: .bottom
                     )
                     Image(systemName: theme.heroSymbol)
-                        .font(.system(size: 26, weight: .black))
+                        .font(.system(size: 26, weight: .black)) // SF Symbol icon size
                         .foregroundStyle(.white.opacity(0.98))
                 }
                 .frame(width: 170, height: 88)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
                 Text(theme.name)
-                    .font(.subheadline.bold())
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
             }
             .padding(8)
@@ -298,7 +298,7 @@ private struct CompanionCard: View {
                                 .clipShape(Circle())
                         } else {
                             Image(systemName: companion.symbol)
-                                .font(.system(size: 28, weight: .black))
+                                .font(.system(size: 28, weight: .black)) // SF Symbol icon size
                                 .foregroundStyle(AppTheme.textPrimary)
                         }
                     }
@@ -306,10 +306,10 @@ private struct CompanionCard: View {
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(companion.name)
-                            .font(.headline.bold())
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary)
                         Text(companion.title)
-                            .font(.subheadline.weight(.semibold))
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary.opacity(0.78))
                     }
 
@@ -317,13 +317,13 @@ private struct CompanionCard: View {
                 }
 
                 Text(companion.tagline)
-                    .font(.subheadline)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.84))
                     .lineLimit(3)
 
                 if isSelected {
                     Label("Selected", systemImage: "checkmark.seal.fill")
-                        .font(.caption.bold())
+                        .kidText(.caption)
                         .foregroundStyle(theme.primary)
                 }
             }

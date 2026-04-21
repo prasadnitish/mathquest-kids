@@ -32,7 +32,7 @@ struct SkillTrailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Skill Trail")
-                .font(.title2.bold())
+                .kidText(.h2)
                 .foregroundStyle(AppTheme.textPrimary)
                 .padding(.bottom, 12)
 
@@ -40,10 +40,10 @@ struct SkillTrailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 6) {
                         Text(group.grade)
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(appState.selectedTheme.primary)
                         Image(systemName: "star.fill")
-                            .font(.caption2)
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.accent)
                     }
                     .padding(.horizontal, 10)
@@ -131,7 +131,7 @@ struct SkillTrailNodeView: View {
                     }
 
                     Image(systemName: nodeSymbol)
-                        .font(.title3.bold())
+                        .kidText(.h2)
                         .foregroundStyle(nodeIconColor)
 
                     if case .inProgress(let pct) = node.nodeState {
@@ -147,7 +147,7 @@ struct SkillTrailNodeView: View {
                             HStack {
                                 Spacer()
                                 Image(systemName: "star.circle.fill")
-                                    .font(.caption.bold())
+                                    .kidText(.caption)
                                     .foregroundStyle(.yellow)
                                     .background(Circle().fill(.white).padding(-2))
                             }
@@ -158,7 +158,7 @@ struct SkillTrailNodeView: View {
                 }
 
                 Text(node.unit.title)
-                    .font(.caption2.bold())
+                    .kidText(.caption)
                     .foregroundStyle(node.nodeState == .locked ? .secondary : AppTheme.textPrimary)
                     .multilineTextAlignment(.center)
                     .frame(width: 72)

@@ -22,7 +22,7 @@ struct HomeView: View {
         .overlay(alignment: .top) {
             if let message = appState.statusMessage {
                 Text(message)
-                    .font(.subheadline.weight(.semibold))
+                    .kidText(.body)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(.ultraThinMaterial, in: Capsule())
@@ -35,13 +35,13 @@ struct HomeView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("\(greeting), \(appState.profile?.displayName ?? "Explorer")")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .kidText(.h1)
                 .foregroundStyle(AppTheme.textPrimary)
                 .minimumScaleFactor(0.7)
                 .lineLimit(2)
 
             Text("Offline-first math adventures with adaptive K-5 learning paths.")
-                .font(.title3.weight(.semibold))
+                .kidText(.h2)
                 .foregroundStyle(AppTheme.textSecondary)
 
             ViewThatFits(in: .horizontal) {
@@ -81,18 +81,18 @@ struct HomeView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Adaptive Mission")
-                        .font(.title2.bold())
+                        .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
 
                     if appState.adaptivePath.confidence > 0 {
                         Text("Level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
-                            .font(.subheadline)
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textSecondary)
                             .lineLimit(2)
                             .minimumScaleFactor(0.8)
                     } else {
                         Text("Take the placement quiz to personalize your path.")
-                            .font(.subheadline)
+                            .kidText(.body)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
                 }
@@ -101,7 +101,7 @@ struct HomeView: View {
 
                 if appState.dashboard.completedSessions > 0 {
                     Text("\(Int(appState.dashboard.averageAccuracy * 100))%")
-                        .font(.title2.bold())
+                        .kidText(.h2)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(appState.selectedTheme.accent.opacity(0.28), in: Capsule())
@@ -110,12 +110,12 @@ struct HomeView: View {
 
             if appState.adaptivePath.recommendedLessons.isEmpty {
                 Text("Run the diagnostic to unlock a personalized K-5 roadmap.")
-                    .font(.subheadline)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
             } else {
                 let top = appState.adaptivePath.recommendedLessons.prefix(3).map(\.title).joined(separator: "  •  ")
                 Text(top)
-                    .font(.subheadline.weight(.semibold))
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
             }
 
@@ -125,7 +125,7 @@ struct HomeView: View {
                     if !appState.adaptivePath.supportLessons.isEmpty {
                         let supportTitle = appState.adaptivePath.supportLessons.first?.title ?? ""
                         Label(supportTitle, systemImage: "arrow.down.circle")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 5)
@@ -135,7 +135,7 @@ struct HomeView: View {
                     if !appState.adaptivePath.stretchLessons.isEmpty {
                         let stretchTitle = appState.adaptivePath.stretchLessons.first?.title ?? ""
                         Label(stretchTitle, systemImage: "arrow.up.circle")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 5)
@@ -149,7 +149,7 @@ struct HomeView: View {
                 HStack(spacing: 8) {
                     ForEach(appState.adaptivePath.pedagogyHighlights) { strategy in
                         Text(strategy.title)
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
                             .background(appState.selectedTheme.primary.opacity(0.10), in: Capsule())
@@ -207,7 +207,7 @@ struct HomeView: View {
     private var companionSpotlight: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Character Pack")
-                .font(.title2.bold())
+                .kidText(.h2)
                 .foregroundStyle(AppTheme.textPrimary)
 
             HStack(alignment: .top, spacing: 12) {
@@ -232,13 +232,13 @@ struct HomeView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(appState.activeCompanion.name)
-                        .font(.title3.bold())
+                        .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
                     Text(appState.activeCompanion.title)
-                        .font(.subheadline.weight(.semibold))
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                     Text("\"\(appState.activeCompanion.tagline)\"")
-                        .font(.subheadline)
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
 
@@ -264,7 +264,7 @@ struct HomeView: View {
                                                 .clipShape(Circle())
                                         } else {
                                             Image(systemName: companion.symbol)
-                                                .font(.title2.bold())
+                                                .kidText(.h2)
                                                 .foregroundStyle(AppTheme.textPrimary)
                                         }
                                     }
@@ -274,11 +274,11 @@ struct HomeView: View {
                                 }
 
                                 Text(companion.name)
-                                    .font(.subheadline.bold())
+                                    .kidText(.body)
                                     .foregroundStyle(AppTheme.textPrimary)
                                     .lineLimit(1)
                                 Text(companion.title)
-                                    .font(.caption.weight(.semibold))
+                                    .kidText(.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                     .lineLimit(1)
                             }
@@ -317,19 +317,19 @@ struct HomeView: View {
     private var rewardCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Momentum")
-                .font(.title2.bold())
+                .kidText(.h2)
                 .foregroundStyle(AppTheme.textPrimary)
             Text("Streak: \(appState.dashboard.streakDays) day\(appState.dashboard.streakDays == 1 ? "" : "s")")
-                .font(.body.weight(.semibold))
+                .kidText(.body)
             Text("Sessions: \(appState.dashboard.completedSessions)  ·  Accuracy: \(Int(appState.dashboard.averageAccuracy * 100))%")
-                .font(.subheadline)
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
             ProgressView(value: appState.dashboard.rewardProgress)
                 .tint(appState.selectedTheme.primary)
             Text("Keep a 5-day streak to unlock a bonus badge.")
-                .font(.subheadline)
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
 
             Button("Open Sticker Book") {
@@ -359,11 +359,11 @@ struct HomeView: View {
 
     private func summaryPill(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title.uppercased())
-                .font(.caption2.weight(.bold))
+            Text(title)
+                .kidText(.caption)
                 .foregroundStyle(AppTheme.textSecondary)
             Text(value)
-                .font(.headline.bold())
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textPrimary)
         }
         .padding(.horizontal, 12)
@@ -389,11 +389,11 @@ struct UnitCardView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(unit.title)
-                    .font(.title3.bold())
+                    .kidText(.h2)
                     .foregroundStyle(AppTheme.textPrimary)
                 Spacer(minLength: 8)
                 Text(unit.gradeHint)
-                    .font(.caption.bold())
+                    .kidText(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
                     .background(appState.selectedTheme.accent.opacity(0.22), in: Capsule())
@@ -405,11 +405,11 @@ struct UnitCardView: View {
             }
 
             Text(unit.subtitle)
-                .font(.subheadline)
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
 
             Text("Sessions complete: \(sessions)")
-                .font(.caption.weight(.semibold))
+                .kidText(.caption)
                 .foregroundStyle(AppTheme.textSecondary)
 
             Spacer(minLength: 8)

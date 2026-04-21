@@ -9,7 +9,7 @@ struct DiagnosticView: View {
                 content(session: session)
             } else {
                 ProgressView("Preparing diagnostic...")
-                    .font(.title3)
+                    .kidText(.h2)
                     .task {
                         appState.startDiagnosticIfNeeded()
                     }
@@ -22,12 +22,12 @@ struct DiagnosticView: View {
         VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Learning Level Check")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .kidText(.display)
                     .foregroundStyle(AppTheme.textPrimary)
                     .minimumScaleFactor(0.7)
 
                 Text("12 quick questions. This places your child at the right level and builds a personalized K-5 path.")
-                    .font(.system(size: 22, weight: .semibold, design: .rounded))
+                    .kidText(.question)
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.88))
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -36,7 +36,7 @@ struct DiagnosticView: View {
                     .tint(appState.selectedTheme.accent)
 
                 Text("Question \(min(session.index + 1, session.questions.count)) of \(session.questions.count)")
-                    .font(.title3.weight(.bold))
+                    .kidText(.h2)
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.8))
             }
             .padding(18)
@@ -56,7 +56,7 @@ struct DiagnosticView: View {
                 }
 
                 Text(question.prompt)
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .kidText(.question)
                     .foregroundStyle(AppTheme.textPrimary)
                     .minimumScaleFactor(0.65)
                     .lineLimit(nil)
@@ -64,7 +64,7 @@ struct DiagnosticView: View {
 
                 if let feedback = appState.diagnosticFeedbackMessage {
                     Text(feedback)
-                        .font(.title3.weight(.semibold))
+                        .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -82,10 +82,10 @@ struct DiagnosticView: View {
                     } label: {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text(optionLetter(index))
-                                .font(.title3.bold())
+                                .kidText(.answer)
                                 .foregroundStyle(appState.selectedTheme.primary)
                             Text(choice)
-                                .font(.title3.weight(.semibold))
+                                .kidText(.answer)
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .lineLimit(2)
                                 .minimumScaleFactor(0.7)
@@ -109,10 +109,10 @@ struct DiagnosticView: View {
                 } label: {
                     HStack(spacing: 10) {
                         Image(systemName: "questionmark.circle.fill")
-                            .font(.title3.bold())
+                            .kidText(.answer)
                             .foregroundStyle(appState.selectedTheme.primary)
                         Text("I don't know yet")
-                            .font(.title3.weight(.semibold))
+                            .kidText(.answer)
                             .foregroundStyle(AppTheme.textPrimary)
                         Spacer()
                     }
@@ -163,7 +163,7 @@ struct DiagnosticView: View {
 
     private func chip(title: String) -> some View {
         Text(title)
-            .font(.caption.weight(.semibold))
+            .kidText(.caption)
             .foregroundStyle(AppTheme.textPrimary)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)

@@ -21,9 +21,9 @@ struct StickerBookView: View {
                     Button(action: { appState.goHome() }) {
                         HStack(spacing: 6) {
                             Image(systemName: "chevron.left")
-                                .font(.body.weight(.semibold))
+                                .kidText(.body)
                             Text("Done")
-                                .font(.body.weight(.semibold))
+                                .kidText(.body)
                         }
                     }
                     .accessibilityLabel("Close sticker book")
@@ -37,11 +37,11 @@ struct StickerBookView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Sticker Book")
-                            .font(.largeTitle.bold())
+                            .kidText(.display)
                             .padding(.horizontal, 20)
 
                         Text("\(appState.stickerCollection.earnedCount) of \(appState.stickerCollection.totalCount) stickers earned")
-                            .font(.subheadline.weight(.medium))
+                            .kidText(.body)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 20)
 
@@ -72,7 +72,7 @@ struct StickerBookView: View {
             if let message = lockedTapMessage {
                 VStack {
                     Text(message)
-                        .font(.subheadline.weight(.semibold))
+                        .kidText(.body)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
@@ -128,7 +128,7 @@ struct StickerSlotView: View {
                 }
 
                 Text(sticker.unitType.title)
-                    .font(.caption2.weight(.semibold))
+                    .kidText(.caption)
                     .foregroundStyle(sticker.isUnlocked ? .primary : .secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
@@ -136,7 +136,7 @@ struct StickerSlotView: View {
 
                 if showDate, let date = sticker.dateEarned {
                     Text(date.formatted(date: .abbreviated, time: .omitted))
-                        .font(.caption2)
+                        .kidText(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }

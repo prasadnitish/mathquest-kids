@@ -10,22 +10,22 @@ struct ProfileSetupView: View {
 
             VStack(spacing: 16) {
                 Image(systemName: appState.selectedTheme.heroSymbol)
-                    .font(.system(size: 64, weight: .black))
+                    .font(.system(size: 64, weight: .black)) // SF Symbol decorative icon
                     .foregroundStyle(appState.selectedTheme.primary)
 
                 Text("Sprout Math")
-                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .kidText(.display)
                     .foregroundStyle(AppTheme.textPrimary)
 
                 Text("Create a profile, run a quick diagnostic, and unlock a premium adaptive K-5 math path.")
-                    .font(.title3)
+                    .kidText(.h2)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
                     .foregroundStyle(.secondary)
 
                 TextField("Child name", text: $name)
                     .textFieldStyle(.roundedBorder)
-                    .font(.title3)
+                    .kidText(.h2)
                     .accessibilityLabel("Child name")
 
                 Button("Start Adventure") {

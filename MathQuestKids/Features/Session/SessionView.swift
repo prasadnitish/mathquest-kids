@@ -42,9 +42,9 @@ struct SessionView: View {
                 } label: {
                     HStack(spacing: 5) {
                         Image(systemName: "chevron.left")
-                            .font(.body.weight(.semibold))
+                            .kidText(.body)
                         Text("Quit")
-                            .font(.body.weight(.semibold))
+                            .kidText(.body)
                     }
                     .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -59,14 +59,14 @@ struct SessionView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 8) {
                     Text(item.unit.title)
-                        .font(.caption.bold())
+                        .kidText(.caption)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(appState.selectedTheme.primary.opacity(0.18), in: Capsule())
 
                     if item.isReview {
                         Text("Review Item")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
                             .background(appState.selectedTheme.accent.opacity(0.24), in: Capsule())
@@ -75,7 +75,7 @@ struct SessionView: View {
                 }
 
                 Text(item.prompt)
-                    .font(.system(size: sizeClass == .compact ? 26 : 32, weight: .bold, design: .rounded))
+                    .kidText(.question)
                     .foregroundStyle(AppTheme.textPrimary)
                     .minimumScaleFactor(0.65)
                     .lineLimit(nil)
@@ -111,11 +111,11 @@ struct SessionView: View {
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(companionPhrase)
-                                .font(.subheadline.bold())
+                                .kidText(.body)
                                 .foregroundStyle(appState.selectedTheme.primary)
                                 .lineLimit(1)
                             Text(feedback)
-                                .font(.headline.weight(.semibold))
+                                .kidText(.body)
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -206,7 +206,7 @@ struct SessionView: View {
                     .animation(.easeInOut(duration: 0.4), value: progress)
                     .overlay(alignment: .trailing) {
                         Image(systemName: appState.selectedTheme.heroSymbol)
-                            .font(.title2.weight(.black))
+                            .kidText(.h2)
                             .foregroundStyle(appState.selectedTheme.primary.opacity(0.22))
                             .padding(.trailing, 14)
                     }
@@ -216,15 +216,15 @@ struct SessionView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Quest in Progress")
-                        .font(sizeClass == .compact ? .headline.bold() : .title2.bold())
+                        .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
                     Text("\(Int(progress * 100))% complete")
-                        .font(.subheadline.weight(.semibold))
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
                 Spacer()
                 Text("\(runtime.index + 1)/\(runtime.items.count)")
-                    .font(.title3.monospacedDigit().bold())
+                    .kidText(.h2)
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.82))
                     .padding(.trailing, 36)
             }
@@ -366,10 +366,10 @@ struct SessionView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(companion.name)
-                        .font(.caption.bold())
+                        .kidText(.caption)
                         .foregroundStyle(AppTheme.textSecondary)
                     Text(correctionPhrase)
-                        .font(.headline.bold())
+                        .kidText(.body)
                         .foregroundStyle(appState.selectedTheme.primary)
                 }
             }
@@ -378,14 +378,14 @@ struct SessionView: View {
             // Correct answer highlight
             HStack(spacing: 10) {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.title2.bold())
+                    .kidText(.h2)
                     .foregroundStyle(.green)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("The answer is")
-                        .font(.subheadline.weight(.semibold))
+                        .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                     Text(item.answer)
-                        .font(.title2.bold())
+                        .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
                 }
                 Spacer()
@@ -400,10 +400,10 @@ struct SessionView: View {
             // Worked explanation
             VStack(alignment: .leading, spacing: 6) {
                 Text("How to solve it")
-                    .font(.subheadline.bold())
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
                 Text(workedHint.text)
-                    .font(.body)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -563,7 +563,7 @@ struct SubtractionStoryInteraction: View {
                         .overlay {
                             if idx < removed {
                                 Image(systemName: "xmark")
-                                    .font(.caption2.bold())
+                                    .kidText(.caption)
                                     .foregroundStyle(DesignTokens.incorrect)
                             }
                         }
@@ -613,14 +613,14 @@ struct AdditionStoryInteraction: View {
                     HStack(spacing: 6) {
                         Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 12, height: 12)
                         Text("= \(left)")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                         Text("+")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                         Circle().fill(AppTheme.primary.opacity(0.7)).frame(width: 12, height: 12)
                         Text("= \(right)")
-                            .font(.caption.bold())
+                            .kidText(.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
                 }
@@ -681,7 +681,7 @@ struct NumberBondInteraction: View {
             Circle()
                 .fill(AppTheme.card)
                 .overlay(Circle().stroke(AppTheme.primary, lineWidth: 2))
-                .overlay(Text("\(Int(item.payload.target ?? 10))").font(.title.bold()).foregroundStyle(AppTheme.textPrimary))
+                .overlay(Text("\(Int(item.payload.target ?? 10))").kidText(.h1).foregroundStyle(AppTheme.textPrimary))
                 .frame(width: 72, height: 72)
 
             // Dividing line
@@ -696,7 +696,7 @@ struct NumberBondInteraction: View {
                     Circle()
                         .fill(label == "?" ? AppTheme.accent.opacity(0.2) : AppTheme.card)
                         .overlay(Circle().stroke(AppTheme.primary, lineWidth: 2))
-                        .overlay(Text(label).font(.title2.bold()).foregroundStyle(AppTheme.textPrimary))
+                        .overlay(Text(label).kidText(.h2).foregroundStyle(AppTheme.textPrimary))
                         .frame(width: 64, height: 64)
                 }
             }
@@ -737,10 +737,10 @@ struct TeenPlaceValueInteraction: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Build the number with tens and ones")
-                .font(.headline)
+                .kidText(.body)
 
             Text("Tap + or - to adjust the blocks. Big bars count as tens and small cubes count as ones.")
-                .font(.subheadline.weight(.medium))
+                .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
 
             ZStack(alignment: .center) {
@@ -758,7 +758,7 @@ struct TeenPlaceValueInteraction: View {
                             .disabled(tens == 0)
 
                             Text("Tens")
-                                .font(.subheadline.weight(.semibold))
+                                .kidText(.body)
                                 .frame(minWidth: 44)
 
                             Button { adjust(.ten, delta: 1) } label: {
@@ -785,7 +785,7 @@ struct TeenPlaceValueInteraction: View {
                             .disabled(ones == 0)
 
                             Text("Ones")
-                                .font(.subheadline.weight(.semibold))
+                                .kidText(.body)
                                 .frame(minWidth: 44)
 
                             Button { adjust(.one, delta: 1) } label: {
@@ -861,17 +861,17 @@ struct PlaceValueBucket: View {
         VStack(spacing: 10) {
             HStack {
                 Text(title)
-                    .font(.headline)
+                    .kidText(.body)
                 Spacer()
                 Text("Target \(targetCount)")
-                    .font(.caption.bold())
+                    .kidText(.caption)
                     .foregroundStyle(AppTheme.textSecondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
                     .background(AppTheme.card.opacity(0.85), in: Capsule())
             }
             Text("\(count)")
-                .font(.largeTitle.bold())
+                .kidText(.display)
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)
             blockPreview
@@ -897,7 +897,7 @@ struct PlaceValueBucket: View {
                 }
                 if count > 5 {
                     Text("+\(count - 5)")
-                        .font(.caption.bold())
+                        .kidText(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -934,7 +934,7 @@ struct ComparisonInteraction: View {
             HStack(spacing: 12) {
                 NumberBadge(number: item.payload.left ?? 0)
                 Text("?")
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .kidText(.h1)
                 NumberBadge(number: item.payload.right ?? 0)
             }
             .frame(maxWidth: .infinity)
@@ -972,7 +972,7 @@ struct MultiplicationArrayInteraction: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Build the array: \(rows) rows × \(columns) columns")
-                .font(.headline)
+                .kidText(.body)
 
             VStack(spacing: 4) {
                 ForEach(0..<min(rows, 8), id: \.self) { _ in
@@ -1016,7 +1016,7 @@ struct FractionComparisonInteraction: View {
             HStack(spacing: 12) {
                 FractionBadge(numerator: aTop, denominator: aBottom)
                 Text("?")
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .kidText(.h1)
                 FractionBadge(numerator: bTop, denominator: bBottom)
             }
             .frame(maxWidth: .infinity)
@@ -1046,7 +1046,7 @@ struct FractionOfWholeInteraction: View {
 
         return VStack(alignment: .leading, spacing: 14) {
             Text("Find \(num)/\(den) of \(whole)")
-                .font(.headline)
+                .kidText(.body)
 
             ProgressView(value: Double(num), total: Double(den))
                 .tint(AppTheme.primary)
@@ -1076,7 +1076,7 @@ struct VolumePrismInteraction: View {
 
         return VStack(alignment: .leading, spacing: 14) {
             Text("Volume = length × width × height")
-                .font(.headline)
+                .kidText(.body)
 
             HStack(spacing: 12) {
                 MetricBadge(title: "L", value: l)
@@ -1110,7 +1110,7 @@ struct DecimalComparisonInteraction: View {
             HStack(spacing: 12) {
                 DecimalBadge(value: left)
                 Text("?")
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .kidText(.h1)
                 DecimalBadge(value: right)
             }
             .frame(maxWidth: .infinity)
@@ -1134,7 +1134,7 @@ struct NumberBadge: View {
 
     var body: some View {
         Text("\(number)")
-            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .kidText(.h1)
             .minimumScaleFactor(0.6)
             .lineLimit(1)
             .padding(.horizontal, 14)
@@ -1150,7 +1150,7 @@ struct FractionBadge: View {
     var body: some View {
         VStack(spacing: 4) {
             Text("\(numerator)")
-                .font(.title2.bold())
+                .kidText(.h2)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
             Rectangle()
@@ -1158,7 +1158,7 @@ struct FractionBadge: View {
                 .frame(height: 2)
                 .frame(minWidth: 28)
             Text("\(denominator)")
-                .font(.title2.bold())
+                .kidText(.h2)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
         }
@@ -1173,7 +1173,7 @@ struct DecimalBadge: View {
 
     var body: some View {
         Text(String(format: "%.3f", value))
-            .font(.system(size: 26, weight: .bold, design: .rounded))
+            .kidText(.question)
             .minimumScaleFactor(0.6)
             .lineLimit(1)
             .padding(.horizontal, 12)
@@ -1189,10 +1189,10 @@ struct MetricBadge: View {
     var body: some View {
         VStack(spacing: 4) {
             Text(title)
-                .font(.caption.bold())
+                .kidText(.caption)
                 .foregroundStyle(.secondary)
             Text("\(value)")
-                .font(.title3.bold())
+                .kidText(.h2)
         }
         .padding(10)
         .frame(width: 56)
@@ -1223,7 +1223,7 @@ struct GroupComparisonInteraction: View {
     }
     private func dotGroup(count: Int, label: String, color: Color) -> some View {
         VStack(spacing: 6) {
-            Text(label).font(.caption.bold()).foregroundStyle(AppTheme.textSecondary)
+            Text(label).kidText(.caption).foregroundStyle(AppTheme.textSecondary)
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(24)), count: 5), spacing: 6) {
                 ForEach(0..<max(count, 0), id: \.self) { _ in
                     Circle().fill(color.opacity(0.8)).frame(width: 20, height: 20)
@@ -1276,7 +1276,7 @@ struct MeasureLengthInteraction: View {
                 ForEach(0...12, id: \.self) { tick in
                     VStack(spacing: 2) {
                         Rectangle().fill(AppTheme.textPrimary.opacity(0.6)).frame(width: 1, height: tick % 5 == 0 ? 18 : 10)
-                        Text("\(tick)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                        Text("\(tick)").kidText(.caption).foregroundStyle(AppTheme.textSecondary)
                     }.frame(width: 32)
                 }
             }
@@ -1302,7 +1302,7 @@ struct DivisionGroupsInteraction: View {
     private var perGroup: Int { max(1, total / groups) }
     var body: some View {
         VStack(spacing: 16) {
-            Text("\(total) items \u{00F7} \(groups) groups").font(.headline)
+            Text("\(total) items \u{00F7} \(groups) groups").kidText(.body)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: min(groups, 4)), spacing: 12) {
                 ForEach(0..<min(groups, 8), id: \.self) { g in
                     VStack(spacing: 4) {
@@ -1311,7 +1311,7 @@ struct DivisionGroupsInteraction: View {
                                 Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 14, height: 14)
                             }
                         }
-                        Text("Group \(g + 1)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                        Text("Group \(g + 1)").kidText(.caption).foregroundStyle(AppTheme.textSecondary)
                     }
                     .padding(8)
                     .background(AppTheme.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
@@ -1336,7 +1336,7 @@ struct AreaTilingInteraction: View {
     private var cols: Int { item.payload.width ?? item.payload.multiplier ?? 4 }
     var body: some View {
         VStack(spacing: 16) {
-            Text("\(rows) rows \u{00D7} \(cols) columns = ?").font(.headline)
+            Text("\(rows) rows \u{00D7} \(cols) columns = ?").kidText(.body)
             VStack(spacing: 2) {
                 ForEach(0..<min(rows, 10), id: \.self) { _ in
                     HStack(spacing: 2) {
@@ -1395,7 +1395,7 @@ struct ClockFaceView: View {
                 ForEach(1...12, id: \.self) { h in
                     let angle = Double(h) * .pi / 6 - .pi / 2
                     let r = size / 2 - 20
-                    Text("\(h)").font(.caption.bold())
+                    Text("\(h)").kidText(.caption)
                         .position(x: center.x + r * cos(angle), y: center.y + r * sin(angle))
                 }
                 // Hour hand
@@ -1431,9 +1431,9 @@ struct CoinDisplayView: View {
                         Circle().fill(name == "P" ? Color.orange.opacity(0.6) : Color.gray.opacity(0.4))
                             .frame(width: name == "Q" ? 40 : name == "D" ? 28 : 34,
                                    height: name == "Q" ? 40 : name == "D" ? 28 : 34)
-                        Text(name).font(.caption.bold())
+                        Text(name).kidText(.caption)
                     }
-                    Text("\u{00D7}\(count)").font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                    Text("\u{00D7}\(count)").kidText(.caption).foregroundStyle(AppTheme.textSecondary)
                 }
             }
         }
@@ -1451,10 +1451,10 @@ struct DataPlotInteraction: View {
             HStack(alignment: .bottom, spacing: 12) {
                 ForEach(0..<min(values.count, labels.count), id: \.self) { i in
                     VStack(spacing: 4) {
-                        Text("\(values[i])").font(.caption.bold())
+                        Text("\(values[i])").kidText(.caption)
                         RoundedRectangle(cornerRadius: 4).fill(AppTheme.primary.opacity(0.6 + 0.1 * Double(i)))
                             .frame(width: 36, height: CGFloat(values[i]) / CGFloat(maxVal) * 100)
-                        Text(labels[i]).font(.caption2.bold()).foregroundStyle(AppTheme.textSecondary)
+                        Text(labels[i]).kidText(.caption).foregroundStyle(AppTheme.textSecondary)
                     }
                 }
             }.frame(height: 140).padding()
@@ -1488,7 +1488,7 @@ struct AngleMeasureInteraction: View {
                 Path { p in
                     p.addArc(center: CGPoint(x: 30, y: 130), radius: 40, startAngle: .degrees(0), endAngle: .degrees(-deg), clockwise: true)
                 }.stroke(AppTheme.accent, style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
-                Text("?\u{00B0}").font(.headline.bold())
+                Text("?\u{00B0}").kidText(.body)
                     .position(x: 30 + 55 * cos(deg / 2 * .pi / 180), y: 130 - 55 * sin(deg / 2 * .pi / 180))
             }.frame(width: 230, height: 160)
             HStack(spacing: 8) {
@@ -1515,10 +1515,10 @@ struct FractionAddSubInteraction: View {
         VStack(spacing: 16) {
             HStack(spacing: 12) {
                 fractionVisual(numerator: numA, denominator: denA, color: AppTheme.accent)
-                Text(isSubtraction ? "\u{2212}" : "+").font(.title.bold())
+                Text(isSubtraction ? "\u{2212}" : "+").kidText(.h1)
                 fractionVisual(numerator: numB, denominator: denB, color: AppTheme.primary)
             }
-            Text("= ?").font(.title2.bold()).foregroundStyle(AppTheme.textPrimary)
+            Text("= ?").kidText(.h2).foregroundStyle(AppTheme.textPrimary)
             HStack(spacing: 8) {
                 ForEach(item.options, id: \.self) { opt in
                     ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
@@ -1531,7 +1531,7 @@ struct FractionAddSubInteraction: View {
     }
     private func fractionVisual(numerator: Int, denominator: Int, color: Color) -> some View {
         VStack(spacing: 4) {
-            Text("\(numerator)/\(denominator)").font(.headline.bold())
+            Text("\(numerator)/\(denominator)").kidText(.body)
             HStack(spacing: 1) {
                 ForEach(0..<denominator, id: \.self) { i in
                     Rectangle().fill(i < numerator ? color.opacity(0.7) : Color.gray.opacity(0.15))
@@ -1570,8 +1570,14 @@ struct RatioTableInteraction: View {
     private func ratioRow(cells: [String], header: Bool) -> some View {
         HStack(spacing: 0) {
             ForEach(cells.indices, id: \.self) { i in
-                Text(cells[i]).font(header ? .caption.bold() : .body.bold())
-                    .frame(width: 54, height: 36)
+                Group {
+                    if header {
+                        Text(cells[i]).kidText(.caption)
+                    } else {
+                        Text(cells[i]).kidText(.body)
+                    }
+                }
+                .frame(width: 54, height: 36)
                     .background(header ? AppTheme.primary.opacity(0.1) : (cells[i] == "?" ? AppTheme.accent.opacity(0.2) : Color.clear))
                     .overlay(Rectangle().stroke(AppTheme.primary.opacity(0.12), lineWidth: 0.5))
             }
@@ -1587,7 +1593,7 @@ struct ChoiceButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.title3.bold())
+                .kidText(.answer)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .frame(maxWidth: .infinity)
