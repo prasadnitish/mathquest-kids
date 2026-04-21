@@ -182,18 +182,14 @@ enum AppTheme {
     static var accent: Color { VisualTheme.loadPersisted().accent }
     static var onPrimaryText: Color { VisualTheme.loadPersisted().onPrimaryText }
     static let error = Color(red: 0.75, green: 0.23, blue: 0.20)
-    static var textPrimary: Color {
-        Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(white: 0.93, alpha: 1.0)
-                : UIColor(red: 0.08, green: 0.12, blue: 0.15, alpha: 1.0)
-        })
-    }
-    static var textSecondary: Color {
-        Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(white: 0.65, alpha: 1.0)
-                : UIColor(red: 0.28, green: 0.32, blue: 0.37, alpha: 1.0)
-        })
-    }
+    static let textPrimary: Color = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.93, alpha: 1.0)
+            : UIColor(red: 0.08, green: 0.12, blue: 0.15, alpha: 1.0)
+    })
+    static let textSecondary: Color = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.65, alpha: 1.0)
+            : UIColor(red: 0.28, green: 0.32, blue: 0.37, alpha: 1.0)
+    })
 }
