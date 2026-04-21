@@ -7,8 +7,7 @@ final class CoreDataStack {
     let persistentContainer: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        let model = Self.makeModel()
-        persistentContainer = NSPersistentContainer(name: "MathQuestKidsModel", managedObjectModel: model)
+        persistentContainer = NSPersistentContainer(name: "MathQuestKidsModel", managedObjectModel: Self.sharedModel)
 
         if inMemory {
             let description = NSPersistentStoreDescription()
@@ -49,6 +48,12 @@ final class CoreDataStack {
         guard context.hasChanges else { return }
         try context.save()
     }
+
+    // A single shared NSManagedObjectModel instance for the entire process.
+    // Multiple models that claim the same @objc(CDFoo) subclasses cause
+    // "+entity" lookups to be ambiguous and insertions to bind to the wrong
+    // store — which is what made parallel in-memory tests flaky.
+    private static let sharedModel: NSManagedObjectModel = makeModel()
 
     private static func makeModel() -> NSManagedObjectModel {
         let model = NSManagedObjectModel()
