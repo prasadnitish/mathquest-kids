@@ -251,7 +251,7 @@ struct SessionView: View {
             Label("Read Aloud", systemImage: "speaker.wave.2.fill")
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(PrimaryButtonStyle())
+        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
         .accessibilityLabel("Read Aloud")
     }
 
@@ -261,7 +261,7 @@ struct SessionView: View {
         } label: {
             Label("Submit", systemImage: "checkmark.circle.fill")
         }
-        .buttonStyle(PrimaryButtonStyle())
+        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
         .disabled(selectedChoice.isEmpty)
         .accessibilityLabel("Submit Answer")
     }
@@ -411,7 +411,7 @@ struct SessionView: View {
             } label: {
                 Label("Got it, next question!", systemImage: "arrow.right.circle.fill")
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
             .accessibilityLabel("Acknowledge correction and continue")
         }
         .padding(18)

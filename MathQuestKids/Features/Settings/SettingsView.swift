@@ -38,7 +38,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(SecondaryButtonStyle())
 
                         if !gateMessage.isEmpty {
                             Text(gateMessage)
@@ -204,7 +204,7 @@ struct SettingsView: View {
                                 ShareLink(item: diagnosticsExportURL) {
                                     Label("Share Diagnostics File", systemImage: "square.and.arrow.up")
                                 }
-                                .buttonStyle(PrimaryButtonStyle())
+                                .buttonStyle(SecondaryButtonStyle())
 
                                 Text(diagnosticsExportURL.lastPathComponent)
                                     .font(.caption)

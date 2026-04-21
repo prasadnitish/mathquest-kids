@@ -31,7 +31,7 @@ struct ProfileSetupView: View {
                 Button("Start Adventure") {
                     appState.createProfile(name: name)
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .accessibilityLabel("Start Adventure")
             }

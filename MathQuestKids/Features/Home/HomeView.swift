@@ -163,7 +163,7 @@ struct HomeView: View {
                     Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
                         appState.startRecommendedSession()
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
 
                     Button("View K-5 Lesson Plan") {
                         appState.openLessonPlans()
@@ -174,7 +174,7 @@ struct HomeView: View {
                     Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
                         appState.startRecommendedSession()
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
 
                     Button("View K-5 Lesson Plan") {
                         appState.openLessonPlans()
@@ -417,7 +417,7 @@ struct UnitCardView: View {
             Button(unlocked ? "Start" : "Locked") {
                 onStart()
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PlayButtonStyle(theme: appState.selectedTheme))
             .disabled(!unlocked)
             .accessibilityLabel("Start \(unit.title)")
         }

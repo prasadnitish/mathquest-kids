@@ -104,17 +104,6 @@ struct DisabledButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - Backwards-compat shim (for WS5-pending code)
-
-/// Temporary alias so pre-migration call sites keep compiling.
-/// Remove after WS5 Task 5.2 completes.
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        CTAButtonStyle(theme: VisualTheme.loadPersisted())
-            .makeBody(configuration: configuration)
-    }
-}
-
 // MARK: - Motion stub (temporary — removed when WS10 lands real Motion.swift)
 
 #if !WS10_MOTION_AVAILABLE
