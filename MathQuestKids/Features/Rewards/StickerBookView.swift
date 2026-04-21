@@ -8,11 +8,7 @@ struct StickerBookView: View {
 
     var body: some View {
         ZStack {
-            ThemedBackgroundView(theme: appState.selectedTheme)
-                .ignoresSafeArea()
-
-            // Translucent overlay for readability
-            Color(.systemBackground).opacity(0.7)
+            ThemedBackgroundView(theme: appState.selectedTheme, mode: .gradientOnly)
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -66,6 +62,7 @@ struct StickerBookView: View {
                     .padding(.top, 4)
                     .padding(.bottom, 40)
                 }
+                .scrollContentBackground(.hidden)
             }
 
             // Feedback overlay for locked sticker taps

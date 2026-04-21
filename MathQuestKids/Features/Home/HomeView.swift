@@ -19,6 +19,7 @@ struct HomeView: View {
             .padding(.top, 84)
             .padding(.bottom, 32)
         }
+        .scrollContentBackground(.hidden)
         .overlay(alignment: .top) {
             if let message = appState.statusMessage {
                 Text(message)

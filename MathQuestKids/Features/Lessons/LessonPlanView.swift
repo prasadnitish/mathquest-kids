@@ -7,7 +7,7 @@ struct LessonPlanView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
+            ThemedBackgroundView(theme: appState.selectedTheme, mode: .gradientOnly)
                 .ignoresSafeArea()
 
             ScrollView {
@@ -28,6 +28,7 @@ struct LessonPlanView: View {
                 .padding(.top, 8)
                 .padding(.bottom, 40)
             }
+            .scrollContentBackground(.hidden)
         }
         .onAppear {
             selectedGrade = appState.adaptivePath.placedGrade

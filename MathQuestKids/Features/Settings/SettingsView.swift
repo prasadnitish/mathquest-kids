@@ -12,7 +12,11 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            ZStack {
+                ThemedBackgroundView(theme: appState.selectedTheme, mode: .gradientOnly)
+                    .ignoresSafeArea()
+
+                Group {
                 if appState.parentGateRequired {
                     VStack(spacing: 14) {
                         Text(appState.parentGatePrompt.prompt)
@@ -219,7 +223,9 @@ struct SettingsView: View {
                         }
                         .padding(24)
                     }
+                    .scrollContentBackground(.hidden)
                 }
+            }
             }
             .navigationTitle("Settings")
             .toolbar {
