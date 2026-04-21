@@ -281,51 +281,52 @@ struct SessionView: View {
 
     @ViewBuilder
     private func manipulativeArea(item: PracticeItem) -> some View {
+        let theme = appState.selectedTheme
         switch item.format {
         case .subtractionStory:
-            SubtractionStoryInteraction(item: item, selection: $selectedChoice)
+            SubtractionStoryInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .teenPlaceValue:
             TeenPlaceValueInteraction(item: item, selection: $selectedChoice)
         case .twoDigitComparison:
-            ComparisonInteraction(item: item, selection: $selectedChoice)
+            ComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .threeDigitComparison:
-            ThreeDigitComparisonInteraction(item: item, selection: $selectedChoice)
+            ThreeDigitComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .multiplicationArray:
-            MultiplicationArrayInteraction(item: item, selection: $selectedChoice)
+            MultiplicationArrayInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .fractionComparison:
-            FractionComparisonInteraction(item: item, selection: $selectedChoice)
+            FractionComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .fractionOfWhole:
-            FractionOfWholeInteraction(item: item, selection: $selectedChoice)
+            FractionOfWholeInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .volumePrism:
-            VolumePrismInteraction(item: item, selection: $selectedChoice)
+            VolumePrismInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .decimalComparison:
-            DecimalComparisonInteraction(item: item, selection: $selectedChoice)
+            DecimalComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .additionStory, .addTwoDigit, .subTwoDigit, .factFamily:
-            AdditionStoryInteraction(item: item, selection: $selectedChoice)
+            AdditionStoryInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .countAndMatch:
-            CountAndMatchInteraction(item: item, selection: $selectedChoice)
+            CountAndMatchInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .numberBond:
-            NumberBondInteraction(item: item, selection: $selectedChoice)
+            NumberBondInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .groupComparison:
-            GroupComparisonInteraction(item: item, selection: $selectedChoice)
+            GroupComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .shapeClassification:
-            ShapeClassificationInteraction(item: item, selection: $selectedChoice)
+            ShapeClassificationInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .measureLength:
-            MeasureLengthInteraction(item: item, selection: $selectedChoice)
+            MeasureLengthInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .divisionGroups:
-            DivisionGroupsInteraction(item: item, selection: $selectedChoice)
+            DivisionGroupsInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .areaTiling:
-            AreaTilingInteraction(item: item, selection: $selectedChoice)
+            AreaTilingInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .timeMoney:
-            TimeMoneyInteraction(item: item, selection: $selectedChoice)
+            TimeMoneyInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .dataPlot:
-            DataPlotInteraction(item: item, selection: $selectedChoice)
+            DataPlotInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .angleMeasure:
-            AngleMeasureInteraction(item: item, selection: $selectedChoice)
+            AngleMeasureInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .fractionAddSub:
-            FractionAddSubInteraction(item: item, selection: $selectedChoice)
+            FractionAddSubInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .ratioTable:
-            RatioTableInteraction(item: item, selection: $selectedChoice)
+            RatioTableInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         }
     }
 
@@ -423,6 +424,13 @@ struct SessionView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private func recordDefer() {
+        // "I don't know yet" — trigger the hint system so the child gets guidance
+        // without scoring the question as wrong.
+        activeHint = appState.requestHint()
+        showingHint = true
     }
 
     private func submit(item: PracticeItem) {
@@ -548,6 +556,8 @@ struct SessionView: View {
 struct SubtractionStoryInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -571,12 +581,23 @@ struct SubtractionStoryInteraction: View {
             }
             .padding(.vertical, 8)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -588,6 +609,8 @@ struct SubtractionStoryInteraction: View {
 struct AdditionStoryInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -627,12 +650,23 @@ struct AdditionStoryInteraction: View {
             }
             .padding(.vertical, 8)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -644,6 +678,8 @@ struct AdditionStoryInteraction: View {
 struct CountAndMatchInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 16) {
@@ -657,12 +693,23 @@ struct CountAndMatchInteraction: View {
             }
             .padding()
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -674,6 +721,8 @@ struct CountAndMatchInteraction: View {
 struct NumberBondInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 20) {
@@ -701,12 +750,23 @@ struct NumberBondInteraction: View {
                 }
             }
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -928,6 +988,8 @@ enum TokenKind {
 struct ComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -939,12 +1001,23 @@ struct ComparisonInteraction: View {
             }
             .frame(maxWidth: .infinity)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -956,15 +1029,19 @@ struct ComparisonInteraction: View {
 struct ThreeDigitComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
-        ComparisonInteraction(item: item, selection: $selection)
+        ComparisonInteraction(item: item, selection: $selection, theme: theme, onDefer: onDefer)
     }
 }
 
 struct MultiplicationArrayInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     private var rows: Int { item.payload.multiplicand ?? 1 }
     private var columns: Int { item.payload.multiplier ?? 1 }
@@ -988,12 +1065,23 @@ struct MultiplicationArrayInteraction: View {
             .padding(12)
             .background(AppTheme.card.opacity(0.9), in: RoundedRectangle(cornerRadius: 12))
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1005,6 +1093,8 @@ struct MultiplicationArrayInteraction: View {
 struct FractionComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         let aTop = item.payload.numeratorA ?? 0
@@ -1021,12 +1111,23 @@ struct FractionComparisonInteraction: View {
             }
             .frame(maxWidth: .infinity)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1038,6 +1139,8 @@ struct FractionComparisonInteraction: View {
 struct FractionOfWholeInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         let num = item.payload.numeratorA ?? 1
@@ -1051,12 +1154,23 @@ struct FractionOfWholeInteraction: View {
             ProgressView(value: Double(num), total: Double(den))
                 .tint(AppTheme.primary)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1068,6 +1182,8 @@ struct FractionOfWholeInteraction: View {
 struct VolumePrismInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         let l = item.payload.length ?? 1
@@ -1084,12 +1200,23 @@ struct VolumePrismInteraction: View {
                 MetricBadge(title: "H", value: h)
             }
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1101,6 +1228,8 @@ struct VolumePrismInteraction: View {
 struct DecimalComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
     var body: some View {
         let left = item.payload.decimalLeft ?? 0
@@ -1115,12 +1244,23 @@ struct DecimalComparisonInteraction: View {
             }
             .frame(maxWidth: .infinity)
 
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { option in
-                    ChoiceButton(title: option, isSelected: selection == option) {
-                        selection = option
-                    }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1205,16 +1345,31 @@ struct MetricBadge: View {
 struct GroupComparisonInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     var body: some View {
         VStack(spacing: 16) {
             HStack(spacing: 24) {
                 dotGroup(count: item.payload.left ?? 0, label: "Group A", color: AppTheme.accent)
                 dotGroup(count: item.payload.right ?? 0, label: "Group B", color: AppTheme.primary)
             }
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1238,6 +1393,8 @@ struct GroupComparisonInteraction: View {
 struct ShapeClassificationInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var shapeSymbol: String {
         switch item.payload.shapeName ?? "" {
         case "Triangle": return "triangle.fill"
@@ -1254,9 +1411,22 @@ struct ShapeClassificationInteraction: View {
         VStack(spacing: 16) {
             Image(systemName: shapeSymbol).font(.system(size: 80)).foregroundStyle(AppTheme.primary.opacity(0.7)).frame(height: 120)
             VStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1268,6 +1438,8 @@ struct ShapeClassificationInteraction: View {
 struct MeasureLengthInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var objectLength: Int { Int(item.payload.target ?? 5) }
     var body: some View {
         VStack(spacing: 16) {
@@ -1282,10 +1454,23 @@ struct MeasureLengthInteraction: View {
             }
             .padding(.horizontal, 8).padding(.vertical, 6)
             .background(Color.yellow.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1297,6 +1482,8 @@ struct MeasureLengthInteraction: View {
 struct DivisionGroupsInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var total: Int { item.payload.dividend ?? (item.payload.multiplicand ?? 1) * (item.payload.multiplier ?? 1) }
     private var groups: Int { max(item.payload.divisor ?? item.payload.multiplier ?? 1, 1) }
     private var perGroup: Int { max(1, total / groups) }
@@ -1317,10 +1504,23 @@ struct DivisionGroupsInteraction: View {
                     .background(AppTheme.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
                 }
             }
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1332,6 +1532,8 @@ struct DivisionGroupsInteraction: View {
 struct AreaTilingInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var rows: Int { item.payload.length ?? item.payload.multiplicand ?? 3 }
     private var cols: Int { item.payload.width ?? item.payload.multiplier ?? 4 }
     var body: some View {
@@ -1348,10 +1550,23 @@ struct AreaTilingInteraction: View {
                 }
             }
             .padding(8).background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1363,6 +1578,8 @@ struct AreaTilingInteraction: View {
 struct TimeMoneyInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var isTimeQuestion: Bool { item.payload.hours != nil }
     var body: some View {
         VStack(spacing: 16) {
@@ -1371,10 +1588,23 @@ struct TimeMoneyInteraction: View {
             } else {
                 CoinDisplayView(cents: item.payload.cents ?? 0)
             }
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1443,6 +1673,8 @@ struct CoinDisplayView: View {
 struct DataPlotInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var values: [Int] { item.payload.barValues ?? [3, 5, 2, 4] }
     private var labels: [String] { item.payload.barLabels ?? ["A", "B", "C", "D"] }
     private var maxVal: Int { max(values.max() ?? 1, 1) }
@@ -1459,10 +1691,23 @@ struct DataPlotInteraction: View {
                 }
             }.frame(height: 140).padding()
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1474,6 +1719,8 @@ struct DataPlotInteraction: View {
 struct AngleMeasureInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var deg: Double { Double(item.payload.degrees ?? 90) }
     var body: some View {
         VStack(spacing: 16) {
@@ -1491,10 +1738,23 @@ struct AngleMeasureInteraction: View {
                 Text("?\u{00B0}").kidText(.body)
                     .position(x: 30 + 55 * cos(deg / 2 * .pi / 180), y: 130 - 55 * sin(deg / 2 * .pi / 180))
             }.frame(width: 230, height: 160)
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1506,6 +1766,8 @@ struct AngleMeasureInteraction: View {
 struct FractionAddSubInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var numA: Int { item.payload.numeratorA ?? 1 }
     private var denA: Int { max(item.payload.denominatorA ?? 1, 1) }
     private var numB: Int { item.payload.numeratorB ?? 1 }
@@ -1519,10 +1781,23 @@ struct FractionAddSubInteraction: View {
                 fractionVisual(numerator: numB, denominator: denB, color: AppTheme.primary)
             }
             Text("= ?").kidText(.h2).foregroundStyle(AppTheme.textPrimary)
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1546,6 +1821,8 @@ struct FractionAddSubInteraction: View {
 struct RatioTableInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
     private var ratioL: Int { item.payload.ratioLeft ?? item.payload.left ?? 2 }
     private var ratioR: Int { item.payload.ratioRight ?? item.payload.right ?? 3 }
     var body: some View {
@@ -1557,10 +1834,23 @@ struct RatioTableInteraction: View {
             }
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.primary.opacity(0.2), lineWidth: 1))
-            HStack(spacing: 8) {
-                ForEach(item.options, id: \.self) { opt in
-                    ChoiceButton(title: opt, isSelected: selection == opt) { selection = opt }
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
+                    AnswerButton(
+                        index: index,
+                        title: opt,
+                        state: selection == opt ? .selected : .default,
+                        theme: theme,
+                        action: { selection = opt }
+                    )
                 }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
             }
         }
         .padding()
@@ -1582,31 +1872,5 @@ struct RatioTableInteraction: View {
                     .overlay(Rectangle().stroke(AppTheme.primary.opacity(0.12), lineWidth: 0.5))
             }
         }
-    }
-}
-
-struct ChoiceButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .kidText(.answer)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 10)
-                .background(isSelected ? AppTheme.primary.opacity(0.24) : AppTheme.card)
-                .foregroundStyle(AppTheme.textPrimary)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(AppTheme.primary.opacity(isSelected ? 0.78 : 0.5), lineWidth: isSelected ? 2 : 1)
-                )
-        }
-        .accessibilityLabel("Option \(title)")
     }
 }
