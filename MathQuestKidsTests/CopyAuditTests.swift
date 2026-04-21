@@ -40,4 +40,37 @@ struct CopyAuditTests {
             #expect(!source.contains(".textCase(.uppercase)"), "Child-facing file \(file.lastPathComponent) uses .textCase(.uppercase); forbidden by design system.")
         }
     }
+
+    @Test
+    func childFeaturesHaveNoAccuracyPercentString() throws {
+        // Accuracy % belongs in Parent Mode only.
+        let parentOnly = ["ParentDashboardView.swift", "DomainCoverageCard.swift"]
+        for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
+            let source = try String(contentsOf: file)
+            #expect(!source.contains("\"Accuracy\""),
+                    "Child file \(file.lastPathComponent) renders an 'Accuracy' label; move to parent mode.")
+        }
+    }
+
+    @Test
+    func childFeaturesHaveNoGradeLabelInText() throws {
+        let parentOnly = ["ParentDashboardView.swift", "DomainCoverageCard.swift"]
+        let regex = try Regex(#"Text\(\s*"Grade \d"#)
+        for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
+            let source = try String(contentsOf: file)
+            #expect(source.firstMatch(of: regex) == nil,
+                    "Child file \(file.lastPathComponent) hardcodes a 'Grade N' label.")
+        }
+    }
+
+    @Test
+    func childFeaturesHaveNoKindergartenLabelInText() throws {
+        // Specific catch for the literal "Kindergarten" — the critique flagged this on the question screen.
+        let parentOnly = ["ParentDashboardView.swift", "DomainCoverageCard.swift"]
+        for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
+            let source = try String(contentsOf: file)
+            #expect(!source.contains("\"Kindergarten\""),
+                    "Child file \(file.lastPathComponent) uses literal 'Kindergarten' label; move to parent mode.")
+        }
+    }
 }
