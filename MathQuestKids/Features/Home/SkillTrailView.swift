@@ -20,12 +20,12 @@ struct SkillTrailView: View {
                                        .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios]
 
         return [
-            ("Kindergarten", trail.nodes.filter { kUnits.contains($0.unit) }),
-            ("Grade 1", trail.nodes.filter { g1Units.contains($0.unit) }),
-            ("Grade 2", trail.nodes.filter { g2Units.contains($0.unit) }),
-            ("Grade 3", trail.nodes.filter { g3Units.contains($0.unit) }),
-            ("Grade 4", trail.nodes.filter { g4Units.contains($0.unit) }),
-            ("Grade 5", trail.nodes.filter { g5Units.contains($0.unit) }),
+            ("Chapter 1", trail.nodes.filter { kUnits.contains($0.unit) }),
+            ("Chapter 2", trail.nodes.filter { g1Units.contains($0.unit) }),
+            ("Chapter 3", trail.nodes.filter { g2Units.contains($0.unit) }),
+            ("Chapter 4", trail.nodes.filter { g3Units.contains($0.unit) }),
+            ("Chapter 5", trail.nodes.filter { g4Units.contains($0.unit) }),
+            ("Chapter 6", trail.nodes.filter { g5Units.contains($0.unit) }),
         ].filter { !$0.1.isEmpty }
     }
 

@@ -52,19 +52,9 @@ struct HomeView: View {
                 .kidText(.h2)
                 .foregroundStyle(AppTheme.textSecondary)
 
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) {
-                    summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
-                    summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
-                    summaryPill(title: "Accuracy", value: "\(Int(appState.dashboard.averageAccuracy * 100))%")
-                }
-                VStack(spacing: 8) {
-                    HStack(spacing: 10) {
-                        summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
-                        summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
-                    }
-                    summaryPill(title: "Accuracy", value: "\(Int(appState.dashboard.averageAccuracy * 100))%")
-                }
+            HStack(spacing: 10) {
+                summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
+                summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -107,13 +97,6 @@ struct HomeView: View {
 
                 Spacer()
 
-                if appState.dashboard.completedSessions > 0 {
-                    Text("\(Int(appState.dashboard.averageAccuracy * 100))%")
-                        .kidText(.h2)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(appState.selectedTheme.accent.opacity(0.28), in: Capsule())
-                }
             }
 
             if appState.adaptivePath.recommendedLessons.isEmpty {
@@ -329,11 +312,9 @@ struct HomeView: View {
                 .foregroundStyle(AppTheme.textPrimary)
             Text("Streak: \(appState.dashboard.streakDays) day\(appState.dashboard.streakDays == 1 ? "" : "s")")
                 .kidText(.body)
-            Text("Sessions: \(appState.dashboard.completedSessions)  ·  Accuracy: \(Int(appState.dashboard.averageAccuracy * 100))%")
+            Text("Sessions: \(appState.dashboard.completedSessions)")
                 .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
-                .lineLimit(2)
-                .minimumScaleFactor(0.8)
             ProgressView(value: appState.dashboard.rewardProgress)
                 .tint(appState.selectedTheme.primary)
             Text("Keep a 5-day streak to unlock a bonus badge.")
