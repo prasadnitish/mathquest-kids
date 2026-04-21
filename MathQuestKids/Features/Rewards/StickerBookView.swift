@@ -6,6 +6,10 @@ struct StickerBookView: View {
 
     private let columns = [GridItem(.adaptive(minimum: 100, maximum: 140))]
 
+    /// Maximum number of locked-but-not-yet-earned sticker slots shown in the grid.
+    /// The rest collapse into a single MysteryTile to keep the reward loop feeling achievable.
+    private let maxVisibleLocked = 4
+
     var body: some View {
         ZStack {
             ThemedBackgroundView(theme: appState.selectedTheme, mode: .gradientOnly)
@@ -50,7 +54,14 @@ struct StickerBookView: View {
                             .padding(.horizontal, 20)
 
                         LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(appState.stickerCollection.stickers) { sticker in
+                            // All unlocked stickers — shown in full
+                            let unlocked = appState.stickerCollection.stickers.filter { $0.isUnlocked }
+                            // Locked stickers — preserved in learning-path order
+                            let locked = appState.stickerCollection.stickers.filter { !$0.isUnlocked }
+                            let visibleLocked = Array(locked.prefix(maxVisibleLocked))
+                            let hiddenLockedCount = max(0, locked.count - visibleLocked.count)
+
+                            ForEach(unlocked + visibleLocked) { sticker in
                                 StickerSlotView(
                                     sticker: sticker,
                                     theme: appState.selectedTheme
@@ -63,6 +74,10 @@ struct StickerBookView: View {
                                         }
                                     }
                                 }
+                            }
+
+                            if hiddenLockedCount > 0 {
+                                MysteryTile(count: hiddenLockedCount)
                             }
                         }
                         .padding(.horizontal, 16)
@@ -151,5 +166,31 @@ struct StickerSlotView: View {
             ? "\(sticker.title) earned"
             : "Locked. Complete \(sticker.unitType.title) to unlock.")
         .opacity(sticker.isUnlocked ? 1 : 0.6)
+    }
+}
+
+/// Collapses all remaining locked stickers into a single encouraging tile
+/// so children see a bounded reward loop rather than an endless wall of grey locks.
+private struct MysteryTile: View {
+    let count: Int
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("✨")
+                .font(.system(size: 32))
+            Text("More coming!")
+                .kidText(.caption)
+        }
+        .frame(maxWidth: .infinity, minHeight: 110)
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                .stroke(
+                    Color.white.opacity(0.4),
+                    style: StrokeStyle(lineWidth: 2, dash: [6, 4])
+                )
+        )
+        .foregroundStyle(.white)
+        .accessibilityLabel("More surprises coming — \(count) sticker\(count == 1 ? "" : "s") still to earn")
     }
 }
