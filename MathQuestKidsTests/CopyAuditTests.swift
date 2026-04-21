@@ -73,4 +73,35 @@ struct CopyAuditTests {
                     "Child file \(file.lastPathComponent) uses literal 'Kindergarten' label; move to parent mode.")
         }
     }
+
+    @Test
+    func childFeaturesHaveNoForbiddenWords() throws {
+        let parentOnly = ["ParentDashboardView.swift", "DomainCoverageCard.swift"]
+        let forbidden = [
+            "\"Wrong\"", "\"Incorrect\"",
+            "\"CPA\"", "\"Spiral Review\"", "\"Variation Theory\"",
+            "\"Domain\"",
+        ]
+        for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
+            let source = try String(contentsOf: file)
+            for word in forbidden {
+                #expect(!source.contains(word),
+                        "Child file \(file.lastPathComponent) contains forbidden literal \(word)")
+            }
+        }
+    }
+
+    @Test
+    func companionPhrasesAreAtMost12Words() throws {
+        let source = try String(contentsOf: appDir.appendingPathComponent("CompanionPhrases.swift"))
+        // Match: a line like `return "..."` where the string is up to 200 chars.
+        // Extracts the string literal between quotes.
+        let regex = try Regex(#"return "([^"]{1,200})""#)
+        for match in source.matches(of: regex) {
+            // Regex<AnyRegexOutput>.Match — access the first captured group.
+            let matchedText = String(match.output[1].substring ?? "")
+            let words = matchedText.split(separator: " ").count
+            #expect(words <= 12, "CompanionPhrases phrase exceeds 12 words: \"\(matchedText)\"")
+        }
+    }
 }
