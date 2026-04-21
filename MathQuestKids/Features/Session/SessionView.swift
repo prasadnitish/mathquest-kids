@@ -558,13 +558,13 @@ struct SubtractionStoryInteraction: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: dotSize, maximum: dotSize + 4))], spacing: 6) {
                 ForEach(0..<max(total, 0), id: \.self) { idx in
                     Circle()
-                        .fill(idx < removed ? AppTheme.error.opacity(0.35) : AppTheme.accent.opacity(0.8))
+                        .fill(idx < removed ? DesignTokens.incorrect.opacity(0.35) : AppTheme.accent.opacity(0.8))
                         .frame(width: dotSize, height: dotSize)
                         .overlay {
                             if idx < removed {
                                 Image(systemName: "xmark")
                                     .font(.caption2.bold())
-                                    .foregroundStyle(AppTheme.error)
+                                    .foregroundStyle(DesignTokens.incorrect)
                             }
                         }
                 }

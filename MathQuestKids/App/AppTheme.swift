@@ -181,7 +181,6 @@ enum AppTheme {
     static var primary: Color { VisualTheme.loadPersisted().primary }
     static var accent: Color { VisualTheme.loadPersisted().accent }
     static var onPrimaryText: Color { VisualTheme.loadPersisted().onPrimaryText }
-    static let error = Color(red: 0.75, green: 0.23, blue: 0.20)
     static var textPrimary: Color {
         Color(UIColor { traits in
             traits.userInterfaceStyle == .dark

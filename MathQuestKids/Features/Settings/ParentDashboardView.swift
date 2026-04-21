@@ -289,6 +289,6 @@ struct ParentDashboardView: View {
     private func accuracyColor(_ accuracy: Double) -> Color {
         if accuracy >= 0.8 { return .green }
         if accuracy >= 0.5 { return .orange }
-        return AppTheme.error
+        return DesignTokens.incorrect
     }
 }

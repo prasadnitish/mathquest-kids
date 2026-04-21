@@ -42,7 +42,7 @@ struct SettingsView: View {
 
                         if !gateMessage.isEmpty {
                             Text(gateMessage)
-                                .foregroundStyle(gateMessage == "Unlocked" ? AppTheme.primary : AppTheme.error)
+                                .foregroundStyle(gateMessage == "Unlocked" ? AppTheme.primary : DesignTokens.incorrect)
                         }
                     }
                     .padding(24)
