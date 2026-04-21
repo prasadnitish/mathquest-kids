@@ -55,16 +55,10 @@ struct SessionView: View {
 
             topBar(runtime: runtime, progress: progress)
 
-            // Question card: prompt + Read Aloud
+            // Question card: prompt only (no grade/domain labels)
             VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 8) {
-                    Text(item.unit.title)
-                        .kidText(.caption)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(appState.selectedTheme.primary.opacity(0.18), in: Capsule())
-
-                    if item.isReview {
+                if item.isReview {
+                    HStack(spacing: 8) {
                         Text("Review Item")
                             .kidText(.caption)
                             .padding(.horizontal, 10)
@@ -131,13 +125,13 @@ struct SessionView: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityAddTraits(.updatesFrequently)
                 }
-
-                // Read Aloud stays with the question
-                readAloudButton
             }
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+
+            // Read Aloud — primary CTA above the answer options
+            readAloudButton
 
             // Options / manipulative area
             if runtime.pendingCorrection {
@@ -255,8 +249,9 @@ struct SessionView: View {
             appState.replayPrompt()
         } label: {
             Label("Read Aloud", systemImage: "speaker.wave.2.fill")
+                .frame(maxWidth: .infinity)
         }
-        .buttonStyle(SecondaryButtonStyle())
+        .buttonStyle(PrimaryButtonStyle())
         .accessibilityLabel("Read Aloud")
     }
 
@@ -274,7 +269,6 @@ struct SessionView: View {
     @ViewBuilder
     private func sessionActionButtons(item: PracticeItem) -> some View {
         hintButton
-        readAloudButton
         Spacer(minLength: 10)
         submitButton(item: item)
     }
