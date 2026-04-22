@@ -20,11 +20,11 @@ struct DeterministicHintEngine: HintEngine {
 
         switch context.incorrectAttempts {
         case 0:
-            return .showConcreteSupport(text: concreteHint(for: context) ?? template?.concrete ?? "Use a visual helper to think it through.")
+            return .showConcreteSupport(text: template?.concrete ?? concreteHint(for: context) ?? "Use a visual helper to think it through.")
         case 1:
-            return .strategyPrompt(text: strategyHint(for: context) ?? template?.strategy ?? "Try the strategy step by step.")
+            return .strategyPrompt(text: template?.strategy ?? strategyHint(for: context) ?? "Try the strategy step by step.")
         default:
-            return .workedStep(text: workedHint(for: context) ?? template?.worked ?? "Let's solve one together, then you solve the next.")
+            return .workedStep(text: template?.worked ?? workedHint(for: context) ?? "Let's solve one together, then you solve the next.")
         }
     }
 

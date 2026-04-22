@@ -14,6 +14,17 @@ final class AppState: ObservableObject {
         case stickerBook
     }
 
+    enum SettingsDismissAction {
+        case retakeDiagnostic
+    }
+
+    enum ParentGateResult {
+        case unlocked
+        case incorrect(remainingAttempts: Int)
+        case cooldown(seconds: Int)
+        case pinNotConfigured
+    }
+
     @Published var route: Route = .profileSetup
     @Published var profile: ChildProfileRecord?
     @Published var currentSession: SessionRuntime?
@@ -28,7 +39,8 @@ final class AppState: ObservableObject {
     @Published var diagnosticInteractionDisabled = false
 
     @Published var parentGateRequired = false
-    @Published var parentGatePrompt = ParentGateChallenge.newChallenge()
+    @Published private(set) var parentPINConfigured = false
+    @Published var parentGateLockedUntil: Date?
     @Published var statusMessage: String?
 
     @Published var selectedTheme: VisualTheme
@@ -51,14 +63,17 @@ final class AppState: ObservableObject {
     let diagnosticService: DiagnosticService
     let adaptivePlanner: AdaptiveLessonPlanner
     let progressReportService: ProgressReportService
-    let diagnostics: DiagnosticsLogger
+    let parentPINStore: ParentPINStoring
 
     private let defaults = UserDefaults.standard
     private let skipDiagnosticOnboarding: Bool
     private var temporarilySkippedDiagnostic = false
     private var diagnosticAdvanceTask: Task<Void, Never>?
     private var sessionAdvanceTask: Task<Void, Never>?
+    private var questionReadTask: Task<Void, Never>?
     private var statusClearTask: Task<Void, Never>?
+    private var parentGateFailureCount = 0
+    private var pendingSettingsDismissAction: SettingsDismissAction?
 
     var availableCompanions: [ThemeCompanion] {
         CharacterPackLibrary.companions(for: selectedTheme)
@@ -79,12 +94,15 @@ final class AppState: ObservableObject {
         curriculumCatalog: CurriculumCatalog? = nil,
         diagnosticService: DiagnosticService? = nil,
         adaptivePlanner: AdaptiveLessonPlanner? = nil,
-        diagnostics: DiagnosticsLogger? = nil
+        parentPINStore: ParentPINStoring? = nil
     ) {
         let launchArgs = ProcessInfo.processInfo.arguments
         let isUITest = launchArgs.contains("-ui-test")
         skipDiagnosticOnboarding = isUITest || launchArgs.contains("-skip-diagnostic")
-        let diagnostics = diagnostics ?? DiagnosticsLogger.shared
+
+        if isUITest, let bundleID = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundleID)
+        }
 
         selectedTheme = VisualTheme.loadPersisted()
         selectedCompanionID = "" // placeholder — set after services are ready (line 142)
@@ -94,16 +112,15 @@ final class AppState: ObservableObject {
 
         NetworkGuard.assertOfflineOnly()
 
-        let sharedRepository = repository ?? ProgressRepository(coreDataStack: CoreDataStack.shared)
+        let defaultCoreDataStack = isUITest ? CoreDataStack(inMemory: true) : CoreDataStack.shared
+        let sharedRepository = repository ?? ProgressRepository(coreDataStack: defaultCoreDataStack)
         let pack: ContentPack
         if let contentPack {
             pack = contentPack
         } else {
             do {
                 pack = try ContentLoader.loadDefaultPack()
-                diagnostics.info("Loaded content pack", metadata: ["units": "\(pack.units.count)", "lessons": "\(pack.lessons.count)"])
             } catch {
-                diagnostics.error("Failed to load content pack; using empty fallback", metadata: ["error": error.localizedDescription])
                 pack = .empty
             }
         }
@@ -114,9 +131,7 @@ final class AppState: ObservableObject {
         } else {
             do {
                 catalog = try CurriculumService.loadDefaultCatalog()
-                diagnostics.info("Loaded curriculum catalog", metadata: ["grades": "\(catalog.grades.count)"])
             } catch {
-                diagnostics.error("Failed to load curriculum catalog; using empty fallback", metadata: ["error": error.localizedDescription])
                 catalog = .empty
             }
         }
@@ -135,7 +150,14 @@ final class AppState: ObservableObject {
         self.diagnosticService = diagnosticService ?? DiagnosticService(deterministic: deterministicDiagnostic)
         self.adaptivePlanner = adaptivePlanner ?? AdaptiveLessonPlanner()
         self.progressReportService = ProgressReportService(repository: sharedRepository, catalog: catalog)
-        self.diagnostics = diagnostics
+        if let parentPINStore {
+            self.parentPINStore = parentPINStore
+        } else if isUITest {
+            self.parentPINStore = InMemoryParentPINStore(initialPIN: "2468")
+        } else {
+            self.parentPINStore = KeychainParentPINStore()
+        }
+        self.parentPINConfigured = self.parentPINStore.isConfigured
 
         self.profile = sharedRepository.loadActiveProfile()
         selectedCompanionID = loadCompanion(for: selectedTheme)
@@ -154,15 +176,6 @@ final class AppState: ObservableObject {
             route = .profileSetup
             adaptivePath = self.adaptivePlanner.buildPath(result: nil, catalog: catalog)
         }
-
-        diagnostics.info(
-            "App state initialized",
-            metadata: [
-                "route": String(describing: route),
-                "theme": selectedTheme.rawValue,
-                "hasProfile": "\(profile != nil)"
-            ]
-        )
     }
 
     func createProfile(name: String) {
@@ -182,23 +195,20 @@ final class AppState: ObservableObject {
                 route = .diagnostic
                 startDiagnosticIfNeeded()
                 setStatus("Great. Quick diagnostic next to personalize lessons.")
-                diagnostics.info("Profile created; diagnostic required", metadata: ["childId": created.id.uuidString])
             } else {
                 route = .home
                 setStatus("Welcome, \(created.displayName)!")
-                diagnostics.info("Profile created", metadata: ["childId": created.id.uuidString])
             }
         } catch {
-            diagnostics.error("Profile creation failed", metadata: ["error": error.localizedDescription])
             setStatus("Couldn't save profile. Please try again.")
         }
     }
 
     func startDiagnosticIfNeeded() {
         guard diagnosticSession == nil else { return }
+        cancelQuestionReadTask()
         clearDiagnosticFeedbackState()
         diagnosticSession = diagnosticService.makeSession()
-        diagnostics.info("Diagnostic session started")
     }
 
     func submitDiagnosticChoice(_ choiceIndex: Int) {
@@ -226,24 +236,23 @@ final class AppState: ObservableObject {
     }
 
     func submitDiagnosticDontKnow() {
-        diagnostics.info("Diagnostic answer: I don't know")
         submitDiagnosticChoice(-1)
     }
 
     func skipDiagnosticForNow() {
+        cancelQuestionReadTask()
         clearDiagnosticFeedbackState()
         temporarilySkippedDiagnostic = true
         diagnosticSession = nil
         route = .home
         setStatus("You can run the diagnostic anytime in Parent Settings.")
-        diagnostics.info("Diagnostic skipped for now")
     }
 
     func retakeDiagnostic() {
+        cancelQuestionReadTask()
         clearDiagnosticFeedbackState()
         diagnosticSession = diagnosticService.makeSession()
         route = .diagnostic
-        diagnostics.info("Diagnostic retake started")
     }
 
     private func finishDiagnostic(_ session: DiagnosticSessionRuntime) {
@@ -260,24 +269,17 @@ final class AppState: ObservableObject {
         route = .home
         setStatus("Placement complete: \(result.placedGrade.title).")
         playSFX(.reward)
-        diagnostics.info(
-            "Diagnostic finished",
-            metadata: [
-                "placedGrade": result.placedGrade.rawValue,
-                "overallScore": String(format: "%.3f", result.overallScore)
-            ]
-        )
     }
 
     func startSession(for unit: UnitType) {
         guard let profile else { return }
         guard isUnitUnlocked(unit) else {
             setStatus("Complete the previous quest to unlock this unit.")
-            diagnostics.warning("Attempted to start locked unit", metadata: ["unit": unit.rawValue])
             return
         }
 
         do {
+            cancelQuestionReadTask()
             let targetItemCount = FeatureFlags.adaptiveSessionItems(for: unit, placedGrade: diagnosticResult?.placedGrade)
             let blueprint = try sessionComposer.composeSession(
                 childID: profile.id,
@@ -287,17 +289,7 @@ final class AppState: ObservableObject {
             currentSession = SessionRuntime(blueprint: blueprint)
             route = .session
             playSFX(.tap)
-            diagnostics.info(
-                "Session started",
-                metadata: [
-                    "unit": unit.rawValue,
-                    "sessionId": blueprint.sessionID.uuidString,
-                    "items": "\(blueprint.items.count)",
-                    "placedGrade": diagnosticResult?.placedGrade.rawValue ?? "none"
-                ]
-            )
         } catch {
-            diagnostics.error("Session composition failed", metadata: ["unit": unit.rawValue, "error": error.localizedDescription])
             setStatus("Unable to start that quest right now.")
         }
     }
@@ -326,23 +318,29 @@ final class AppState: ObservableObject {
             }
         }
 
-        // 2. First playable, unlocked recommended lesson (even if completed — for review)
+        // 2. Fallback: highest unlocked unit not yet completed. This keeps
+        // progression moving even after the initial recommended slice has
+        // been completed.
+        if let next = dashboard.unitProgress
+            .last(where: { $0.unlocked && $0.completedSessions == 0 }) {
+            return next.unit
+        }
+
+        // 3. Highest unlocked unit (for replay after a full path clear)
+        if let highestUnlocked = dashboard.unitProgress
+            .last(where: { $0.unlocked }) {
+            return highestUnlocked.unit
+        }
+
+        // 4. First playable, unlocked recommended lesson (even if completed — for review)
         for lesson in adaptivePath.recommendedLessons where lesson.isPlayableInApp {
             if let linked = lesson.linkedUnit, isUnitUnlocked(linked) {
                 return linked
             }
         }
 
-        // 3. Fallback: highest unlocked unit not yet completed
-        if let next = dashboard.unitProgress
-            .last(where: { $0.unlocked && $0.completedSessions == 0 }) {
-            return next.unit
-        }
-
-        // 4. Ultimate fallback: highest unlocked unit (for replay)
-        return dashboard.unitProgress
-            .last(where: { $0.unlocked })?
-            .unit ?? .kCountObjects
+        // 5. Ultimate fallback
+        return .kCountObjects
     }
 
     /// Whether the current recommendation is from the adaptive planner
@@ -372,6 +370,7 @@ final class AppState: ObservableObject {
 
     func submitAnswer(answer: String, inputMode: InputMode, latencyMs: Double) {
         guard let profile, var runtime = currentSession else { return }
+        cancelQuestionReadTask()
         let item = runtime.currentItem
         let isCorrect = runtime.evaluate(answer: answer)
 
@@ -421,20 +420,13 @@ final class AppState: ObservableObject {
                 }
             }
         } catch {
-            diagnostics.error(
-                "Failed to persist attempt",
-                metadata: [
-                    "skillId": item.skillID,
-                    "sessionId": runtime.sessionID.uuidString,
-                    "error": error.localizedDescription
-                ]
-            )
             setStatus("We couldn't save that attempt.")
         }
     }
 
     func acknowledgeCorrection() {
         guard profile != nil, var runtime = currentSession, runtime.pendingCorrection else { return }
+        cancelQuestionReadTask()
         runtime.acknowledgeCorrection()
 
         if runtime.isComplete {
@@ -447,6 +439,7 @@ final class AppState: ObservableObject {
 
     private func finishSession(_ rt: SessionRuntime, lastItem: PracticeItem, lastCorrect: Bool) {
         guard let profile else { return }
+        cancelQuestionReadTask()
         let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
         let summary = SessionSummary(
             sessionID: rt.sessionID,
@@ -468,7 +461,6 @@ final class AppState: ObservableObject {
                 rewardTitle: reward
             )
         } catch {
-            diagnostics.error("Failed to finish session", metadata: ["error": error.localizedDescription])
         }
 
         latestSummary = summary
@@ -478,19 +470,11 @@ final class AppState: ObservableObject {
         route = .summary
         narrationService.speakFeedback(lastCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
         playSFX(.reward)
-        diagnostics.info(
-            "Session completed",
-            metadata: [
-                "sessionId": rt.sessionID.uuidString,
-                "unit": rt.focusUnit.rawValue,
-                "correct": "\(rt.correctCount)",
-                "total": "\(rt.items.count)"
-            ]
-        )
     }
 
     func requestHint() -> HintAction? {
         guard var runtime = currentSession else { return nil }
+        cancelQuestionReadTask()
         let context = AttemptContext(
             unit: runtime.currentItem.unit,
             skillID: runtime.currentItem.skillID,
@@ -515,19 +499,35 @@ final class AppState: ObservableObject {
     }
 
     func readQuestionIfEnabled() {
-        guard autoReadQuestions else { return }
-        // Wait for any feedback audio to finish, then a short visual pause
-        Task {
+        questionReadTask?.cancel()
+        guard autoReadQuestions, let runtime = currentSession else { return }
+        let expectedSessionID = runtime.sessionID
+        let expectedItemID = runtime.currentItem.id
+        let narrationText = runtime.currentItem.narrationText
+        let templateID = runtime.currentItem.templateID
+
+        // Wait for any feedback audio to finish, then a short visual pause.
+        questionReadTask = Task { [weak self] in
             // Wait up to 4 seconds for feedback audio to finish
             for _ in 0..<40 {
-                if !narrationService.isSpeaking { break }
+                guard !Task.isCancelled else { return }
+                if self?.narrationService.isSpeaking != true { break }
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
             }
             // Abort if audio is still playing after timeout (avoid overlap)
-            guard !narrationService.isSpeaking else { return }
+            guard !Task.isCancelled, self?.narrationService.isSpeaking != true else { return }
             // Short pause so the child can see the new question before audio starts
             try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s
-            replayPrompt()
+            guard
+                !Task.isCancelled,
+                let self,
+                let current = self.currentSession,
+                current.sessionID == expectedSessionID,
+                current.currentItem.id == expectedItemID
+            else {
+                return
+            }
+            self.narrationService.speakQuestion(narrationText, style: self.narrationStyle, interrupt: true, itemID: templateID)
         }
     }
 
@@ -580,7 +580,6 @@ final class AppState: ObservableObject {
         VisualTheme.persist(theme)
         selectedCompanionID = loadCompanion(for: theme)
         defaults.set(selectedCompanionID, forKey: companionStorageKey(for: theme))
-        diagnostics.info("Theme changed", metadata: ["theme": theme.rawValue])
     }
 
     func setCompanion(_ companionID: String) {
@@ -591,6 +590,9 @@ final class AppState: ObservableObject {
 
     func setAutoReadQuestions(_ enabled: Bool) {
         autoReadQuestions = enabled
+        if !enabled {
+            cancelQuestionReadTask()
+        }
         defaults.set(enabled, forKey: "mathquest.autoReadQuestions")
     }
 
@@ -615,35 +617,137 @@ final class AppState: ObservableObject {
     func goHome() {
         sessionAdvanceTask?.cancel()
         sessionAdvanceTask = nil
+        cancelQuestionReadTask()
         route = profile == nil ? .profileSetup : .home
         currentSession = nil
         latestSummary = nil
         refreshDashboard()
-        diagnostics.debug("Navigated to home", metadata: ["route": String(describing: route)])
     }
 
     func showParentGate() {
-        parentGatePrompt = ParentGateChallenge.newChallenge()
+        clearExpiredParentGateCooldown()
         parentGateRequired = true
     }
 
-    func validateParentGate(answer: String) -> Bool {
-        let isCorrect = answer.trimmingCharacters(in: .whitespacesAndNewlines) == parentGatePrompt.answer
-        if isCorrect {
-            parentGateRequired = false
-            diagnostics.info("Parent gate unlocked")
-        } else {
-            diagnostics.warning("Parent gate failed attempt")
+    func submitParentGate(answer: String, now: Date = .now) -> ParentGateResult {
+        clearExpiredParentGateCooldown(now: now)
+
+        guard parentPINConfigured else {
+            return .pinNotConfigured
         }
-        return isCorrect
+
+        if let lockedUntil = parentGateLockedUntil, lockedUntil > now {
+            return .cooldown(seconds: cooldownSeconds(until: lockedUntil, now: now))
+        }
+
+        let sanitizedAnswer = ParentPINPolicy.sanitize(answer.trimmingCharacters(in: .whitespacesAndNewlines))
+        let isCorrect = parentPINStore.verify(pin: sanitizedAnswer)
+        if isCorrect {
+            parentGateFailureCount = 0
+            parentGateLockedUntil = nil
+            parentGateRequired = false
+            return .unlocked
+        }
+
+        parentGateFailureCount += 1
+        let remainingAttempts = max(0, 3 - parentGateFailureCount)
+        if remainingAttempts == 0 {
+            let lockedUntil = now.addingTimeInterval(20)
+            parentGateFailureCount = 0
+            parentGateLockedUntil = lockedUntil
+            return .cooldown(seconds: cooldownSeconds(until: lockedUntil, now: now))
+        }
+
+        return .incorrect(remainingAttempts: remainingAttempts)
     }
 
-    func exportDiagnosticsFile() throws -> URL {
+    func saveParentPIN(_ pin: String) throws {
+        try parentPINStore.save(pin: pin)
+        parentPINConfigured = parentPINStore.isConfigured
+        parentGateFailureCount = 0
+        parentGateLockedUntil = nil
+        parentGateRequired = false
+    }
+
+    var isParentGateLocked: Bool {
+        guard let lockedUntil = parentGateLockedUntil else { return false }
+        return lockedUntil > .now
+    }
+
+    var parentGateCooldownSecondsRemaining: Int? {
+        guard let lockedUntil = parentGateLockedUntil, lockedUntil > .now else { return nil }
+        return cooldownSeconds(until: lockedUntil, now: .now)
+    }
+
+    func scheduleDiagnosticRetakeAfterSettingsDismissal() {
+        pendingSettingsDismissAction = .retakeDiagnostic
+    }
+
+    func handleSettingsDismissal() {
+        guard let action = pendingSettingsDismissAction else { return }
+        pendingSettingsDismissAction = nil
+
+        switch action {
+        case .retakeDiagnostic:
+            retakeDiagnostic()
+        }
+    }
+
+    func resetLearningData() {
+        guard let profile else { return }
+
         do {
-            return try diagnostics.exportDiagnosticsFile()
+            try repository.deleteLearningData(childID: profile.id, deleteProfile: false)
+            clearDiagnosticResult(childID: profile.id)
+            cancelQuestionReadTask()
+            clearDiagnosticFeedbackState()
+            sessionAdvanceTask?.cancel()
+            sessionAdvanceTask = nil
+            pendingSettingsDismissAction = nil
+            currentSession = nil
+            latestSummary = nil
+            pendingStickerReward = nil
+            diagnosticSession = nil
+            diagnosticResult = nil
+            temporarilySkippedDiagnostic = false
+            showParentDashboard = false
+            refreshDashboard()
+            route = .home
+            setStatus("Learning progress reset on this device.")
         } catch {
-            diagnostics.error("Diagnostics export failed", metadata: ["error": error.localizedDescription])
-            throw error
+            setStatus("Couldn't reset local learning data.")
+        }
+    }
+
+    func deleteProfileAndData() {
+        guard let profile else { return }
+
+        do {
+            try repository.deleteLearningData(childID: profile.id, deleteProfile: true)
+            clearDiagnosticResult(childID: profile.id)
+            cancelQuestionReadTask()
+            clearDiagnosticFeedbackState()
+            sessionAdvanceTask?.cancel()
+            sessionAdvanceTask = nil
+            pendingSettingsDismissAction = nil
+            currentSession = nil
+            latestSummary = nil
+            pendingStickerReward = nil
+            diagnosticSession = nil
+            diagnosticResult = nil
+            temporarilySkippedDiagnostic = false
+            showParentDashboard = false
+            parentGateFailureCount = 0
+            parentGateLockedUntil = nil
+            parentGateRequired = false
+            dashboard = .empty
+            stickerCollection = StickerCollection(stickers: [])
+            adaptivePath = adaptivePlanner.buildPath(result: nil, catalog: curriculumCatalog)
+            self.profile = nil
+            route = .profileSetup
+            setStatus("Child profile and local learning data deleted.")
+        } catch {
+            setStatus("Couldn't delete the child profile.")
         }
     }
 
@@ -678,6 +782,10 @@ final class AppState: ObservableObject {
         return try? JSONDecoder().decode(DiagnosticResult.self, from: data)
     }
 
+    private func clearDiagnosticResult(childID: UUID) {
+        defaults.removeObject(forKey: diagnosticStorageKey(for: childID))
+    }
+
     private func saveDiagnosticResult(_ result: DiagnosticResult) {
         guard let encoded = try? JSONEncoder().encode(result) else { return }
         defaults.set(encoded, forKey: diagnosticStorageKey(for: result.childID))
@@ -692,6 +800,20 @@ final class AppState: ObservableObject {
             guard !Task.isCancelled else { return }
             statusMessage = nil
         }
+    }
+
+    private func cancelQuestionReadTask() {
+        questionReadTask?.cancel()
+        questionReadTask = nil
+    }
+
+    private func clearExpiredParentGateCooldown(now: Date = .now) {
+        guard let lockedUntil = parentGateLockedUntil, lockedUntil <= now else { return }
+        parentGateLockedUntil = nil
+    }
+
+    private func cooldownSeconds(until lockedUntil: Date, now: Date) -> Int {
+        max(1, Int(ceil(lockedUntil.timeIntervalSince(now))))
     }
 
     private func playSFX(_ event: SFXEvent) {
@@ -796,17 +918,5 @@ final class AppState: ObservableObject {
             dashboard: dashboard,
             stickerCollection: stickerCollection
         )
-    }
-}
-
-struct ParentGateChallenge {
-    let prompt: String
-    let answer: String
-
-    static func newChallenge() -> ParentGateChallenge {
-        // Simple single-digit multiplication — easy for parents, hard for K-2 kids.
-        let left = Int.random(in: 6...9)
-        let right = Int.random(in: 6...9)
-        return ParentGateChallenge(prompt: "Parent check: \(left) \u{00D7} \(right) = ?", answer: String(left * right))
     }
 }

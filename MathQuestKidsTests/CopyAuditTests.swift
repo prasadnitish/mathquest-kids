@@ -81,6 +81,7 @@ struct CopyAuditTests {
             "\"Wrong\"", "\"Incorrect\"",
             "\"CPA\"", "\"Spiral Review\"", "\"Variation Theory\"",
             "\"Domain\"",
+            "\"Confidence\"", "\"Adaptive Placement\"", "\"Standards\"",
         ]
         for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
             let source = try String(contentsOf: file)

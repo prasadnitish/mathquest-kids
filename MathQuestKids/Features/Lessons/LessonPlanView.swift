@@ -3,7 +3,10 @@ import SwiftUI
 struct LessonPlanView: View {
     @EnvironmentObject private var appState: AppState
     @State private var selectedGrade: GradeBand = .kindergarten
-    @State private var expandedStandards: Set<String> = []
+
+    private var featuredLessonID: String? {
+        appState.adaptivePath.recommendedLessons.first?.id
+    }
 
     var body: some View {
         ZStack {
@@ -11,24 +14,24 @@ struct LessonPlanView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp6) {
                     header
+
                     MascotBlock(
                         companion: appState.activeCompanion,
                         context: .lessonStart,
                         theme: appState.selectedTheme
                     )
                     .padding(.horizontal, DesignTokens.Spacing.sp4)
-                    .padding(.bottom, DesignTokens.Spacing.sp4)
-                    gradeSelector
 
-                    if appState.adaptivePath.hasRecommendations {
-                        adaptiveCard
-                    }
+                    chapterSelector
 
                     if let plan = appState.curriculumCatalog.gradePlan(for: selectedGrade) {
-                        overviewSection(plan)
-                        lessonList(plan)
+                        if let featured = featuredLesson(in: plan) {
+                            featuredQuestCard(featured)
+                        }
+
+                        lessonStack(plan)
                     }
                 }
                 .padding(.horizontal, 20)
@@ -42,37 +45,35 @@ struct LessonPlanView: View {
         }
     }
 
-    // MARK: - Header
-
     private var header: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Button(action: { appState.closeLessonPlans() }) {
-                HStack(spacing: 5) {
-                    Image(systemName: "chevron.left")
-                        .kidText(.body)
-                    Text("Back")
-                        .kidText(.body)
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Button(action: { appState.closeLessonPlans() }) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "chevron.left")
+                            .kidText(.body)
+                        Text("Back")
+                            .kidText(.body)
+                    }
+                    .foregroundStyle(appState.selectedTheme.primary)
                 }
-                .foregroundStyle(appState.selectedTheme.primary)
-            }
-            .accessibilityLabel("Go back to home")
+                .accessibilityLabel("Go back to home")
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Lesson Roadmap")
-                    .kidText(.h1)
+                Text("Quest Map")
+                    .kidText(.display)
                     .foregroundStyle(AppTheme.textPrimary)
-                Text("Standards-aligned curriculum · K through 5")
+
+                Text("Pick a path, tap play, and keep moving toward your next sticker.")
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
 
-    // MARK: - Grade Selector
-
-    private var gradeSelector: some View {
+    private var chapterSelector: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
                 ForEach(GradeBand.allCases) { grade in
                     let isSelected = selectedGrade == grade
                     Button {
@@ -80,24 +81,26 @@ struct LessonPlanView: View {
                             selectedGrade = grade
                         }
                     } label: {
-                        Text(grade.shortLabel)
-                            .kidText(.body)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .foregroundStyle(isSelected ? .white : AppTheme.textPrimary)
-                            .background(
-                                isSelected
-                                    ? AnyShapeStyle(appState.selectedTheme.primary)
-                                    : AnyShapeStyle(AppTheme.card),
-                                in: Capsule()
-                            )
-                            .overlay(
-                                Capsule()
-                                    .stroke(
-                                        isSelected ? Color.clear : AppTheme.textSecondary.opacity(0.15),
-                                        lineWidth: 1
-                                    )
-                            )
+                        VStack(spacing: 2) {
+                            Text("Trail \(grade.order + 1)")
+                                .kidText(.body)
+                            Text(chapterTheme(for: grade))
+                                .kidText(.caption)
+                                .foregroundStyle(isSelected ? Color.white.opacity(0.82) : AppTheme.textSecondary)
+                        }
+                        .foregroundStyle(isSelected ? .white : AppTheme.textPrimary)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(
+                            isSelected
+                                ? AnyShapeStyle(appState.selectedTheme.primary)
+                                : AnyShapeStyle(Color.white.opacity(0.72)),
+                            in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                                .stroke(isSelected ? Color.clear : Color.white.opacity(0.6), lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -105,249 +108,178 @@ struct LessonPlanView: View {
         }
     }
 
-    // MARK: - Adaptive Placement
-
-    private var adaptiveCard: some View {
-        HStack(spacing: 14) {
-            // Confidence ring
-            ZStack {
-                Circle()
-                    .stroke(AppTheme.textSecondary.opacity(0.12), lineWidth: 4)
-                Circle()
-                    .trim(from: 0, to: appState.adaptivePath.confidence)
-                    .stroke(appState.selectedTheme.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                Text("\(Int(appState.adaptivePath.confidence * 100))%")
+    private func featuredQuestCard(_ lesson: LessonPlanItem) -> some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("Picked for You")
                     .kidText(.caption)
                     .foregroundStyle(appState.selectedTheme.primary)
-            }
-            .frame(width: 48, height: 48)
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Adaptive Placement")
-                    .kidText(.body)
+                Text(lesson.title)
+                    .kidText(.h1)
                     .foregroundStyle(AppTheme.textPrimary)
-                Text("Placed at **\(appState.adaptivePath.placedGrade.title)** based on diagnostic results")
-                    .kidText(.caption)
+
+                Text(lesson.activityPrompt)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
-            }
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Spacer(minLength: 0)
-        }
-        .padding(16)
-        .background(appState.selectedTheme.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(appState.selectedTheme.primary.opacity(0.15), lineWidth: 1)
-        )
-    }
-
-    // MARK: - Overview
-
-    private func overviewSection(_ plan: GradePlan) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(plan.overview)
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textSecondary)
-
-            ForEach(plan.bigIdeas, id: \.self) { idea in
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill")
+                if let linkedUnit = lesson.linkedUnit {
+                    Text("Sticker waiting in \(linkedUnit.title)")
                         .kidText(.caption)
-                        .foregroundStyle(appState.selectedTheme.primary.opacity(0.7))
-                        .padding(.top, 2)
-                    Text(idea)
-                        .kidText(.body)
                         .foregroundStyle(AppTheme.textPrimary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(appState.selectedTheme.accent.opacity(0.14), in: Capsule())
                 }
             }
         }
     }
 
-    // MARK: - Lesson List
-
-    private func lessonList(_ plan: GradePlan) -> some View {
-        VStack(spacing: 0) {
+    private func lessonStack(_ plan: GradePlan) -> some View {
+        VStack(spacing: 14) {
             ForEach(Array(plan.lessons.enumerated()), id: \.element.id) { index, lesson in
-                lessonRow(lesson, number: index + 1, isLast: index == plan.lessons.count - 1)
+                LessonQuestCard(
+                    lesson: lesson,
+                    number: index + 1,
+                    isFeatured: lesson.id == featuredLessonID,
+                    isUnlocked: lesson.linkedUnit.map(appState.isUnitUnlocked) ?? false,
+                    theme: appState.selectedTheme,
+                    onPlay: {
+                        if let linked = lesson.linkedUnit {
+                            appState.startSession(for: linked)
+                        }
+                    }
+                )
             }
         }
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(AppTheme.textSecondary.opacity(0.1), lineWidth: 1)
-        )
     }
 
-    private func lessonRow(_ lesson: LessonPlanItem, number: Int, isLast: Bool) -> some View {
-        VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 14) {
-                // Left: domain color bar + number
-                VStack(spacing: 6) {
-                    Text("\(number)")
-                        .kidText(.caption)
-                        .foregroundStyle(.white)
-                        .frame(width: 26, height: 26)
-                        .background(lesson.domain.accentColor.opacity(0.85), in: Circle())
-                }
-                .frame(width: 26)
-                .padding(.top, 2)
+    private func featuredLesson(in plan: GradePlan) -> LessonPlanItem? {
+        if let featuredLessonID {
+            return plan.lessons.first(where: { $0.id == featuredLessonID })
+        }
+        return plan.lessons.first(where: { $0.isPlayableInApp })
+    }
 
-                // Middle: content
-                VStack(alignment: .leading, spacing: 6) {
-                    // Title row
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(lesson.title)
-                            .kidText(.body)
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .lineLimit(2)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: 4)
-                        Text("\(lesson.estimatedMinutes) min")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(AppTheme.textSecondary.opacity(0.08), in: Capsule())
-                    }
-
-                    // Domain tag
-                    Text(lesson.domain.shortTitle)
-                        .kidText(.caption)
-                        .foregroundStyle(lesson.domain.accentColor)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(lesson.domain.accentColor.opacity(0.10), in: Capsule())
-
-                    // Objective
-                    Text(lesson.objective)
-                        .kidText(.body)
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    // Pedagogy pills
-                    FlowLayout(spacing: 6) {
-                        ForEach(lesson.strategies) { strategy in
-                            Text(strategy.title)
-                                .kidText(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .foregroundStyle(AppTheme.textSecondary)
-                                .background(AppTheme.textSecondary.opacity(0.06), in: Capsule())
-                        }
-                    }
-
-                    // Expandable standards
-                    if !lesson.standards.isEmpty {
-                        let isExpanded = expandedStandards.contains(lesson.id)
-                        Button {
-                            withAnimation(Motion.stateChange) {
-                                if isExpanded {
-                                    expandedStandards.remove(lesson.id)
-                                } else {
-                                    expandedStandards.insert(lesson.id)
-                                }
-                            }
-                        } label: {
-                            HStack(spacing: 4) {
-                                Text("Standards")
-                                    .kidText(.caption)
-                                Image(systemName: "chevron.right")
-                                    .kidText(.caption)
-                                    .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                            }
-                            .foregroundStyle(AppTheme.textSecondary.opacity(0.6))
-                        }
-                        .buttonStyle(.plain)
-
-                        if isExpanded {
-                            Text(lesson.standards.joined(separator: ", "))
-                                .kidText(.caption)
-                                .foregroundStyle(AppTheme.textSecondary.opacity(0.5))
-                                .fixedSize(horizontal: false, vertical: true)
-                                .transition(.opacity.combined(with: .move(edge: .top)))
-                        }
-                    }
-
-                    // Play button
-                    if lesson.isPlayableInApp, let linked = lesson.linkedUnit {
-                        let unlocked = appState.isUnitUnlocked(linked)
-                        Button {
-                            appState.startSession(for: linked)
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: unlocked ? "play.fill" : "lock.fill")
-                                    .kidText(.caption)
-                                Text(unlocked ? "Play" : "Locked")
-                                    .kidText(.body)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .foregroundStyle(unlocked ? .white : AppTheme.textSecondary)
-                            .background(
-                                unlocked
-                                    ? AnyShapeStyle(appState.selectedTheme.primary)
-                                    : AnyShapeStyle(AppTheme.textSecondary.opacity(0.10)),
-                                in: Capsule()
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(!unlocked)
-                        .accessibilityLabel(unlocked ? "Play \(lesson.title)" : "\(lesson.title) is locked")
-                        .padding(.top, 2)
-                    }
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-
-            // Divider between rows
-            if !isLast {
-                Divider()
-                    .padding(.leading, 56)
-            }
+    private func chapterTheme(for grade: GradeBand) -> String {
+        switch grade {
+        case .kindergarten: return "Count & Play"
+        case .grade1: return "Add & Solve"
+        case .grade2: return "Build Big Numbers"
+        case .grade3: return "Groups & Fractions"
+        case .grade4: return "Bigger Challenges"
+        case .grade5: return "Patterns & Power"
         }
     }
 }
 
-// MARK: - Flow Layout for wrapping pills
+private struct LessonQuestCard: View {
+    let lesson: LessonPlanItem
+    let number: Int
+    let isFeatured: Bool
+    let isUnlocked: Bool
+    let theme: VisualTheme
+    let onPlay: () -> Void
 
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 6
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = arrangeSubviews(proposal: proposal, subviews: subviews)
-        return result.size
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = arrangeSubviews(proposal: ProposedViewSize(width: bounds.width, height: bounds.height), subviews: subviews)
-        for (index, position) in result.positions.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y), proposal: .unspecified)
+    private var statusTitle: String {
+        if isFeatured && isUnlocked {
+            return "Best next quest"
         }
+        if lesson.isPlayableInApp && isUnlocked {
+            return "Ready to play"
+        }
+        if lesson.isPlayableInApp {
+            return "Coming up soon"
+        }
+        return "More adventures soon"
     }
 
-    private func arrangeSubviews(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
-        let maxWidth = proposal.width ?? .infinity
-        var positions: [CGPoint] = []
-        var currentX: CGFloat = 0
-        var currentY: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        var maxX: CGFloat = 0
+    private var buttonTitle: String {
+        if lesson.isPlayableInApp && isUnlocked {
+            return "Play"
+        }
+        if lesson.isPlayableInApp {
+            return "Locked"
+        }
+        return "Soon"
+    }
 
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            if currentX + size.width > maxWidth, currentX > 0 {
-                currentX = 0
-                currentY += lineHeight + spacing
-                lineHeight = 0
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+            HStack(alignment: .top, spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(theme.primary.opacity(isFeatured ? 1.0 : 0.78))
+                    Text("\(number)")
+                        .kidText(.caption)
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 34, height: 34)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(statusTitle)
+                        .kidText(.caption)
+                        .foregroundStyle(theme.primary)
+
+                    Text(lesson.title)
+                        .kidText(.h2)
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(lesson.activityPrompt)
+                        .kidText(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
             }
-            positions.append(CGPoint(x: currentX, y: currentY))
-            lineHeight = max(lineHeight, size.height)
-            currentX += size.width + spacing
-            maxX = max(maxX, currentX - spacing)
-        }
 
-        return (CGSize(width: maxX, height: currentY + lineHeight), positions)
+            HStack(spacing: 10) {
+                Text("\(lesson.estimatedMinutes) min")
+                    .kidText(.caption)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 7)
+                    .background(Color.white.opacity(0.74), in: Capsule())
+
+                if let linkedUnit = lesson.linkedUnit, lesson.isPlayableInApp {
+                    Text(linkedUnit.title)
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                Button(buttonTitle, action: onPlay)
+                    .buttonStyle(PlayButtonStyle(theme: theme))
+                    .disabled(!(lesson.isPlayableInApp && isUnlocked))
+                    .accessibilityLabel(buttonAccessibilityLabel)
+            }
+        }
+        .padding(DesignTokens.Spacing.sp6)
+        .background(
+            isFeatured
+                ? theme.cardSurface
+                : Color.white.opacity(0.82),
+            in: RoundedRectangle(cornerRadius: DesignTokens.Radius.lg)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.lg)
+                .stroke(isFeatured ? theme.primary.opacity(0.45) : Color.white.opacity(0.7), lineWidth: isFeatured ? 2 : 1)
+        )
+        .shadow(color: .black.opacity(0.08), radius: 18, x: 0, y: 6)
+    }
+
+    private var buttonAccessibilityLabel: String {
+        if lesson.isPlayableInApp && isUnlocked {
+            return "Play \(lesson.title)"
+        }
+        if lesson.isPlayableInApp {
+            return "\(lesson.title) is locked for now"
+        }
+        return "\(lesson.title) is coming soon"
     }
 }

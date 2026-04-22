@@ -6,7 +6,7 @@
 - Unit unlocking enforces order: subtraction -> teen place value -> two-digit comparison.
 - Session starts for each unit and completes to summary.
 - Summary shows correct count and reward title.
-- Parent gate blocks settings until correct answer.
+- Parent PIN blocks settings until the correct 4-digit PIN is entered.
 
 ## Learning Logic
 - Mastery promotion at >=85% over recent 20 attempts across >=2 sessions.
@@ -27,3 +27,4 @@
 - App runs without network calls during gameplay.
 - No cloud sync dependency.
 - Data stored locally in Core Data.
+- Parent PIN stored locally on-device.

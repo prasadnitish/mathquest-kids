@@ -53,7 +53,9 @@ struct RootView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showingSettings) {
+            .sheet(isPresented: $showingSettings, onDismiss: {
+                appState.handleSettingsDismissal()
+            }) {
                 SettingsView()
                     .environmentObject(appState)
             }
@@ -62,6 +64,11 @@ struct RootView: View {
     }
 
     private var showsSettingsButton: Bool {
-        appState.route != .profileSetup
+        switch appState.route {
+        case .home, .lessonPlans, .summary, .stickerBook:
+            return true
+        case .profileSetup, .diagnostic, .session:
+            return false
+        }
     }
 }

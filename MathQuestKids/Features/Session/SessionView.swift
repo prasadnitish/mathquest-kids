@@ -35,122 +35,47 @@ struct SessionView: View {
         let item = runtime.currentItem
         let progress = Double(runtime.answeredCount) / Double(max(runtime.items.count, 1))
 
-        return VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Button {
-                    showingQuitConfirmation = true
-                } label: {
-                    HStack(spacing: 5) {
-                        Image(systemName: "chevron.left")
-                            .kidText(.body)
-                        Text("Quit")
-                            .kidText(.body)
-                    }
-                    .foregroundStyle(AppTheme.textSecondary)
-                }
-                .accessibilityLabel("Quit quest")
+        return ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                sessionTopRow
 
-                Spacer()
-            }
+                topBar(runtime: runtime, progress: progress)
 
-            topBar(runtime: runtime, progress: progress)
+                MascotBlock(
+                    companion: appState.activeCompanion,
+                    context: mascotContext(for: runtime),
+                    theme: appState.selectedTheme
+                )
 
-            // Question card: prompt only (no grade/domain labels)
-            VStack(alignment: .leading, spacing: 12) {
-                if item.isReview {
-                    HStack(spacing: 8) {
-                        Text("Review Item")
-                            .kidText(.caption)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(appState.selectedTheme.accent.opacity(0.24), in: Capsule())
-                            .accessibilityLabel("This is a review item")
-                    }
-                }
-
-                Text(item.prompt)
-                    .kidText(.question)
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .minimumScaleFactor(0.65)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("Problem prompt")
-                    .accessibilityIdentifier("problemPrompt")
+                questionCard(for: item, runtime: runtime)
 
                 if let feedback {
-                    let companion = appState.activeCompanion
-                    let companionPhrase = feedbackTone == .positive
-                        ? CompanionPhrases.correct(tone: companion.tone)
-                        : CompanionPhrases.incorrect(tone: companion.tone)
+                    feedbackCard(feedback)
+                }
 
-                    HStack(alignment: .top, spacing: 10) {
-                        Group {
-                            if !companion.imageName.isEmpty {
-                                Image(companion.imageName)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 48, height: 48)
-                                    .clipShape(Circle())
-                                    .shadow(color: appState.selectedTheme.primary.opacity(0.3), radius: 4, y: 2)
-                            } else {
-                                Image(systemName: companion.symbol)
-                                    .font(.system(size: 22, weight: .bold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 48, height: 48)
-                                    .background(appState.selectedTheme.primary, in: Circle())
-                                    .shadow(color: appState.selectedTheme.primary.opacity(0.3), radius: 4, y: 2)
-                            }
+                if runtime.pendingCorrection {
+                    correctionOverlay(item: item)
+                } else {
+                    answerStage(for: item)
+
+                    if sizeClass == .regular {
+                        HStack(spacing: 12) {
+                            readAloudButton
+                            hintButton
                         }
-                        .offset(y: -12) // overflow above the card
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(companionPhrase)
-                                .kidText(.body)
-                                .foregroundStyle(appState.selectedTheme.primary)
-                                .lineLimit(1)
-                            Text(feedback)
-                                .kidText(.body)
-                                .foregroundStyle(AppTheme.textPrimary)
-                                .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        VStack(spacing: 12) {
+                            readAloudButton
+                            hintButton
                         }
                     }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.24) : appState.selectedTheme.primary.opacity(0.16), in: RoundedRectangle(cornerRadius: 16))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke((feedbackTone == .positive ? appState.selectedTheme.accent : appState.selectedTheme.primary).opacity(0.28), lineWidth: 1)
-                    )
-                    .accessibilityElement(children: .combine)
-                    .accessibilityAddTraits(.updatesFrequently)
+
+                    submitButton(item: item)
                 }
             }
-            .padding(18)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
-
-            // Read Aloud — primary CTA above the answer options
-            readAloudButton
-
-            // Options / manipulative area
-            if runtime.pendingCorrection {
-                correctionOverlay(item: item)
-            } else {
-                manipulativeArea(item: item)
-                    .disabled(choicesDisabledTemporarily)
-                    .opacity(choicesDisabledTemporarily ? 0.6 : 1.0)
-            }
-
-            // Hint + Submit below options
-            HStack(spacing: 12) {
-                hintButton
-                submitButton(item: item)
-            }
-            .padding(.horizontal, 4)
-
-            Spacer(minLength: 0)
+            .padding(.bottom, 24)
         }
+        .scrollIndicators(.hidden)
         .background(.clear)
         .alert(appState.activeCompanion.name, isPresented: $showingHint, actions: {
             Button("OK", role: .cancel) { }
@@ -176,6 +101,32 @@ struct SessionView: View {
             choicesDisabledTemporarily = false
             itemStartTime = Date()
             appState.readQuestionIfEnabled()
+        }
+    }
+
+    private var sessionTopRow: some View {
+        HStack(spacing: 12) {
+            Button {
+                showingQuitConfirmation = true
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "chevron.left")
+                        .kidText(.body)
+                    Text("Quit")
+                        .kidText(.body)
+                }
+                .foregroundStyle(AppTheme.textSecondary)
+            }
+            .accessibilityLabel("Quit quest")
+
+            Spacer()
+
+            Text("Keep going, \(appState.activeCompanion.name) is cheering for you.")
+                .kidText(.caption)
+                .foregroundStyle(AppTheme.textSecondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(0.66), in: Capsule())
         }
     }
 
@@ -209,18 +160,18 @@ struct SessionView: View {
 
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Quest in Progress")
+                    Text("Quest Step")
                         .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("\(Int(progress * 100))% complete")
+                    Text("\(runtime.index + 1) of \(runtime.items.count) · \(runtime.correctCount) stars earned")
                         .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
                 Spacer()
-                Text("\(runtime.index + 1)/\(runtime.items.count)")
+                Text("\(Int(progress * 100))%")
                     .kidText(.h2)
                     .foregroundStyle(AppTheme.textPrimary.opacity(0.82))
-                    .padding(.trailing, 36)
+                    .padding(.trailing, 16)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
@@ -233,16 +184,177 @@ struct SessionView: View {
         .accessibilityElement(children: .combine)
     }
 
-    // TODO: WS7.4-followup — wire MascotBlock reactions here:
-    // show MascotBlock(companion: appState.activeCompanion, context: .questionHint, ...)
-    // on hint reveal, and .answerCorrect / .answerWrong / .answerIdk on feedback.
-    // Requires transient overlay state + animation — deferred from WS7.4.
+    private func mascotContext(for runtime: SessionRuntime) -> MascotVoice.Context {
+        if runtime.pendingCorrection {
+            return .answerIdk
+        }
+        guard feedback != nil else {
+            return .questionHint
+        }
+        return feedbackTone == .positive ? .answerCorrect : .answerWrong
+    }
+
+    private func questionCard(for item: PracticeItem, runtime: SessionRuntime) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 8) {
+                if item.isReview {
+                    Text("Quick Review")
+                        .kidText(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(appState.selectedTheme.accent.opacity(0.22), in: Capsule())
+                        .accessibilityLabel("This is a review item")
+                }
+
+                if runtime.hintsUsedForCurrentItem > 0 {
+                    Text("Hint Used")
+                        .kidText(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(appState.selectedTheme.primary.opacity(0.12), in: Capsule())
+                }
+            }
+
+            Text(questionHeadline(for: runtime))
+                .kidText(.h2)
+                .foregroundStyle(appState.selectedTheme.primary)
+
+            Text(item.prompt)
+                .kidText(.question)
+                .foregroundStyle(AppTheme.textPrimary)
+                .minimumScaleFactor(0.65)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel("Problem prompt")
+                .accessibilityIdentifier("problemPrompt")
+
+            Text(questionHelperText(for: runtime))
+                .kidText(.body)
+                .foregroundStyle(AppTheme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+    }
+
+    private func feedbackCard(_ feedback: String) -> some View {
+        let companion = appState.activeCompanion
+        let companionPhrase = feedbackTone == .positive
+            ? CompanionPhrases.correct(tone: companion.tone)
+            : CompanionPhrases.incorrect(tone: companion.tone)
+        let accentColor = feedbackTone == .positive ? appState.selectedTheme.accent : appState.selectedTheme.primary
+
+        return HStack(alignment: .top, spacing: 12) {
+            Circle()
+                .fill(accentColor.opacity(0.2))
+                .frame(width: 52, height: 52)
+                .overlay {
+                    Image(systemName: feedbackTone == .positive ? "star.fill" : "sparkles")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundStyle(accentColor)
+                }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(companionPhrase)
+                    .kidText(.body)
+                    .foregroundStyle(accentColor)
+                Text(feedback)
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.18) : appState.selectedTheme.primary.opacity(0.12),
+            in: RoundedRectangle(cornerRadius: 18)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(accentColor.opacity(0.22), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.updatesFrequently)
+    }
+
+    private func answerStage(for item: PracticeItem) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Pick Your Answer")
+                        .kidText(.h2)
+                        .foregroundStyle(AppTheme.textPrimary)
+                    Text(answerHelperText)
+                        .kidText(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+
+                Spacer()
+
+                if !selectedChoice.isEmpty {
+                    Text("Ready")
+                        .kidText(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(appState.selectedTheme.primary.opacity(0.14), in: Capsule())
+                }
+            }
+
+            manipulativeArea(item: item)
+                .disabled(choicesDisabledTemporarily)
+                .opacity(choicesDisabledTemporarily ? 0.6 : 1.0)
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var answerHelperText: String {
+        if choicesDisabledTemporarily {
+            return "Hold on. Let's look at the clue together."
+        }
+        if !selectedChoice.isEmpty {
+            return "Nice pick. Tap Submit when you're ready."
+        }
+        return "Choose the answer that feels right."
+    }
+
+    private func questionHeadline(for runtime: SessionRuntime) -> String {
+        if runtime.pendingCorrection {
+            return "Let's Learn This One"
+        }
+        if feedback != nil {
+            return feedbackTone == .positive ? "You Did It" : "Try a New Idea"
+        }
+        if runtime.currentItem.isReview {
+            return "Let's Warm Up"
+        }
+        return "Your Turn"
+    }
+
+    private func questionHelperText(for runtime: SessionRuntime) -> String {
+        if runtime.pendingCorrection {
+            return "Watch the fix, then jump into the next question."
+        }
+        if feedbackTone == .positive, feedback != nil {
+            return "That answer moved your quest forward."
+        }
+        if feedback != nil {
+            return "Use the clue below and try again."
+        }
+        return "Listen, think, and choose the answer that matches."
+    }
+
     private var hintButton: some View {
         Button {
             activeHint = appState.requestHint()
             showingHint = true
         } label: {
             Label("Hint", systemImage: "lightbulb.fill")
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(SecondaryButtonStyle())
         .accessibilityLabel("Hint")
@@ -264,17 +376,11 @@ struct SessionView: View {
             submit(item: item)
         } label: {
             Label("Submit", systemImage: "checkmark.circle.fill")
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
         .disabled(selectedChoice.isEmpty)
         .accessibilityLabel("Submit Answer")
-    }
-
-    @ViewBuilder
-    private func sessionActionButtons(item: PracticeItem) -> some View {
-        hintButton
-        Spacer(minLength: 10)
-        submitButton(item: item)
     }
 
     @ViewBuilder
@@ -329,9 +435,6 @@ struct SessionView: View {
     }
 
     private func correctionOverlay(item: PracticeItem) -> some View {
-        let companion = appState.activeCompanion
-        let correctionPhrase = CompanionPhrases.correction(tone: companion.tone)
-
         // Build a worked explanation from the hint engine
         let context = AttemptContext(
             unit: item.unit,
@@ -345,36 +448,12 @@ struct SessionView: View {
         let workedHint = appState.hintEngine.nextHint(for: context)
 
         return VStack(spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                Group {
-                    if !companion.imageName.isEmpty {
-                        Image(companion.imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 56, height: 56)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: companion.symbol)
-                            .font(.system(size: 26, weight: .bold))
-                            .foregroundStyle(.white)
-                            .frame(width: 56, height: 56)
-                            .background(appState.selectedTheme.primary, in: Circle())
-                    }
-                }
-                .shadow(color: appState.selectedTheme.primary.opacity(0.35), radius: 6, y: 3)
+            MascotBlock(
+                companion: appState.activeCompanion,
+                context: .answerIdk,
+                theme: appState.selectedTheme
+            )
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(companion.name)
-                        .kidText(.caption)
-                        .foregroundStyle(AppTheme.textSecondary)
-                    Text(correctionPhrase)
-                        .kidText(.body)
-                        .foregroundStyle(appState.selectedTheme.primary)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            // Correct answer highlight
             HStack(spacing: 10) {
                 Image(systemName: "checkmark.circle.fill")
                     .kidText(.h2)
@@ -396,9 +475,8 @@ struct SessionView: View {
                     .stroke(Color.green.opacity(0.3), lineWidth: 1)
             )
 
-            // Worked explanation
             VStack(alignment: .leading, spacing: 6) {
-                Text("How to solve it")
+                Text("Let's Solve It Together")
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
                 Text(workedHint.text)
@@ -425,8 +503,6 @@ struct SessionView: View {
     }
 
     private func recordDefer() {
-        // "I don't know yet" — trigger the hint system so the child gets guidance
-        // without scoring the question as wrong.
         activeHint = appState.requestHint()
         showingHint = true
     }

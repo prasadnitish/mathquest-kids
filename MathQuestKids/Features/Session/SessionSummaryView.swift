@@ -38,9 +38,8 @@ struct SessionSummaryView: View {
                         .foregroundStyle(AppTheme.accent)
                         .scaleEffect(animateBadge ? 1.0 : 0.82)
                         .opacity(animateBadge ? 1.0 : 0.7)
-                        // TODO(WS10.3): bespoke — repeatCount(2) pulse not covered by Motion tokens; leave as-is.
                         .animation(
-                            reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7).repeatCount(2, autoreverses: true),
+                            reduceMotion ? nil : Motion.kidCelebratePulse,
                             value: animateBadge
                         )
                     Text("\(summary.correctItems) of \(summary.totalItems) correct")
@@ -53,7 +52,7 @@ struct SessionSummaryView: View {
                         .foregroundStyle(.secondary)
 
                     if let nextLesson = appState.adaptivePath.recommendedLessons.first {
-                        Text("Next adaptive lesson: \(nextLesson.title)")
+                        Text("Next quest: \(nextLesson.title)")
                             .kidText(.body)
                             .foregroundStyle(AppTheme.textPrimary)
                     }

@@ -152,7 +152,7 @@
 * App runs in portrait-only orientation on both iPhone and iPad without layout overflow or clipping.
 * Sticker is awarded on first session completion per unit and persists across app launches.
 * Narration reads the current question prompt aloud when auto-read is enabled or the read-aloud button is tapped.
-* Diagnostics export produces a readable local file containing session history and placement data with no PII beyond the child's first name.
+* No diagnostics export or support-log sharing is included in version 1; app data remains local to the device.
 * Status messages (e.g. "Placement Complete: Kindergarten") auto-dismiss after 4 seconds.
 
 ---
@@ -180,7 +180,7 @@
 **Dependencies:**
 * Apple Developer Program enrollment (active) for TestFlight and App Store submission
 * App Store Connect metadata, screenshots, and privacy policy URL must be finalized before review
-* PrivacyInfo.xcprivacy manifest required by Apple for all new submissions (not yet created)
+* PrivacyInfo.xcprivacy manifest created and included in the app bundle for App Store submission
 * Content accuracy: 2,400+ question templates must be mathematically correct — human spot-check required for each grade band before launch
 
 **Risks:**

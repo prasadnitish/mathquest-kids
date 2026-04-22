@@ -15,6 +15,7 @@ Applied the Sproutmath Design System overhaul across all child-facing surfaces. 
 - **Celebration modal**: Reward splash aligned to Sproutmath modal spec via new `CelebrationModal` component (preserves particle burst + TTS).
 - **Motion**: Centralized four named animations (`kidBounceIdle`, `kidPopIn`, `kidWiggle`, `kidFloat`) + duration scale in `Motion.swift`.
 - **Parent Mode**: Dark slate visual language (`#1e293b`), DM Sans typography, no theme gradient, no mascot. Data-forward layout distinct from child UI.
+- **Launch screen**: Static branded launch storyboard added for iPhone and iPad startup.
 
 ### Data shown to kids (per design-system rule)
 - KEPT: streak days, sessions count, mastered skill nodes (visual progression)
@@ -27,7 +28,6 @@ Applied the Sproutmath Design System overhaul across all child-facing surfaces. 
 - No curriculum jargon ("CPA", "Spiral Review", "Variation Theory") in child UI
 
 ### Deliberate deviations from design system spec
-- **Parent gate**: spec says 4-digit PIN; this app keeps its math-challenge gate (better anti-snooping property)
 - **Grade labels**: spec says hide; this app renames them to "Chapter N" (preserves grouping signal without academic framing)
 
 ### Test infrastructure additions
@@ -53,9 +53,10 @@ Applied the Sproutmath Design System overhaul across all child-facing surfaces. 
 
 ## Privacy and Kids Safety
 - Local-only storage: Core Data in app sandbox.
+- Parent Settings protected by a 4-digit on-device PIN.
 - No third-party ads or analytics.
 - No cloud sync in V1.
-- Parent gate required before settings access.
+- Parent PIN required before settings access.
 
 ## TestFlight Checklist
 - Increment build number.

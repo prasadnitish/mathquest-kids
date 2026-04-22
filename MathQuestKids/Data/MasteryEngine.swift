@@ -20,10 +20,13 @@ final class MasteryEngine {
         let previousStatus = MasteryStatus(rawValue: existing?.statusRaw ?? MasteryStatus.learning.rawValue) ?? .learning
 
         let status: MasteryStatus
-        if recent.count >= 20 && accuracy >= 0.85 && sessionCount >= 2 {
+        if previousStatus == .mastered {
+            status = (accuracy < 0.70 || incorrectStreak >= 3) ? .reviewDue : .mastered
+        } else if previousStatus == .reviewDue {
+            // Keep lapsed skills in review mode until the learner re-establishes strong accuracy.
+            status = (recent.count >= 20 && accuracy >= 0.85 && sessionCount >= 2 && incorrectStreak == 0) ? .mastered : .reviewDue
+        } else if recent.count >= 20 && accuracy >= 0.85 && sessionCount >= 2 {
             status = .mastered
-        } else if previousStatus == .mastered && (accuracy < 0.70 || incorrectStreak >= 3) {
-            status = .reviewDue
         } else if accuracy >= 0.60 {
             status = .practicing
         } else {

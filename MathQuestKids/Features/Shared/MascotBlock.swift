@@ -5,6 +5,9 @@ struct MascotBlock: View {
     let context: MascotVoice.Context
     let theme: VisualTheme
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var bob = false
+
     var body: some View {
         HStack(alignment: .top, spacing: DesignTokens.Spacing.sp3) {
             avatar
@@ -25,7 +28,10 @@ struct MascotBlock: View {
                 .foregroundStyle(.white)
         }
         .frame(width: 52, height: 52)
+        .offset(y: bob ? -4 : 4)
         .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 3)
+        .animation(reduceMotion ? nil : Motion.kidBounceIdle, value: bob)
+        .onAppear { bob = true }
     }
 
     private var bubble: some View {

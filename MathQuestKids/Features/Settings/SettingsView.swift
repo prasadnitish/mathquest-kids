@@ -1,14 +1,55 @@
 import SwiftUI
 
+private enum ParentDataAction: String, Identifiable {
+    case resetProgress
+    case deleteProfile
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .resetProgress:
+            return "Reset Learning Progress?"
+        case .deleteProfile:
+            return "Delete Child Profile?"
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .resetProgress:
+            return "This clears local practice history, diagnostic placement, mastery progress, rewards, and reports on this device. The child name stays in the app."
+        case .deleteProfile:
+            return "This removes the child name and all local learning data from this device. This action cannot be undone."
+        }
+    }
+
+    var confirmTitle: String {
+        switch self {
+        case .resetProgress:
+            return "Reset Progress"
+        case .deleteProfile:
+            return "Delete Profile"
+        }
+    }
+}
+
+private enum ParentPINEditorMode: String, Identifiable {
+    case change
+
+    var id: String { rawValue }
+}
+
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
 
     @State private var parentAnswer = ""
+    @State private var setupPIN = ""
+    @State private var confirmSetupPIN = ""
     @State private var gateMessage = ""
-    @State private var failedAttempts = 0
-    @State private var diagnosticsExportURL: URL?
-    @State private var diagnosticsExportStatus = ""
+    @State private var pendingDataAction: ParentDataAction?
+    @State private var pinEditorMode: ParentPINEditorMode?
 
     var body: some View {
         NavigationStack {
@@ -18,216 +59,217 @@ struct SettingsView: View {
 
                 Group {
                 if appState.parentGateRequired {
-                    VStack(spacing: 14) {
-                        Text(appState.parentGatePrompt.prompt)
-                            .font(.title3.bold())
-
-                        TextField("Answer", text: $parentAnswer)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
-                            .accessibilityLabel("Parent gate answer")
-
-                        Button("Unlock Settings") {
-                            if appState.validateParentGate(answer: parentAnswer) {
-                                gateMessage = "Unlocked"
-                                failedAttempts = 0
-                            } else {
-                                failedAttempts += 1
-                                gateMessage = "Incorrect. Try again."
-                                if failedAttempts >= 3 {
-                                    appState.parentGatePrompt = ParentGateChallenge.newChallenge()
-                                    parentAnswer = ""
-                                    failedAttempts = 0
-                                    gateMessage = "New question generated."
-                                }
-                            }
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-
-                        if !gateMessage.isEmpty {
-                            Text(gateMessage)
-                                .foregroundStyle(gateMessage == "Unlocked" ? AppTheme.primary : DesignTokens.incorrect)
-                        }
+                    if appState.parentPINConfigured {
+                        parentPINUnlockView
+                    } else {
+                        parentPINSetupView
                     }
-                    .padding(24)
                 } else {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 14) {
-                            Text("Parent Settings")
-                                .kidText(.display)
+                        VStack(alignment: .leading, spacing: 16) {
+                            parentSettingsHero
 
-                            Text("Themes")
-                                .kidText(.h2)
-                            Text("Choose a visual world with custom background art and colors.")
-                                .foregroundStyle(.secondary)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 12) {
-                                    ForEach(VisualTheme.allCases) { theme in
-                                        ThemeCard(theme: theme, isSelected: appState.selectedTheme == theme) {
-                                            appState.setTheme(theme)
-                                        }
-                                    }
-                                }
-                            }
-
-                            Text("Character Packs")
-                                .kidText(.h2)
-                            Text("Each theme includes mentor characters with unique coaching style.")
-                                .foregroundStyle(.secondary)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 12) {
-                                    ForEach(appState.availableCompanions) { companion in
-                                        CompanionCard(
-                                            companion: companion,
-                                            isSelected: appState.selectedCompanionID == companion.id,
-                                            theme: appState.selectedTheme
-                                        ) {
-                                            appState.setCompanion(companion.id)
-                                        }
-                                    }
-                                }
-                            }
-
-                            Divider()
-
-                            Text("Adaptive Learning")
-                                .kidText(.h2)
-                            Text("Placement: \(appState.adaptivePath.placedGrade.title)")
-                                .foregroundStyle(.secondary)
-
-                            if let result = appState.diagnosticResult {
-                                Text("Last diagnostic score: \(Int(result.overallScore * 100))%")
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                Text("Diagnostic not completed yet.")
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            Button("Retake Diagnostic") {
-                                dismiss()
-                                // Delay route change so the sheet dismissal animation
-                                // completes before navigating to the diagnostic screen.
-                                Task {
-                                    try? await Task.sleep(nanoseconds: 400_000_000)
-                                    appState.retakeDiagnostic()
-                                }
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-
-                            Button("View Progress Report") {
-                                appState.showParentDashboard = true
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-                            .accessibilityLabel("View child progress report")
-
-                            Divider()
-
-                            Text("Narration")
-                                .kidText(.h2)
-                            Text("Make the voice more lively and auto-read each new question.")
-                                .foregroundStyle(.secondary)
-
-                            Toggle(
-                                "Read question aloud automatically",
-                                isOn: Binding(
-                                    get: { appState.autoReadQuestions },
-                                    set: { appState.setAutoReadQuestions($0) }
-                                )
-                            )
-
-                            Picker(
-                                "Voice style",
-                                selection: Binding(
-                                    get: { appState.narrationStyle },
-                                    set: { appState.setNarrationStyle($0) }
-                                )
+                            settingsSection(
+                                title: "Learning Journey",
+                                subtitle: "Review the child's current path and jump to the detailed progress report."
                             ) {
-                                ForEach(NarrationStyle.allCases) { style in
-                                    Text(style.title).tag(style)
+                                ViewThatFits(in: .horizontal) {
+                                    HStack(spacing: 10) {
+                                        metricPill(
+                                            title: "Current trail",
+                                            value: appState.adaptivePath.placedGrade.title
+                                        )
+                                        metricPill(
+                                            title: "Quest check",
+                                            value: diagnosticSummary
+                                        )
+                                    }
+
+                                    VStack(spacing: 10) {
+                                        metricPill(
+                                            title: "Current trail",
+                                            value: appState.adaptivePath.placedGrade.title
+                                        )
+                                        metricPill(
+                                            title: "Quest check",
+                                            value: diagnosticSummary
+                                        )
+                                    }
                                 }
-                            }
-                            .pickerStyle(.segmented)
 
-                            Button("Preview Voice") {
-                                appState.previewNarrationStyle()
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-
-                            Divider()
-
-                            Text("Sound Effects")
-                                .kidText(.h2)
-                            Text("Theme-based layered sound cues for tap, hint, success, and rewards.")
-                                .foregroundStyle(.secondary)
-
-                            Toggle(
-                                "Enable sound effects",
-                                isOn: Binding(
-                                    get: { appState.soundEffectsEnabled },
-                                    set: { appState.setSoundEffectsEnabled($0) }
-                                )
-                            )
-
-                            Button("Preview Reward Sound") {
-                                appState.previewSoundEffects()
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-
-                            Divider()
-
-                            Text("Privacy")
-                                .kidText(.h2)
-                            Text("Sprout Math stores progress only on this device in v1. No third-party ads, analytics, or cloud sync are enabled by default.")
-                                .foregroundStyle(.secondary)
-
-                            Text("Safety")
-                                .kidText(.h2)
-                            Text("Supportive feedback, short sessions, and deterministic offline content.")
-                                .foregroundStyle(.secondary)
-
-                            Divider()
-
-                            Text("Diagnostics")
-                                .font(.title2.bold())
-                            Text("Local-only diagnostics are stored on-device. Generate a snapshot file to share for troubleshooting.")
-                                .foregroundStyle(.secondary)
-
-                            Button("Prepare Diagnostics Export") {
-                                do {
-                                    diagnosticsExportURL = try appState.exportDiagnosticsFile()
-                                    diagnosticsExportStatus = "Diagnostics file ready."
-                                } catch {
-                                    diagnosticsExportStatus = "Couldn't prepare diagnostics export."
-                                }
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-
-                            if let diagnosticsExportURL {
-                                ShareLink(item: diagnosticsExportURL) {
-                                    Label("Share Diagnostics File", systemImage: "square.and.arrow.up")
+                                Button("Retake Quest Check") {
+                                    appState.scheduleDiagnosticRetakeAfterSettingsDismissal()
+                                    dismiss()
                                 }
                                 .buttonStyle(SecondaryButtonStyle())
 
-                                Text(diagnosticsExportURL.lastPathComponent)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                Button("View Progress Report") {
+                                    appState.showParentDashboard = true
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
+                                .accessibilityLabel("View child progress report")
                             }
 
-                            if !diagnosticsExportStatus.isEmpty {
-                                Text(diagnosticsExportStatus)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(AppTheme.textPrimary)
+                            settingsSection(
+                                title: "Look & Feel",
+                                subtitle: "Pick the visual world and coaching buddy the child sees in the app."
+                            ) {
+                                Text("Themes")
+                                    .kidText(.h2)
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 12) {
+                                        ForEach(VisualTheme.allCases) { theme in
+                                            ThemeCard(theme: theme, isSelected: appState.selectedTheme == theme) {
+                                                appState.setTheme(theme)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Text("Buddies")
+                                    .kidText(.h2)
+
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 12) {
+                                        ForEach(appState.availableCompanions) { companion in
+                                            CompanionCard(
+                                                companion: companion,
+                                                isSelected: appState.selectedCompanionID == companion.id,
+                                                theme: appState.selectedTheme
+                                            ) {
+                                                appState.setCompanion(companion.id)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            settingsSection(
+                                title: "Voice & Sound",
+                                subtitle: "Tune narration and reward sounds without changing the learning flow."
+                            ) {
+                                Toggle(
+                                    "Read question aloud automatically",
+                                    isOn: Binding(
+                                        get: { appState.autoReadQuestions },
+                                        set: { appState.setAutoReadQuestions($0) }
+                                    )
+                                )
+
+                                Picker(
+                                    "Voice style",
+                                    selection: Binding(
+                                        get: { appState.narrationStyle },
+                                        set: { appState.setNarrationStyle($0) }
+                                    )
+                                ) {
+                                    ForEach(NarrationStyle.allCases) { style in
+                                        Text(style.title).tag(style)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+
+                                Button("Preview Voice") {
+                                    appState.previewNarrationStyle()
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
+
+                                Divider()
+
+                                Toggle(
+                                    "Enable sound effects",
+                                    isOn: Binding(
+                                        get: { appState.soundEffectsEnabled },
+                                        set: { appState.setSoundEffectsEnabled($0) }
+                                    )
+                                )
+
+                                Button("Preview Reward Sound") {
+                                    appState.previewSoundEffects()
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
+                            }
+
+                            settingsSection(
+                                title: "Privacy & Controls",
+                                subtitle: "All learning data stays on this device. Legal details, the parent PIN, and local delete tools live here."
+                            ) {
+                                Text("Sprout Math does not use ads, analytics SDKs, telemetry, crash-reporting services, or cloud sync in version 1. Parent Settings are protected by a 4-digit PIN stored securely on this device.")
+                                    .foregroundStyle(.secondary)
+
+                                Button {
+                                    pinEditorMode = .change
+                                } label: {
+                                    settingsLinkLabel(
+                                        title: "Change Parent PIN",
+                                        subtitle: "Update the 4-digit PIN used to unlock parent settings and reports.",
+                                        symbol: "key.fill"
+                                    )
+                                }
+                                .buttonStyle(.plain)
+
+                                NavigationLink {
+                                    LegalDocumentView(document: .privacyPolicy)
+                                } label: {
+                                    settingsLinkLabel(
+                                        title: "Privacy Policy",
+                                        subtitle: "How local data is stored on-device, what Sprout Math does not collect, and how deletion works.",
+                                        symbol: "lock.doc"
+                                    )
+                                }
+                                .buttonStyle(.plain)
+
+                                NavigationLink {
+                                    LegalDocumentView(document: .termsOfUse)
+                                } label: {
+                                    settingsLinkLabel(
+                                        title: "Terms of Use",
+                                        subtitle: "Educational use, disclaimers, and contact details.",
+                                        symbol: "doc.text"
+                                    )
+                                }
+                                .buttonStyle(.plain)
+
+                                Button(role: .destructive) {
+                                    pendingDataAction = .resetProgress
+                                } label: {
+                                    settingsLinkLabel(
+                                        title: "Reset Learning Progress",
+                                        subtitle: "Clear local practice history, placement, rewards, and reports while keeping the child name.",
+                                        symbol: "arrow.counterclockwise.circle",
+                                        tint: DesignTokens.incorrect
+                                    )
+                                }
+                                .buttonStyle(.plain)
+
+                                Button(role: .destructive) {
+                                    pendingDataAction = .deleteProfile
+                                } label: {
+                                    settingsLinkLabel(
+                                        title: "Delete Child Profile & Data",
+                                        subtitle: "Remove the child name and all local learning data from this device.",
+                                        symbol: "trash",
+                                        tint: DesignTokens.incorrect
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+
+                            settingsSection(
+                                title: "Safety Notes",
+                                subtitle: "Short sessions, supportive feedback, and deterministic offline content."
+                            ) {
+                                Text("This version keeps the experience simple: local progress, predictable hints, and parent-controlled settings.")
+                                    .foregroundStyle(.secondary)
                             }
                         }
-                        .padding(24)
+                        .padding(20)
                     }
                     .scrollContentBackground(.hidden)
                 }
             }
             }
-            .navigationTitle("Settings")
+            .navigationTitle(navigationTitle)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
@@ -237,6 +279,329 @@ struct SettingsView: View {
                 ParentDashboardView()
                     .environmentObject(appState)
             }
+            .sheet(item: $pinEditorMode) { mode in
+                ParentPINEditorSheet(mode: mode) { newPIN in
+                    try appState.saveParentPIN(newPIN)
+                }
+            }
+            .alert(item: $pendingDataAction) { action in
+                Alert(
+                    title: Text(action.title),
+                    message: Text(action.message),
+                    primaryButton: .destructive(Text(action.confirmTitle)) {
+                        performParentDataAction(action)
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+        }
+    }
+
+    private var navigationTitle: String {
+        if appState.parentGateRequired {
+            return appState.parentPINConfigured ? "Enter Parent PIN" : "Create Parent PIN"
+        }
+        return "Parent Settings"
+    }
+
+    private var parentPINUnlockView: some View {
+        VStack(spacing: 16) {
+            Text("Enter Parent PIN")
+                .font(.title2.bold())
+
+            Text("Use the 4-digit PIN to open parent settings, reports, and privacy controls.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            SecureField("4-digit PIN", text: $parentAnswer)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
+                .textContentType(.oneTimeCode)
+                .onChange(of: parentAnswer) { _, newValue in
+                    parentAnswer = ParentPINPolicy.sanitize(newValue)
+                }
+                .accessibilityLabel("Parent PIN")
+
+            Button("Unlock Settings") {
+                switch appState.submitParentGate(answer: parentAnswer) {
+                case .unlocked:
+                    gateMessage = ""
+                    parentAnswer = ""
+                case .incorrect(let remainingAttempts):
+                    gateMessage = remainingAttempts == 1
+                        ? "Incorrect PIN. One try left before a short cooldown."
+                        : "Incorrect PIN. \(remainingAttempts) tries left."
+                case .cooldown:
+                    parentAnswer = ""
+                    gateMessage = ""
+                case .pinNotConfigured:
+                    gateMessage = "Create a parent PIN first."
+                }
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .disabled(appState.isParentGateLocked || parentAnswer.count != ParentPINPolicy.requiredLength)
+
+            if let seconds = appState.parentGateCooldownSecondsRemaining {
+                Text("Too many attempts. Try again in about \(seconds) seconds.")
+                    .foregroundStyle(DesignTokens.incorrect)
+                    .multilineTextAlignment(.center)
+            }
+
+            if !gateMessage.isEmpty {
+                Text(gateMessage)
+                    .foregroundStyle(DesignTokens.incorrect)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(24)
+    }
+
+    private var parentPINSetupView: some View {
+        VStack(spacing: 16) {
+            Text("Create Parent PIN")
+                .font(.title2.bold())
+
+            Text("Choose a 4-digit PIN to protect parent settings, reports, and local data controls.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            SecureField("New 4-digit PIN", text: $setupPIN)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
+                .textContentType(.newPassword)
+                .onChange(of: setupPIN) { _, newValue in
+                    setupPIN = ParentPINPolicy.sanitize(newValue)
+                }
+                .accessibilityLabel("New parent PIN")
+
+            SecureField("Confirm 4-digit PIN", text: $confirmSetupPIN)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
+                .textContentType(.newPassword)
+                .onChange(of: confirmSetupPIN) { _, newValue in
+                    confirmSetupPIN = ParentPINPolicy.sanitize(newValue)
+                }
+                .accessibilityLabel("Confirm parent PIN")
+
+            Button("Save Parent PIN") {
+                saveNewParentPIN()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .disabled(setupPIN.count != ParentPINPolicy.requiredLength || confirmSetupPIN.count != ParentPINPolicy.requiredLength)
+
+            if !gateMessage.isEmpty {
+                Text(gateMessage)
+                    .foregroundStyle(DesignTokens.incorrect)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(24)
+    }
+
+    private var diagnosticSummary: String {
+        if let result = appState.diagnosticResult {
+            return "\(Int(result.overallScore * 100))%"
+        }
+        return "Not finished yet"
+    }
+
+    private var parentSettingsHero: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Parent Settings")
+                .kidText(.display)
+
+            Text("Review progress, tune the app experience, and manage local data from one place.")
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(20)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 22))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(AppTheme.textSecondary.opacity(0.12), lineWidth: 1)
+        )
+    }
+
+    private func settingsSection<Content: View>(
+        title: String,
+        subtitle: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(title)
+                .kidText(.h2)
+
+            Text(subtitle)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            content()
+        }
+        .padding(18)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 22))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(AppTheme.textSecondary.opacity(0.12), lineWidth: 1)
+        )
+    }
+
+    private func metricPill(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title3.weight(.bold))
+                .foregroundStyle(AppTheme.textPrimary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(AppTheme.textSecondary.opacity(0.12), lineWidth: 1)
+        )
+    }
+
+    private func settingsLinkLabel(title: String, subtitle: String, symbol: String, tint: Color = AppTheme.textPrimary) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(tint)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(AppTheme.textSecondary.opacity(0.12), lineWidth: 1)
+        )
+    }
+
+    private func performParentDataAction(_ action: ParentDataAction) {
+        switch action {
+        case .resetProgress:
+            appState.resetLearningData()
+        case .deleteProfile:
+            appState.deleteProfileAndData()
+            dismiss()
+        }
+    }
+
+    private func saveNewParentPIN() {
+        gateMessage = ""
+
+        guard ParentPINPolicy.isValid(setupPIN), ParentPINPolicy.isValid(confirmSetupPIN) else {
+            gateMessage = "Use exactly 4 digits for the parent PIN."
+            return
+        }
+
+        guard setupPIN == confirmSetupPIN else {
+            gateMessage = "The PIN entries do not match."
+            return
+        }
+
+        do {
+            try appState.saveParentPIN(setupPIN)
+            setupPIN = ""
+            confirmSetupPIN = ""
+        } catch {
+            gateMessage = "Couldn't save the parent PIN right now."
+        }
+    }
+}
+
+private struct ParentPINEditorSheet: View {
+    let mode: ParentPINEditorMode
+    let onSave: (String) throws -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var newPIN = ""
+    @State private var confirmPIN = ""
+    @State private var message = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Text("Use a 4-digit PIN that only the parent or guardian knows.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    SecureField("New 4-digit PIN", text: $newPIN)
+                        .keyboardType(.numberPad)
+                        .textContentType(.newPassword)
+                        .onChange(of: newPIN) { _, newValue in
+                            newPIN = ParentPINPolicy.sanitize(newValue)
+                        }
+
+                    SecureField("Confirm 4-digit PIN", text: $confirmPIN)
+                        .keyboardType(.numberPad)
+                        .textContentType(.newPassword)
+                        .onChange(of: confirmPIN) { _, newValue in
+                            confirmPIN = ParentPINPolicy.sanitize(newValue)
+                        }
+
+                    if !message.isEmpty {
+                        Text(message)
+                            .foregroundStyle(DesignTokens.incorrect)
+                    }
+                }
+            }
+            .navigationTitle(mode == .change ? "Change Parent PIN" : "Create Parent PIN")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save") {
+                        save()
+                    }
+                    .disabled(newPIN.count != ParentPINPolicy.requiredLength || confirmPIN.count != ParentPINPolicy.requiredLength)
+                }
+            }
+        }
+    }
+
+    private func save() {
+        message = ""
+
+        guard ParentPINPolicy.isValid(newPIN), ParentPINPolicy.isValid(confirmPIN) else {
+            message = "Use exactly 4 digits for the parent PIN."
+            return
+        }
+
+        guard newPIN == confirmPIN else {
+            message = "The PIN entries do not match."
+            return
+        }
+
+        do {
+            try onSave(newPIN)
+            dismiss()
+        } catch {
+            message = "Couldn't update the parent PIN right now."
         }
     }
 }

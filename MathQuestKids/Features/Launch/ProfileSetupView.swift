@@ -17,7 +17,7 @@ struct ProfileSetupView: View {
                     .kidText(.display)
                     .foregroundStyle(AppTheme.textPrimary)
 
-                Text("Create a profile, run a quick diagnostic, and unlock a premium adaptive K-5 math path.")
+                Text("Choose a name, take a quick quest check, and start a math adventure made just for this device.")
                     .kidText(.h2)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
@@ -38,7 +38,35 @@ struct ProfileSetupView: View {
                 TextField("Child name", text: $name)
                     .textFieldStyle(.roundedBorder)
                     .kidText(.h2)
+                    .submitLabel(.done)
+                    .onSubmit {
+                        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !trimmed.isEmpty else { return }
+                        appState.createProfile(name: trimmed)
+                    }
                     .accessibilityLabel("Child name")
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("The child’s first name stays only on this device and is never sent to a server or third party.")
+                        .parentText(.data)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("Parent Settings use a 4-digit PIN that you create on this device.")
+                        .parentText(.data)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    NavigationLink {
+                        LegalDocumentView(document: .privacyPolicy)
+                    } label: {
+                        Text("Review the Privacy Policy")
+                            .parentText(.data)
+                            .foregroundStyle(appState.selectedTheme.primary)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button("Start Adventure") {
                     appState.createProfile(name: name)

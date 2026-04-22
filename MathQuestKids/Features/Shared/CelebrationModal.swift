@@ -19,50 +19,55 @@ struct CelebrationModal<StickerContent: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        ZStack {
-            // Themed gradient backdrop (spec: bg1 → bg2, topLeading → bottomTrailing).
-            LinearGradient(
-                colors: [theme.bg1, theme.bg2],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+        GeometryReader { geo in
+            ZStack {
+                // Themed gradient backdrop (spec: bg1 → bg2, topLeading → bottomTrailing).
+                LinearGradient(
+                    colors: [theme.bg1, theme.bg2],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
 
-            // White card (spec: 95% white, 24pt corner radius, max 300pt wide).
-            VStack(spacing: DesignTokens.Spacing.sp4) {
-                // Sticker content — pop-in spring animation (spec: 64pt, centered, spring).
-                stickerContent()
-                    .scaleEffect(hasPopped ? 1 : 0)
-                    .animation(
-                        reduceMotion
-                            ? .easeIn(duration: 0.2)
-                            : Motion.kidPopIn,
-                        value: hasPopped
-                    )
+                ScrollView(showsIndicators: false) {
+                    // White card (spec: 95% white, 24pt corner radius, responsive width).
+                    VStack(spacing: DesignTokens.Spacing.sp4) {
+                        // Sticker content — pop-in spring animation (spec: 64pt, centered, spring).
+                        stickerContent()
+                            .scaleEffect(hasPopped ? 1 : 0)
+                            .animation(
+                                reduceMotion
+                                    ? .easeIn(duration: 0.2)
+                                    : Motion.kidPopIn,
+                                value: hasPopped
+                            )
 
-                Text(title)
-                    .kidText(.h1)
-                    .multilineTextAlignment(.center)
+                        Text(title)
+                            .kidText(.h1)
+                            .multilineTextAlignment(.center)
 
-                if let subtitle {
-                    Text(subtitle)
-                        .kidText(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
+                        if let subtitle {
+                            Text(subtitle)
+                                .kidText(.body)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
 
-                MascotBlock(companion: companion, context: .rewardEarned, theme: theme)
+                        MascotBlock(companion: companion, context: .rewardEarned, theme: theme)
 
-                Button(ctaTitle, action: onDismiss)
-                    .buttonStyle(CTAButtonStyle(theme: theme))
+                        Button(ctaTitle, action: onDismiss)
+                            .buttonStyle(CTAButtonStyle(theme: theme))
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding(DesignTokens.Spacing.sp8)
+                    .frame(maxWidth: min(max(geo.size.width - 48, 0), 380))
+                    .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 24))
+                    .shadow(color: .black.opacity(0.2), radius: 60, x: 0, y: 20)
+                    .padding(DesignTokens.Spacing.sp6)
                     .frame(maxWidth: .infinity)
+                    .onAppear { hasPopped = true }
+                }
             }
-            .padding(DesignTokens.Spacing.sp8)
-            .frame(maxWidth: 300)
-            .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 24))
-            .shadow(color: .black.opacity(0.2), radius: 60, x: 0, y: 20)
-            .padding(DesignTokens.Spacing.sp6)
-            .onAppear { hasPopped = true }
         }
         .accessibilityAddTraits(.isModal)
     }

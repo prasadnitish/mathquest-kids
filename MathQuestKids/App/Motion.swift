@@ -18,6 +18,9 @@ enum Motion {
     /// Pop-in spring: sticker reveal, correct answer. ~0.5s spring.
     static let kidPopIn: Animation = .spring(response: 0.4, dampingFraction: 0.55)
 
+    /// Short celebration pulse used on summary/reward accents.
+    static let kidCelebratePulse: Animation = .spring(response: 0.5, dampingFraction: 0.7).repeatCount(2, autoreverses: true)
+
     /// Wiggle / shake: wrong answer feedback. 0.4s, keyframe via View modifier below.
     static let kidWiggle: Animation = .easeInOut(duration: 0.4)
 

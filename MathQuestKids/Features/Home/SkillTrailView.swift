@@ -4,7 +4,7 @@ struct SkillTrailView: View {
     @EnvironmentObject private var appState: AppState
     let trail: SkillTrail
 
-    private var gradeGroups: [(grade: String, nodes: [TrailNode])] {
+    private var trailGroups: [(title: String, subtitle: String, nodes: [TrailNode])] {
         let kUnits: Set<UnitType> = [.kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
                                       .subtractionStories, .kCompareGroups, .kShapeAttributes, .teenPlaceValue]
         let g1Units: Set<UnitType> = [.g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
@@ -20,26 +20,32 @@ struct SkillTrailView: View {
                                        .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios]
 
         return [
-            ("Chapter 1", trail.nodes.filter { kUnits.contains($0.unit) }),
-            ("Chapter 2", trail.nodes.filter { g1Units.contains($0.unit) }),
-            ("Chapter 3", trail.nodes.filter { g2Units.contains($0.unit) }),
-            ("Chapter 4", trail.nodes.filter { g3Units.contains($0.unit) }),
-            ("Chapter 5", trail.nodes.filter { g4Units.contains($0.unit) }),
-            ("Chapter 6", trail.nodes.filter { g5Units.contains($0.unit) }),
-        ].filter { !$0.1.isEmpty }
+            ("Trail 1", "Count & Play", trail.nodes.filter { kUnits.contains($0.unit) }),
+            ("Trail 2", "Add & Solve", trail.nodes.filter { g1Units.contains($0.unit) }),
+            ("Trail 3", "Build Big Numbers", trail.nodes.filter { g2Units.contains($0.unit) }),
+            ("Trail 4", "Groups & Fractions", trail.nodes.filter { g3Units.contains($0.unit) }),
+            ("Trail 5", "Bigger Challenges", trail.nodes.filter { g4Units.contains($0.unit) }),
+            ("Trail 6", "Patterns & Power", trail.nodes.filter { g5Units.contains($0.unit) }),
+        ].filter { !$0.nodes.isEmpty }
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Skill Trail")
+            Text("Quest Trail")
                 .kidText(.h2)
                 .foregroundStyle(AppTheme.textPrimary)
+                .padding(.bottom, 6)
+
+            Text("Tap any glowing stop to jump back into your adventure.")
+                .kidText(.body)
+                .foregroundStyle(AppTheme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 12)
 
-            ForEach(gradeGroups, id: \.grade) { group in
+            ForEach(trailGroups, id: \.title) { group in
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 6) {
-                        Text(group.grade)
+                        Text(group.title)
                             .kidText(.caption)
                             .foregroundStyle(appState.selectedTheme.primary)
                         Image(systemName: "star.fill")
@@ -51,6 +57,11 @@ struct SkillTrailView: View {
                     .background(appState.selectedTheme.primary.opacity(0.10),
                                 in: Capsule())
                     .padding(.bottom, 4)
+
+                    Text(group.subtitle)
+                        .kidText(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .padding(.horizontal, 4)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 14) {

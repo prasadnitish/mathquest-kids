@@ -3,26 +3,53 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var appState: AppState
 
-    private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    private var featuredLesson: LessonPlanItem? {
+        appState.adaptivePath.recommendedLessons.first
+    }
+
+    private var missionChipTitles: [String] {
+        Array(appState.adaptivePath.recommendedLessons.prefix(3).map(\.title))
+    }
+
+    private var nextSticker: Sticker? {
+        appState.stickerCollection.stickers.first(where: { !$0.isUnlocked })
+    }
+
+    private var streakMessage: String {
+        switch appState.dashboard.streakDays {
+        case 5...:
+            return "Your sparkle streak is glowing bright."
+        case 2...:
+            return "You're building a shiny streak."
+        case 1:
+            return "You played today. That's a great start."
+        default:
+            return "One quest today starts your streak."
+        }
+    }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                header
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp6) {
+                heroSection
+
                 MascotBlock(
                     companion: appState.activeCompanion,
-                    context: .homeGreeting,
+                    context: appState.dashboard.streakDays >= 3 ? .streakMilestone : .homeGreeting,
                     theme: appState.selectedTheme
                 )
                 .padding(.horizontal, DesignTokens.Spacing.sp4)
-                .padding(.bottom, DesignTokens.Spacing.sp4)
-                adaptiveMission
-                companionSpotlight
+
+                missionSection
+                progressSection
+                companionSection
+
                 SkillTrailView(trail: appState.skillTrail)
                     .environmentObject(appState)
-                rewardCard
+
+                stickerSection
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, DesignTokens.Spacing.sp6)
             .padding(.top, 84)
             .padding(.bottom, 32)
         }
@@ -40,301 +67,260 @@ struct HomeView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("\(greeting), \(appState.profile?.displayName ?? "Explorer")")
-                .kidText(.h1)
-                .foregroundStyle(AppTheme.textPrimary)
-                .minimumScaleFactor(0.7)
-                .lineLimit(2)
+    private var heroSection: some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("\(greeting), \(appState.profile?.displayName ?? "Explorer")")
+                    .kidText(.display)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(2)
 
-            Text("Offline-first math adventures with adaptive K-5 learning paths.")
-                .kidText(.h2)
-                .foregroundStyle(AppTheme.textSecondary)
+                Text("Ready for your next math adventure?")
+                    .kidText(.h2)
+                    .foregroundStyle(AppTheme.textPrimary)
 
-            HStack(spacing: 10) {
-                summaryPill(title: "Streak", value: "\(appState.dashboard.streakDays)")
-                summaryPill(title: "Sessions", value: "\(appState.dashboard.completedSessions)")
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(22)
-        .background(
-            LinearGradient(
-                colors: [AppTheme.card, appState.selectedTheme.accent.opacity(0.12)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 24)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(appState.selectedTheme.primary.opacity(0.18), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.10), radius: 14, x: 0, y: 8)
-    }
-
-    private var adaptiveMission: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Adaptive Mission")
-                        .kidText(.h2)
-                        .foregroundStyle(AppTheme.textPrimary)
-
-                    if appState.adaptivePath.confidence > 0 {
-                        Text("Level: \(appState.adaptivePath.placedGrade.title)  ·  Confidence: \(Int(appState.adaptivePath.confidence * 100))%")
-                            .kidText(.body)
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.8)
-                    } else {
-                        Text("Take the placement quiz to personalize your path.")
-                            .kidText(.body)
-                            .foregroundStyle(AppTheme.textSecondary)
-                    }
-                }
-
-                Spacer()
-
-            }
-
-            if appState.adaptivePath.recommendedLessons.isEmpty {
-                Text("Run the diagnostic to unlock a personalized K-5 roadmap.")
+                Text(streakMessage)
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
-            } else {
-                let top = appState.adaptivePath.recommendedLessons.prefix(3).map(\.title).joined(separator: "  •  ")
-                Text(top)
-                    .kidText(.body)
+
+                HStack(spacing: 10) {
+                    FriendlyStatPill(
+                        emoji: "✨",
+                        value: "\(appState.stickerCollection.earnedCount)",
+                        label: "stickers"
+                    )
+                    FriendlyStatPill(
+                        emoji: "🔥",
+                        value: "\(appState.dashboard.streakDays)",
+                        label: "day glow"
+                    )
+                }
+            }
+        }
+    }
+
+    private var missionSection: some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("Today's Mission")
+                    .kidText(.caption)
+                    .foregroundStyle(appState.selectedTheme.primary)
+
+                Text(featuredLesson?.title ?? "Find your just-right quest")
+                    .kidText(.h1)
                     .foregroundStyle(AppTheme.textPrimary)
-            }
 
-            // Support & stretch lesson pills
-            if !appState.adaptivePath.supportLessons.isEmpty || !appState.adaptivePath.stretchLessons.isEmpty {
-                HStack(spacing: 6) {
-                    if !appState.adaptivePath.supportLessons.isEmpty {
-                        let supportTitle = appState.adaptivePath.supportLessons.first?.title ?? ""
-                        Label(supportTitle, systemImage: "arrow.down.circle")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(Color.orange.opacity(0.12), in: Capsule())
-                            .lineLimit(1)
-                    }
-                    if !appState.adaptivePath.stretchLessons.isEmpty {
-                        let stretchTitle = appState.adaptivePath.stretchLessons.first?.title ?? ""
-                        Label(stretchTitle, systemImage: "arrow.up.circle")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(Color.green.opacity(0.12), in: Capsule())
-                            .lineLimit(1)
-                    }
-                }
-            }
+                Text(missionDescription)
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(appState.adaptivePath.pedagogyHighlights) { strategy in
-                        Text(strategy.title)
-                            .kidText(.caption)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(appState.selectedTheme.primary.opacity(0.10), in: Capsule())
-                            .overlay(Capsule().stroke(appState.selectedTheme.primary.opacity(0.18), lineWidth: 1))
-                    }
-                }
-            }
-
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) {
-                    Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
-                        appState.startRecommendedSession()
-                    }
-                    .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
-
-                    Button("View K-5 Lesson Plan") {
-                        appState.openLessonPlans()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                }
-                VStack(spacing: 8) {
-                    Button(appState.isRecommendationPersonalized ? "Start Recommended Quest" : "Start Next Quest") {
-                        appState.startRecommendedSession()
-                    }
-                    .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
-
-                    Button("View K-5 Lesson Plan") {
-                        appState.openLessonPlans()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                }
-            }
-        }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 22))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(appState.selectedTheme.primary.opacity(0.16), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.12), radius: 16, x: 0, y: 8)
-    }
-
-    private var unitGrid: some View {
-        LazyVGrid(columns: columns, spacing: 14) {
-            ForEach(UnitType.learningPath) { unit in
-                UnitCardView(unit: unit) {
-                    appState.startSession(for: unit)
-                }
-                .environmentObject(appState)
-            }
-        }
-    }
-
-    private var companionSpotlight: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Character Pack")
-                .kidText(.h2)
-                .foregroundStyle(AppTheme.textPrimary)
-
-            HStack(alignment: .top, spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(appState.selectedTheme.primary.opacity(0.22))
-                    Circle()
-                        .stroke(appState.selectedTheme.primary.opacity(0.45), lineWidth: 1.5)
-                    if !appState.activeCompanion.imageName.isEmpty {
-                        Image(appState.activeCompanion.imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 80, height: 80)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: appState.activeCompanion.symbol)
-                            .font(.system(size: 42, weight: .black))
-                            .foregroundStyle(AppTheme.textPrimary)
-                    }
-                }
-                .frame(width: 88, height: 88)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(appState.activeCompanion.name)
-                        .kidText(.h2)
-                        .foregroundStyle(AppTheme.textPrimary)
-                    Text(appState.activeCompanion.title)
-                        .kidText(.body)
-                        .foregroundStyle(AppTheme.textSecondary)
-                    Text("\"\(appState.activeCompanion.tagline)\"")
-                        .kidText(.body)
-                        .foregroundStyle(AppTheme.textSecondary)
-                }
-
-                Spacer(minLength: 8)
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(appState.availableCompanions) { companion in
-                        Button {
-                            appState.setCompanion(companion.id)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack(spacing: 8) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(appState.selectedTheme.primary.opacity(0.20))
-                                        if !companion.imageName.isEmpty {
-                                            Image(companion.imageName)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 36, height: 36)
-                                                .clipShape(Circle())
-                                        } else {
-                                            Image(systemName: companion.symbol)
-                                                .kidText(.h2)
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                        }
-                                    }
-                                    .frame(width: 42, height: 42)
-
-                                    Spacer(minLength: 0)
-                                }
-
-                                Text(companion.name)
-                                    .kidText(.body)
-                                    .foregroundStyle(AppTheme.textPrimary)
-                                    .lineLimit(1)
-                                Text(companion.title)
+                if !missionChipTitles.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(missionChipTitles, id: \.self) { title in
+                                Text(title)
                                     .kidText(.caption)
-                                    .foregroundStyle(AppTheme.textSecondary)
-                                    .lineLimit(1)
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(appState.selectedTheme.primary.opacity(0.12), in: Capsule())
                             }
-                            .padding(12)
-                            .frame(width: 170, height: 120, alignment: .leading)
-                            .background(
-                                appState.selectedCompanionID == companion.id
-                                    ? appState.selectedTheme.primary.opacity(0.22)
-                                    : AppTheme.card,
-                                in: RoundedRectangle(cornerRadius: 12)
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(
-                                        appState.selectedCompanionID == companion.id ? appState.selectedTheme.primary : Color.black.opacity(0.08),
-                                        lineWidth: appState.selectedCompanionID == companion.id ? 2 : 1
-                                    )
-                            )
-                            .shadow(color: .black.opacity(appState.selectedCompanionID == companion.id ? 0.12 : 0.06), radius: appState.selectedCompanionID == companion.id ? 8 : 4, x: 0, y: appState.selectedCompanionID == companion.id ? 5 : 2)
                         }
-                        .buttonStyle(.plain)
+                    }
+                }
+
+                if let nextSticker {
+                    HStack(spacing: 10) {
+                        Image(systemName: "sparkles")
+                            .kidText(.h2)
+                            .foregroundStyle(appState.selectedTheme.accent)
+                        Text("Next shiny surprise: \(nextSticker.unitType.title)")
+                            .kidText(.body)
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(appState.selectedTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
+                }
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        missionStartButton
+                        roadmapButton
+                    }
+                    VStack(spacing: 8) {
+                        missionStartButton
+                        roadmapButton
                     }
                 }
             }
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 6)
     }
 
-    private var rewardCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Momentum")
-                .kidText(.h2)
-                .foregroundStyle(AppTheme.textPrimary)
-            Text("Streak: \(appState.dashboard.streakDays) day\(appState.dashboard.streakDays == 1 ? "" : "s")")
-                .kidText(.body)
-            Text("Sessions: \(appState.dashboard.completedSessions)")
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textSecondary)
-            ProgressView(value: appState.dashboard.rewardProgress)
-                .tint(appState.selectedTheme.primary)
-            Text("Keep a 5-day streak to unlock a bonus badge.")
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textSecondary)
+    private var progressSection: some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("Your Garden")
+                    .kidText(.h2)
+                    .foregroundStyle(AppTheme.textPrimary)
 
-            Button("Open Sticker Book") {
-                appState.openStickerBook()
+                Text(progressMessage)
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                ProgressView(value: appState.dashboard.rewardProgress)
+                    .tint(appState.selectedTheme.primary)
+
+                HStack(spacing: 10) {
+                    FriendlyStatPill(
+                        emoji: "🎯",
+                        value: "\(appState.dashboard.completedSessions)",
+                        label: "quests played"
+                    )
+                    FriendlyStatPill(
+                        emoji: "🌟",
+                        value: "\(max(0, 5 - min(5, appState.dashboard.streakDays)))",
+                        label: "to next badge"
+                    )
+                }
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .accessibilityLabel("Open Sticker Book")
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 6)
+    }
+
+    private var companionSection: some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("Pick Your Buddy")
+                    .kidText(.h2)
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                HStack(alignment: .top, spacing: 12) {
+                    companionAvatar(appState.activeCompanion, size: 92)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(appState.activeCompanion.name)
+                            .kidText(.h2)
+                            .foregroundStyle(AppTheme.textPrimary)
+                        Text(appState.activeCompanion.title)
+                            .kidText(.body)
+                            .foregroundStyle(AppTheme.textSecondary)
+                        Text("\"\(appState.activeCompanion.tagline)\"")
+                            .kidText(.body)
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(appState.availableCompanions) { companion in
+                            Button(action: { appState.setCompanion(companion.id) }) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    companionAvatar(companion, size: 44)
+
+                                    Text(companion.name)
+                                        .kidText(.body)
+                                        .foregroundStyle(AppTheme.textPrimary)
+                                        .lineLimit(1)
+
+                                    Text(companion.title)
+                                        .kidText(.caption)
+                                        .foregroundStyle(AppTheme.textSecondary)
+                                        .lineLimit(1)
+                                }
+                                .padding(12)
+                                .frame(width: 170, height: 122, alignment: .leading)
+                                .background(
+                                    appState.selectedCompanionID == companion.id
+                                        ? appState.selectedTheme.primary.opacity(0.18)
+                                        : Color.white.opacity(0.68),
+                                    in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                                        .stroke(
+                                            appState.selectedCompanionID == companion.id ? appState.selectedTheme.primary : Color.white.opacity(0.6),
+                                            lineWidth: appState.selectedCompanionID == companion.id ? 2 : 1
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var stickerSection: some View {
+        AppCard(theme: appState.selectedTheme) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sp4) {
+                Text("Sticker Treasure")
+                    .kidText(.h2)
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                Text(stickerMessage)
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Button("Open Sticker Book") {
+                    appState.openStickerBook()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .accessibilityLabel("Open Sticker Book")
+            }
+        }
+    }
+
+    private var missionStartButton: some View {
+        Button(appState.isRecommendationPersonalized ? "Start Quest" : "Find My Starting Quest") {
+            if appState.isRecommendationPersonalized {
+                appState.startRecommendedSession()
+            } else {
+                appState.startDiagnosticIfNeeded()
+                appState.route = .diagnostic
+            }
+        }
+        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
+    }
+
+    private var roadmapButton: some View {
+        Button("Explore Quest Trail") {
+            appState.openLessonPlans()
+        }
+        .buttonStyle(SecondaryButtonStyle())
+    }
+
+    private var missionDescription: String {
+        if let featuredLesson {
+            return featuredLesson.activityPrompt
+        }
+        return "Take a quick quest check so I can pick adventures that feel just right."
+    }
+
+    private var progressMessage: String {
+        switch appState.dashboard.completedSessions {
+        case 0:
+            return "Your garden is waiting for its first sparkle."
+        case 1:
+            return "You planted your first win. Keep growing."
+        default:
+            return "Every quest adds more sparkle to your garden."
+        }
+    }
+
+    private var stickerMessage: String {
+        if let nextSticker {
+            return "You're \(appState.stickerCollection.earnedCount) stickers in. One more quest gets you closer to \(nextSticker.title)."
+        }
+        return "You found every sticker in this book. That's amazing."
     }
 
     private var greeting: String {
@@ -346,99 +332,55 @@ struct HomeView: View {
         }
     }
 
-    private func summaryPill(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .kidText(.caption)
-                .foregroundStyle(AppTheme.textSecondary)
-            Text(value)
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textPrimary)
+    @ViewBuilder
+    private func companionAvatar(_ companion: ThemeCompanion, size: CGFloat) -> some View {
+        ZStack {
+            Circle()
+                .fill(appState.selectedTheme.primary.opacity(0.22))
+            Circle()
+                .stroke(appState.selectedTheme.primary.opacity(0.4), lineWidth: 1.5)
+
+            if !companion.imageName.isEmpty {
+                Image(companion.imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size, height: size)
+                    .clipShape(Circle())
+            } else {
+                Image(systemName: companion.symbol)
+                    .font(.system(size: size * 0.42, weight: .black))
+                    .foregroundStyle(AppTheme.textPrimary)
+            }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
-        )
+        .frame(width: size + 8, height: size + 8)
     }
 }
 
-struct UnitCardView: View {
-    @EnvironmentObject private var appState: AppState
-    let unit: UnitType
-    let onStart: () -> Void
+private struct FriendlyStatPill: View {
+    let emoji: String
+    let value: String
+    let label: String
 
     var body: some View {
-        let progress = appState.dashboard.unitProgress.first(where: { $0.unit == unit })
-        let unlocked = progress?.unlocked ?? (unit == .kCountObjects)
-        let sessions = progress?.completedSessions ?? 0
+        HStack(spacing: 8) {
+            Text(emoji)
+                .font(.system(size: 20))
 
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text(unit.title)
-                    .kidText(.h2)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
-                Spacer(minLength: 8)
-                Text(unit.gradeHint)
+                Text(label)
                     .kidText(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background(appState.selectedTheme.accent.opacity(0.22), in: Capsule())
-                if !unlocked {
-                    Image(systemName: "lock.fill")
-                        .foregroundStyle(.secondary)
-                        .accessibilityHidden(true)
-                }
+                    .foregroundStyle(AppTheme.textSecondary)
             }
-
-            Text(unit.subtitle)
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textSecondary)
-
-            Text("Sessions complete: \(sessions)")
-                .kidText(.caption)
-                .foregroundStyle(AppTheme.textSecondary)
-
-            Spacer(minLength: 8)
-
-            Button(unlocked ? "Start" : "Locked") {
-                onStart()
-            }
-            .buttonStyle(PlayButtonStyle(theme: appState.selectedTheme))
-            .disabled(!unlocked)
-            .accessibilityLabel("Start \(unit.title)")
         }
-        .padding(16)
-        .frame(minHeight: 190)
-        .background {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(AppTheme.card.opacity(unlocked ? 1.0 : 0.96))
-                LinearGradient(
-                    colors: [appState.selectedTheme.primary.opacity(0.12), Color.clear],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                VStack {
-                    HStack {
-                        Spacer()
-                        Image(systemName: appState.selectedTheme.heroSymbol)
-                            .font(.system(size: 36, weight: .black))
-                            .foregroundStyle(appState.selectedTheme.primary.opacity(0.16))
-                    }
-                    Spacer()
-                }
-                .padding(14)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
         .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(unlocked ? appState.selectedTheme.primary.opacity(0.20) : Color.gray.opacity(0.18), lineWidth: 1)
+            RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
+                .stroke(Color.white.opacity(0.7), lineWidth: 1)
         )
-        .shadow(color: .black.opacity(0.10), radius: 10, x: 0, y: 6)
-        .opacity(unlocked ? 1 : 0.88)
     }
 }

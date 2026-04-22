@@ -6,70 +6,78 @@ final class MathQuestKidsUITests: XCTestCase {
     }
 
     @MainActor
-    func testFlowThroughThreeUnitsAndParentGate() throws {
+    func testMissionEntryAndParentGate() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-deterministic-session", "-ui-test"]
         app.launch()
 
         navigateToHome(app: app)
 
-        let firstUnlocked = firstUnlockedTrailNode(app: app)
-        XCTAssertTrue(firstUnlocked.waitForExistence(timeout: 5),
-                      "Expected at least one unlocked trail node on the home screen.")
-        firstUnlocked.tap()
-        completeCurrentSession(app: app)
-
-        // After completing the first unit, the next unit in the learning path
-        // unlocks. Complete one more to exercise the unlock flow.
-        let nextUnlocked = firstUnlockedTrailNode(app: app, excludingCompleted: true)
-        if nextUnlocked.waitForExistence(timeout: 3) {
-            nextUnlocked.tap()
-            completeCurrentSession(app: app)
-        }
+        let missionButton = currentMissionButton(app: app)
+        XCTAssertTrue(missionButton.waitForExistence(timeout: 5),
+                      "Expected the primary mission CTA on the home screen.")
+        missionButton.tap()
+        XCTAssertTrue(app.staticTexts["problemPrompt"].waitForExistence(timeout: 3))
+        quitCurrentSession(app: app)
 
         app.buttons["Settings"].tap()
+        let configureButton = app.buttons["Create Parent PIN"]
+        if configureButton.waitForExistence(timeout: 3) {
+            configureButton.tap()
+            let createField = app.secureTextFields["Create PIN"]
+            let confirmField = app.secureTextFields["Confirm PIN"]
+            XCTAssertTrue(createField.waitForExistence(timeout: 2))
+            createField.tap()
+            createField.typeText("2468")
+            confirmField.tap()
+            confirmField.typeText("2468")
+            app.buttons["Save PIN"].tap()
+        }
+
         let unlockButton = app.buttons["Unlock Settings"]
         XCTAssertTrue(unlockButton.waitForExistence(timeout: 3))
+        let pinField = app.secureTextFields["Parent PIN"]
+        XCTAssertTrue(pinField.waitForExistence(timeout: 2))
+        pinField.tap()
+        pinField.typeText("2468")
+        unlockButton.tap()
+        XCTAssertTrue(app.staticTexts["Parent Settings"].waitForExistence(timeout: 3))
     }
 
     @MainActor
     private func navigateToHome(app: XCUIApplication) {
-        let anyTrailNode = app.buttons.matching(unlockedTrailNodePredicate).firstMatch
-        if anyTrailNode.waitForExistence(timeout: 2) {
+        let missionButton = currentMissionButton(app: app)
+        if missionButton.waitForExistence(timeout: 2) {
             return
         }
 
         let nameField = app.textFields["Child name"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         nameField.tap()
-        nameField.typeText("Mia")
-        app.buttons["Start Adventure"].tap()
-        XCTAssertTrue(anyTrailNode.waitForExistence(timeout: 5))
-    }
-
-    /// Matches a skill-trail node that is playable (not locked).
-    /// The node's accessibility label format is `"<Unit Title>: <State>"`
-    /// where <State> is one of "Locked", "Available, tap to start",
-    /// "In progress, N percent", "Completed", "Mastered".
-    private var unlockedTrailNodePredicate: NSPredicate {
-        NSPredicate(format:
-            "label CONTAINS ': Available' OR label CONTAINS ': In progress' OR label CONTAINS ': Completed' OR label CONTAINS ': Mastered'"
-        )
-    }
-
-    @MainActor
-    private func firstUnlockedTrailNode(app: XCUIApplication, excludingCompleted: Bool = false) -> XCUIElement {
-        if excludingCompleted {
-            let predicate = NSPredicate(format:
-                "label CONTAINS ': Available' OR label CONTAINS ': In progress'"
-            )
-            return app.buttons.matching(predicate).firstMatch
+        nameField.typeText("Mia\n")
+        if !missionButton.waitForExistence(timeout: 2) {
+            let startAdventureButton = app.buttons["Start Adventure"]
+            XCTAssertTrue(startAdventureButton.waitForExistence(timeout: 2))
+            startAdventureButton.tap()
         }
-        return app.buttons.matching(unlockedTrailNodePredicate).firstMatch
+        XCTAssertTrue(missionButton.waitForExistence(timeout: 5))
     }
 
     @MainActor
-    private func completeCurrentSession(app: XCUIApplication) {
+    private func currentMissionButton(app: XCUIApplication) -> XCUIElement {
+        let startQuest = app.buttons["Start Quest"]
+        if startQuest.exists {
+            return startQuest
+        }
+        let findStartingQuest = app.buttons["Find My Starting Quest"]
+        if findStartingQuest.exists {
+            return findStartingQuest
+        }
+        return startQuest
+    }
+
+    @MainActor
+    private func completeCurrentSession(app: XCUIApplication, returnToHome: Bool = true) {
         var guardCounter = 0
         while !app.buttons["Back to Home"].exists && guardCounter < 40 {
             guardCounter += 1
@@ -85,7 +93,9 @@ final class MathQuestKidsUITests: XCTestCase {
         }
 
         XCTAssertTrue(app.buttons["Back to Home"].waitForExistence(timeout: 5))
-        app.buttons["Back to Home"].tap()
+        if returnToHome {
+            app.buttons["Back to Home"].tap()
+        }
     }
 
     @MainActor
@@ -119,21 +129,36 @@ final class MathQuestKidsUITests: XCTestCase {
         XCTAssertTrue(settingsButton.exists)
         assertMinTapTarget(settingsButton, label: "Settings")
 
-        let firstUnlocked = firstUnlockedTrailNode(app: app)
-        XCTAssertTrue(firstUnlocked.waitForExistence(timeout: 3),
-                      "Expected an unlocked trail node on the home screen.")
-        assertMinTapTarget(firstUnlocked, label: "First unlocked trail node")
+        let missionButton = currentMissionButton(app: app)
+        XCTAssertTrue(missionButton.waitForExistence(timeout: 3),
+                      "Expected the primary mission CTA on the home screen.")
+        assertMinTapTarget(missionButton, label: "Mission CTA")
         attachScreenshot(app: app, name: "Home")
 
-        firstUnlocked.tap()
+        missionButton.tap()
         XCTAssertTrue(app.staticTexts["problemPrompt"].waitForExistence(timeout: 3))
         assertMinTapTarget(app.buttons["Hint"], label: "Hint")
         assertMinTapTarget(app.buttons["Read Aloud"], label: "Read Aloud")
         assertMinTapTarget(app.buttons["Submit Answer"], label: "Submit Answer")
         attachScreenshot(app: app, name: "Session")
+        quitCurrentSession(app: app)
+    }
 
-        completeCurrentSession(app: app)
-        attachScreenshot(app: app, name: "SummaryOrHome")
+    @MainActor
+    func testStickerBookFlow() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-deterministic-session", "-ui-test"]
+        app.launch()
+
+        navigateToHome(app: app)
+
+        let stickerBookButton = app.buttons["Open Sticker Book"]
+        scrollToElement(stickerBookButton, in: app)
+        XCTAssertTrue(stickerBookButton.waitForExistence(timeout: 3))
+        stickerBookButton.tap()
+
+        XCTAssertTrue(app.staticTexts["Sticker Book"].waitForExistence(timeout: 3))
+        attachScreenshot(app: app, name: "StickerBook")
     }
 
     private func assertMinTapTarget(_ element: XCUIElement, label: String) {
@@ -147,5 +172,27 @@ final class MathQuestKidsUITests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    @MainActor
+    private func quitCurrentSession(app: XCUIApplication) {
+        let quitButton = app.buttons["Quit quest"]
+        XCTAssertTrue(quitButton.waitForExistence(timeout: 3))
+        quitButton.tap()
+
+        let confirmQuit = app.buttons["Quit Quest"]
+        XCTAssertTrue(confirmQuit.waitForExistence(timeout: 3))
+        confirmQuit.tap()
+
+        XCTAssertTrue(currentMissionButton(app: app).waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    private func scrollToElement(_ element: XCUIElement, in app: XCUIApplication, maxSwipes: Int = 6) {
+        var attempts = 0
+        while !element.exists && attempts < maxSwipes {
+            app.swipeUp()
+            attempts += 1
+        }
     }
 }

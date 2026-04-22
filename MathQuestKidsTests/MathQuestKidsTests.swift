@@ -249,10 +249,20 @@ struct MathQuestKidsTests {
         #expect(runtime.isComplete == false)
 
         runtime.recordSubmission(correct: false)
+        #expect(runtime.index == 0)
+        #expect(runtime.pendingCorrection == true)
+        #expect(runtime.answeredCount == 1)
+        #expect(runtime.isComplete == false)
+
+        runtime.acknowledgeCorrection()
         #expect(runtime.index == 1)
         #expect(runtime.isComplete == false)
 
         runtime.recordSubmission(correct: true)
+        #expect(runtime.pendingAdvance == true)
+        #expect(runtime.isComplete == false)
+
+        runtime.advanceIfPending()
         #expect(runtime.isComplete == true)
     }
 
@@ -814,7 +824,8 @@ struct MathQuestKidsTests {
         // Second wrong answer: item completes, answeredCount increments
         runtime.recordSubmission(correct: false)
         #expect(runtime.answeredCount == 1)
-        #expect(runtime.pendingAdvance == true)
+        #expect(runtime.pendingAdvance == false)
+        #expect(runtime.pendingCorrection == true)
     }
 
     @Test
@@ -850,6 +861,10 @@ struct MathQuestKidsTests {
 
         runtime.recordSubmission(correct: true)
         #expect(runtime.answeredCount == 2)
+        #expect(runtime.pendingAdvance == true)
+        #expect(runtime.isComplete == false)
+
+        runtime.advanceIfPending()
         #expect(runtime.isComplete == true)
     }
 
@@ -893,6 +908,190 @@ struct MathQuestKidsTests {
         #expect(!path.supportLessons.isEmpty) // G4 support should exist
     }
 
+    @Test
+    func resetLearningDataClearsProgressButKeepsProfile() throws {
+        let stack = CoreDataStack(inMemory: true)
+        let repo = ProgressRepository(coreDataStack: stack)
+        let profile = try repo.createOrLoadProfile(name: "Kid")
+        let sessionID = UUID()
+
+        try repo.startSession(sessionID: sessionID, childID: profile.id, unit: .subtractionStories)
+        try repo.finishSession(
+            sessionID: sessionID,
+            childID: profile.id,
+            unit: .subtractionStories,
+            totalItems: 4,
+            correctItems: 3,
+            rewardTitle: "Forest Sticker"
+        )
+        try repo.saveAttempt(
+            AttemptInput(
+                childID: profile.id,
+                skillID: "sub_within_10",
+                unit: .subtractionStories,
+                itemID: "item-1",
+                sessionID: sessionID,
+                response: "5",
+                correct: true,
+                latencyMs: 500,
+                hintsUsed: 0,
+                inputMode: .tap
+            )
+        )
+        try repo.saveMasteryState(
+            MasteryStateRecord(
+                childID: profile.id,
+                skillID: "sub_within_10",
+                status: .practicing,
+                masteryScore: 0.75,
+                lastAssessedAt: .now,
+                sessionCount: 1,
+                recentIncorrectStreak: 0
+            )
+        )
+        try repo.saveReviewSchedule(
+            ReviewScheduleRecord(
+                childID: profile.id,
+                skillID: "sub_within_10",
+                nextDueAt: .distantFuture,
+                intervalIndex: 1,
+                lapseCount: 0
+            )
+        )
+        try repo.saveStickerEarned(childID: profile.id, unitRaw: UnitType.subtractionStories.rawValue, dateEarned: .now)
+
+        try repo.deleteLearningData(childID: profile.id, deleteProfile: false)
+
+        #expect(repo.loadActiveProfile()?.displayName == "Kid")
+        #expect(repo.completedSessionCount(childID: profile.id) == 0)
+        #expect(repo.fetchRecentSessionLogs(childID: profile.id, limit: 10).isEmpty)
+        #expect(repo.fetchRecentAttempts(childID: profile.id, skillID: "sub_within_10").isEmpty)
+        #expect(repo.fetchMasteryState(childID: profile.id, skillID: "sub_within_10") == nil)
+        #expect(repo.fetchReviewSchedule(childID: profile.id, skillID: "sub_within_10") == nil)
+        #expect(repo.fetchStickers(childID: profile.id).isEmpty)
+    }
+
+    @Test
+    func deleteLearningDataCanRemoveProfile() throws {
+        let stack = CoreDataStack(inMemory: true)
+        let repo = ProgressRepository(coreDataStack: stack)
+        let profile = try repo.createOrLoadProfile(name: "Kid")
+
+        try repo.deleteLearningData(childID: profile.id, deleteProfile: true)
+
+        #expect(repo.loadActiveProfile() == nil)
+    }
+
+    @MainActor
+    @Test
+    func parentGateAppliesCooldownAfterThreeFailures() {
+        let pinStore = InMemoryParentPINStore(initialPIN: "2468")
+        let state = AppState(
+            repository: ProgressRepository(coreDataStack: CoreDataStack(inMemory: true)),
+            parentPINStore: pinStore
+        )
+        let now = Date(timeIntervalSince1970: 100)
+
+        state.showParentGate()
+        _ = state.submitParentGate(answer: "0", now: now)
+        _ = state.submitParentGate(answer: "0", now: now)
+        let result = state.submitParentGate(answer: "0", now: now)
+
+        switch result {
+        case .cooldown(let seconds):
+            #expect(seconds >= 19)
+            #expect(state.parentGateLockedUntil == now.addingTimeInterval(20))
+        default:
+            Issue.record("Expected the parent gate to enter cooldown after three failures.")
+        }
+    }
+
+    @MainActor
+    @Test
+    func savingParentPINUnlocksGateAndAllowsVerification() throws {
+        let pinStore = InMemoryParentPINStore()
+        let state = AppState(
+            repository: ProgressRepository(coreDataStack: CoreDataStack(inMemory: true)),
+            parentPINStore: pinStore
+        )
+
+        #expect(state.parentPINConfigured == false)
+
+        try state.saveParentPIN("2468")
+
+        #expect(state.parentPINConfigured == true)
+
+        state.showParentGate()
+        let result = state.submitParentGate(answer: "2468")
+
+        switch result {
+        case .unlocked:
+            #expect(state.parentGateRequired == false)
+        default:
+            Issue.record("Expected the saved parent PIN to unlock the gate.")
+        }
+    }
+
+    @MainActor
+    @Test
+    func recommendedProgressionWalksFromFirstQuestThroughGradeFiveAndAwardsStickers() throws {
+        let stack = CoreDataStack(inMemory: true)
+        let repo = ProgressRepository(coreDataStack: stack)
+        let profile = try repo.createOrLoadProfile(name: "Mia")
+        let state = AppState(
+            repository: repo,
+            contentPack: makeProgressionContentPack(),
+            curriculumCatalog: makeProgressionCatalog(),
+            parentPINStore: InMemoryParentPINStore()
+        )
+
+        state.route = .home
+        state.goHome()
+
+        let path = UnitType.learningPath
+        #expect(state.isUnitUnlocked(path[0]))
+        #expect(state.isUnitUnlocked(path[1]) == false)
+
+        for (index, expectedUnit) in path.enumerated() {
+            state.startRecommendedSession()
+            #expect(state.currentSession?.focusUnit == expectedUnit)
+
+            guard let session = state.currentSession else {
+                Issue.record("Expected a session for \(expectedUnit.rawValue).")
+                return
+            }
+
+            if index + 1 < path.count {
+                #expect(state.isUnitUnlocked(path[index + 1]) == false)
+            }
+
+            try repo.finishSession(
+                sessionID: session.sessionID,
+                childID: profile.id,
+                unit: expectedUnit,
+                totalItems: 5,
+                correctItems: 5,
+                rewardTitle: "\(expectedUnit.title) Sticker"
+            )
+
+            state.goHome()
+            state.checkAndAwardSticker(for: expectedUnit)
+            #expect(state.pendingStickerReward?.unitType == expectedUnit)
+            state.pendingStickerReward = nil
+
+            if index + 1 < path.count {
+                #expect(state.isUnitUnlocked(path[index + 1]))
+            }
+        }
+
+        #expect(path.allSatisfy(state.isUnitUnlocked))
+        #expect(state.stickerCollection.earnedCount == path.count)
+        #expect(state.stickerCollection.totalCount == path.count)
+
+        state.startRecommendedSession()
+        #expect(state.currentSession?.focusUnit == path.last)
+    }
+
     // MARK: - Test Helpers
 
     private func makeMiniCatalog() -> CurriculumCatalog {
@@ -933,5 +1132,107 @@ struct MathQuestKidsTests {
                 )
             }
         )
+    }
+
+    private func makeProgressionCatalog() -> CurriculumCatalog {
+        let grouped: [(GradeBand, [UnitType])] = [
+            (.kindergarten, Array(UnitType.learningPath[0...7])),
+            (.grade1, Array(UnitType.learningPath[8...14])),
+            (.grade2, Array(UnitType.learningPath[15...20])),
+            (.grade3, Array(UnitType.learningPath[21...26])),
+            (.grade4, Array(UnitType.learningPath[27...32])),
+            (.grade5, Array(UnitType.learningPath[33...37]))
+        ]
+
+        let grades = grouped.map { grade, units in
+            GradePlan(
+                grade: grade,
+                overview: "\(grade.title) overview",
+                bigIdeas: ["Build confidence one quest at a time."],
+                lessons: units.enumerated().map { offset, unit in
+                    LessonPlanItem(
+                        id: "\(grade.rawValue)-\(offset)",
+                        grade: grade,
+                        title: unit.title,
+                        domain: lessonDomain(for: unit),
+                        objective: "Practice \(unit.title.lowercased())",
+                        standards: ["Internal"],
+                        strategies: [.concretePictorialAbstract],
+                        estimatedMinutes: 10,
+                        isPlayableInApp: true,
+                        linkedUnit: unit,
+                        activityPrompt: "Practice \(unit.title.lowercased()) in a short quest."
+                    )
+                }
+            )
+        }
+
+        return CurriculumCatalog(grades: grades)
+    }
+
+    private func makeProgressionContentPack() -> ContentPack {
+        ContentPack(
+            units: UnitType.learningPath.enumerated().map { index, unit in
+                UnitDefinition(id: unit, title: unit.title, order: index + 1)
+            },
+            lessons: UnitType.learningPath.map { unit in
+                LessonDefinition(
+                    id: "lesson-\(unit.rawValue)",
+                    unit: unit,
+                    title: unit.title,
+                    skill: "skill-\(unit.rawValue)"
+                )
+            },
+            itemTemplates: UnitType.learningPath.map { unit in
+                ItemTemplate(
+                    id: "template-\(unit.rawValue)",
+                    unit: unit,
+                    skill: "skill-\(unit.rawValue)",
+                    format: .countAndMatch,
+                    difficulty: 1,
+                    prompt: "How many dots?",
+                    spokenForm: nil,
+                    answer: "3",
+                    supports: [.counters],
+                    payload: ItemPayload(
+                        left: nil,
+                        right: nil,
+                        minuend: nil,
+                        subtrahend: nil,
+                        target: 3,
+                        tens: nil,
+                        ones: nil
+                    )
+                )
+            },
+            hints: [],
+            rewards: [
+                RewardDefinition(id: "reward-1", title: "Explorer Sticker", description: "A shiny surprise")
+            ]
+        )
+    }
+
+    private func lessonDomain(for unit: UnitType) -> LessonDomain {
+        switch unit {
+        case .kCountObjects:
+            return .countingCardinality
+        case .kCompareGroups, .g2DataIntro, .g2TimeMoney, .g5LinePlotsFractions, .volumeAndDecimals:
+            return .measurementData
+        case .kShapeAttributes, .g1MeasureLength, .g3AreaConcept, .g4AngleMeasure:
+            return .geometry
+        case .subtractionStories, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
+             .g1AddWithin20, .g1FactFamilies, .g1AddSub100, .g2AddWithin100,
+             .g2SubWithin100, .g2AddSubRegroup, .g2EqualGroups, .multiplicationArrays,
+             .g3DivMeaning, .g3MultiStep:
+            return .operationsAlgebraicThinking
+        case .teenPlaceValue, .twoDigitComparison, .threeDigitComparison, .g2PlaceValue1000,
+             .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients:
+            return .numberOperationsBaseTen
+        case .fractionComparison, .fractionOfWhole, .g3FractionUnit, .g3FractionCompare,
+             .g4FractionAddSub, .g5FractionAddSubUnlike:
+            return .fractions
+        case .g5PreRatios:
+            return .ratiosExpressions
+        }
     }
 }

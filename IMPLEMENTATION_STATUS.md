@@ -21,7 +21,7 @@
 - Completed: reward reveal and home dashboard metrics (streak, sessions, accuracy).
 
 ## Phase 5: Hardening + Release Prep
-- Completed: parent gate and privacy copy.
+- Completed: 4-digit parent PIN gate, privacy copy, and in-app legal documents.
 - Completed: reduced-motion-friendly summary animation behavior.
 - Completed: minimum touch-target constraints in shared button styles.
 - Completed: unit/integration/UI test expansion and QA matrix.
@@ -30,3 +30,4 @@
 - Completed: accessibility regression coverage with min tap-target assertions + screen snapshots.
 - Completed: explicit portrait-only orientation lock for iPad.
 - Completed: local QA runner script (`scripts/run-local-qa.sh`).
+- Completed: branded launch screen for app startup.

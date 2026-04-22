@@ -36,10 +36,6 @@ struct ParentDashboardView: View {
         overallAccuracy > 0 ? "\(Int(overallAccuracy * 100))%" : "—"
     }
 
-    private var subheaderString: String {
-        "PIN protected · \(report.childName) · \(report.gradePlacement)"
-    }
-
     // MARK: - Body
 
     var body: some View {
@@ -67,28 +63,40 @@ struct ParentDashboardView: View {
     // MARK: - Header Bar
 
     private var headerBar: some View {
-        HStack(spacing: DesignTokens.Spacing.sp3) {
-            Text("PARENT VIEW")
-                .parentText(.section)
-                .textCase(.uppercase)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 3)
-                .background(
-                    DesignTokens.parentCard,
-                    in: RoundedRectangle(cornerRadius: DesignTokens.Radius.sm)
-                )
-                .foregroundStyle(DesignTokens.parentMuted)
-
-            Text(subheaderString)
-                .parentText(.data)
-                .foregroundStyle(DesignTokens.parentMuted)
-
-            Spacer()
-
-            Button(action: { dismiss() }) {
-                Text("Exit")
-                    .parentText(.data)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: DesignTokens.Spacing.sp3) {
+                Text("PARENT VIEW")
+                    .parentText(.section)
+                    .textCase(.uppercase)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 3)
+                    .background(
+                        DesignTokens.parentCard,
+                        in: RoundedRectangle(cornerRadius: DesignTokens.Radius.sm)
+                    )
                     .foregroundStyle(DesignTokens.parentMuted)
+
+                Spacer()
+
+                Button(action: { dismiss() }) {
+                    Text("Exit")
+                        .parentText(.data)
+                        .foregroundStyle(DesignTokens.parentMuted)
+                }
+            }
+
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    headerPill(systemName: "person.fill", text: report.childName)
+                    headerPill(systemName: "map.fill", text: report.gradePlacement)
+                    headerPill(systemName: "lock.fill", text: "Local-only data")
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    headerPill(systemName: "person.fill", text: report.childName)
+                    headerPill(systemName: "map.fill", text: report.gradePlacement)
+                    headerPill(systemName: "lock.fill", text: "Local-only data")
+                }
             }
         }
     }
@@ -241,6 +249,18 @@ struct ParentDashboardView: View {
         if accuracy >= 0.8 { return .green }
         if accuracy >= 0.5 { return .orange }
         return DesignTokens.incorrect
+    }
+
+    private func headerPill(systemName: String, text: String) -> some View {
+        Label(text, systemImage: systemName)
+            .parentText(.caption)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(
+                DesignTokens.parentCard,
+                in: RoundedRectangle(cornerRadius: DesignTokens.Radius.sm)
+            )
     }
 }
 
