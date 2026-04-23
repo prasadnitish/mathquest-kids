@@ -61,6 +61,7 @@ struct RootView: View {
             }
         }
         .tint(appState.selectedTheme.primary)
+        .preferredColorScheme(.light)
     }
 
     private var showsSettingsButton: Bool {

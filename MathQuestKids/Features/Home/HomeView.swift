@@ -364,10 +364,10 @@ private struct FriendlyStatPill: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
+        .background(Color.white.opacity(0.90), in: RoundedRectangle(cornerRadius: DesignTokens.Radius.md))
         .overlay(
             RoundedRectangle(cornerRadius: DesignTokens.Radius.md)
-                .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                .stroke(Color.black.opacity(0.06), lineWidth: 1)
         )
     }
 }

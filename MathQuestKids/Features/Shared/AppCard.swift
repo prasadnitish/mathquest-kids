@@ -27,8 +27,8 @@ struct AppCard<Content: View>: View {
             .overlay(alignment: .topLeading) {
                 LinearGradient(
                     colors: [
-                        Color.white.opacity(0.40),
-                        Color.white.opacity(0.08),
+                        Color.white.opacity(0.24),
+                        Color.white.opacity(0.06),
                         .clear
                     ],
                     startPoint: .topLeading,
@@ -38,7 +38,7 @@ struct AppCard<Content: View>: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Circle()
-                    .fill(theme.accent.opacity(0.12))
+                    .fill(theme.accent.opacity(0.08))
                     .frame(width: 160, height: 160)
                     .blur(radius: 36)
                     .offset(x: 34, y: 34)
@@ -54,7 +54,7 @@ struct AppCard<Content: View>: View {
                 Capsule()
                     .fill(
                         LinearGradient(
-                            colors: [theme.primary.opacity(0.20), theme.accent.opacity(0.12)],
+                            colors: [theme.primary.opacity(0.14), theme.accent.opacity(0.08)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )

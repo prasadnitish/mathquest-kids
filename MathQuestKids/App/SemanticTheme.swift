@@ -74,10 +74,10 @@ extension VisualTheme {
     var cardSurface: Color {
         switch self {
         case .starsSpace:
-            // Space is dark; use a translucent dark card per design system.
-            return Color.white.opacity(0.10)
+            // Keep the space world atmospheric, but use a much stronger surface so child text stays readable.
+            return Color(red: 0.96, green: 0.98, blue: 1.0).opacity(0.92)
         default:
-            return Color.white.opacity(0.92)
+            return Color.white.opacity(0.96)
         }
     }
 }
