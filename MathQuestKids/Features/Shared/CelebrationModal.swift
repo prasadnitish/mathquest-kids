@@ -16,6 +16,7 @@ struct CelebrationModal<StickerContent: View>: View {
     @ViewBuilder let stickerContent: () -> StickerContent
 
     @State private var hasPopped = false
+    @State private var haloAnimating = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -29,18 +30,35 @@ struct CelebrationModal<StickerContent: View>: View {
                 )
                 .ignoresSafeArea()
 
+                rewardBackdrop(theme: theme, size: geo.size)
+
                 ScrollView(showsIndicators: false) {
                     // White card (spec: 95% white, 24pt corner radius, responsive width).
                     VStack(spacing: DesignTokens.Spacing.sp4) {
                         // Sticker content — pop-in spring animation (spec: 64pt, centered, spring).
-                        stickerContent()
-                            .scaleEffect(hasPopped ? 1 : 0)
-                            .animation(
-                                reduceMotion
-                                    ? .easeIn(duration: 0.2)
-                                    : Motion.kidPopIn,
-                                value: hasPopped
-                            )
+                        ZStack {
+                            Circle()
+                                .fill(theme.accent.opacity(0.18))
+                                .frame(width: 156, height: 156)
+                                .blur(radius: 8)
+                            Circle()
+                                .stroke(Color.white.opacity(0.85), lineWidth: 4)
+                                .frame(width: haloAnimating ? 162 : 144, height: haloAnimating ? 162 : 144)
+                                .opacity(haloAnimating ? 0.22 : 0.78)
+                                .animation(
+                                    reduceMotion ? nil : Motion.kidCelebratePulse,
+                                    value: haloAnimating
+                                )
+                            starburst
+                            stickerContent()
+                                .scaleEffect(hasPopped ? 1 : 0)
+                                .animation(
+                                    reduceMotion
+                                        ? .easeIn(duration: 0.2)
+                                        : Motion.kidPopIn,
+                                    value: hasPopped
+                                )
+                        }
 
                         Text(title)
                             .kidText(.h1)
@@ -61,16 +79,112 @@ struct CelebrationModal<StickerContent: View>: View {
                     }
                     .padding(DesignTokens.Spacing.sp8)
                     .frame(maxWidth: min(max(geo.size.width - 48, 0), 380))
-                    .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 24))
+                    .background(
+                        RoundedRectangle(cornerRadius: 28, style: .continuous)
+                            .fill(Color.white.opacity(0.95))
+                            .overlay(alignment: .topLeading) {
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.65), .clear],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                            }
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 28, style: .continuous)
+                            .stroke(
+                                LinearGradient(
+                                    colors: [theme.primary.opacity(0.24), Color.white.opacity(0.7), theme.accent.opacity(0.24)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1.5
+                            )
+                    }
                     .shadow(color: .black.opacity(0.2), radius: 60, x: 0, y: 20)
                     .padding(DesignTokens.Spacing.sp6)
                     .frame(maxWidth: .infinity)
-                    .onAppear { hasPopped = true }
+                    .onAppear {
+                        hasPopped = true
+                        haloAnimating = true
+                    }
                 }
             }
         }
         .accessibilityAddTraits(.isModal)
     }
+
+    private var starburst: some View {
+        ZStack {
+            ForEach(0..<10, id: \.self) { index in
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.9), theme.accent.opacity(0.45)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 8, height: 58)
+                    .offset(y: -56)
+                    .rotationEffect(.degrees(Double(index) * 36))
+                    .opacity(0.48)
+            }
+        }
+    }
+}
+
+private func rewardBackdrop(theme: VisualTheme, size: CGSize) -> some View {
+    ZStack {
+        Circle()
+            .fill(theme.primary.opacity(0.22))
+            .frame(width: size.width * 0.55)
+            .blur(radius: 46)
+            .offset(x: -size.width * 0.22, y: -size.height * 0.16)
+        Circle()
+            .fill(theme.accent.opacity(0.24))
+            .frame(width: size.width * 0.48)
+            .blur(radius: 44)
+            .offset(x: size.width * 0.24, y: size.height * 0.12)
+
+        if theme == .starsSpace {
+            ForEach(0..<12, id: \.self) { index in
+                Image(systemName: index.isMultiple(of: 3) ? "sparkles" : "star.fill")
+                    .font(.system(size: CGFloat(10 + (index % 3) * 4), weight: .bold))
+                    .foregroundStyle(index.isMultiple(of: 2) ? Color.white.opacity(0.55) : theme.accent.opacity(0.55))
+                    .position(
+                        x: starX(index: index, width: size.width),
+                        y: starY(index: index, height: size.height)
+                    )
+            }
+        } else if theme == .candyland {
+            ForEach(0..<10, id: \.self) { index in
+                Circle()
+                    .fill(index.isMultiple(of: 2) ? Color.white.opacity(0.34) : theme.accent.opacity(0.38))
+                    .frame(width: CGFloat(index.isMultiple(of: 2) ? 14 : 10), height: CGFloat(index.isMultiple(of: 2) ? 14 : 10))
+                    .overlay(
+                        Circle()
+                            .fill(index.isMultiple(of: 2) ? theme.primary.opacity(0.48) : Color.white.opacity(0.18))
+                            .frame(width: CGFloat(index.isMultiple(of: 2) ? 6 : 4), height: CGFloat(index.isMultiple(of: 2) ? 6 : 4))
+                    )
+                    .position(
+                        x: starX(index: index, width: size.width),
+                        y: starY(index: index, height: size.height)
+                    )
+            }
+        }
+    }
+}
+
+private func starX(index: Int, width: CGFloat) -> CGFloat {
+    let normalized = CGFloat((index * 29) % 100) / 100
+    return 24 + normalized * max(width - 48, 1)
+}
+
+private func starY(index: Int, height: CGFloat) -> CGFloat {
+    let normalized = CGFloat((index * 41) % 100) / 100
+    return 20 + normalized * max(height - 40, 1)
 }
 
 // MARK: - Emoji convenience initialiser

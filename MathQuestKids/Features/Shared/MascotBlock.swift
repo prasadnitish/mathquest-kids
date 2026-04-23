@@ -7,6 +7,7 @@ struct MascotBlock: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var bob = false
+    @State private var orbit = false
 
     var body: some View {
         HStack(alignment: .top, spacing: DesignTokens.Spacing.sp3) {
@@ -17,21 +18,48 @@ struct MascotBlock: View {
             }
             Spacer(minLength: 0)
         }
+        .onAppear {
+            bob = true
+            orbit = true
+        }
     }
 
     private var avatar: some View {
         ZStack {
             Circle()
-                .fill(LinearGradient(colors: [theme.primary, theme.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
-            Image(systemName: companion.symbol)
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(.white)
+                .fill(theme.primary.opacity(0.12))
+                .frame(width: 74, height: 74)
+                .blur(radius: 10)
+
+            orbitToken
+
+            ThemeCompanionArtworkView(
+                companion: companion,
+                theme: theme,
+                size: 56,
+                highlighted: true
+            )
         }
-        .frame(width: 52, height: 52)
+        .frame(width: 60, height: 60)
         .offset(y: bob ? -4 : 4)
         .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 3)
         .animation(reduceMotion ? nil : Motion.kidBounceIdle, value: bob)
-        .onAppear { bob = true }
+    }
+
+    private var orbitToken: some View {
+        Circle()
+            .fill(Color.white.opacity(0.92))
+            .frame(width: 10, height: 10)
+            .overlay {
+                Image(systemName: theme.decorativeSymbols.first ?? "sparkles")
+                    .font(.system(size: 6, weight: .bold))
+                    .foregroundStyle(theme.primary)
+            }
+            .offset(x: orbit ? 19 : -19, y: orbit ? -16 : 16)
+            .animation(
+                reduceMotion ? nil : .easeInOut(duration: 2.8).repeatForever(autoreverses: true),
+                value: orbit
+            )
     }
 
     private var bubble: some View {
@@ -40,7 +68,19 @@ struct MascotBlock: View {
             .foregroundStyle(AppTheme.textPrimary)
             .padding(.horizontal, DesignTokens.Spacing.sp4)
             .padding(.vertical, DesignTokens.Spacing.sp3)
-            .background(Color.white, in: SpeechBubbleShape(cornerRadius: DesignTokens.Radius.md))
+            .background(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.98), theme.accent.opacity(0.10)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                in: SpeechBubbleShape(cornerRadius: DesignTokens.Radius.md)
+            )
+            .overlay {
+                SpeechBubbleShape(cornerRadius: DesignTokens.Radius.md)
+                    .stroke(theme.primary.opacity(0.16), lineWidth: 1.5)
+            }
+            .shadow(color: theme.primary.opacity(0.08), radius: 14, x: 0, y: 4)
             .shadow(color: .black.opacity(0.1), radius: 12, x: 0, y: 2)
     }
 }

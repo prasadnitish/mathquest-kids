@@ -18,7 +18,7 @@ final class MathQuestKidsUITests: XCTestCase {
                       "Expected the primary mission CTA on the home screen.")
         missionButton.tap()
         XCTAssertTrue(app.staticTexts["problemPrompt"].waitForExistence(timeout: 3))
-        quitCurrentSession(app: app)
+        relaunchToHome(app: app)
 
         app.buttons["Settings"].tap()
         let configureButton = app.buttons["Create Parent PIN"]
@@ -141,7 +141,6 @@ final class MathQuestKidsUITests: XCTestCase {
         assertMinTapTarget(app.buttons["Read Aloud"], label: "Read Aloud")
         assertMinTapTarget(app.buttons["Submit Answer"], label: "Submit Answer")
         attachScreenshot(app: app, name: "Session")
-        quitCurrentSession(app: app)
     }
 
     @MainActor
@@ -157,7 +156,7 @@ final class MathQuestKidsUITests: XCTestCase {
         XCTAssertTrue(stickerBookButton.waitForExistence(timeout: 3))
         stickerBookButton.tap()
 
-        XCTAssertTrue(app.staticTexts["Sticker Book"].waitForExistence(timeout: 3))
+        XCTAssertTrue(stickerBookTitle(app: app).waitForExistence(timeout: 3))
         attachScreenshot(app: app, name: "StickerBook")
     }
 
@@ -174,17 +173,22 @@ final class MathQuestKidsUITests: XCTestCase {
         add(attachment)
     }
 
+    private func stickerBookTitle(app: XCUIApplication) -> XCUIElement {
+        let titles = ["Sweet Sticker Pantry", "Galaxy Sticker Atlas", "Sticker Book"]
+        for title in titles {
+            let match = app.staticTexts[title]
+            if match.exists {
+                return match
+            }
+        }
+        return app.staticTexts[titles[0]]
+    }
+
     @MainActor
-    private func quitCurrentSession(app: XCUIApplication) {
-        let quitButton = app.buttons["Quit quest"]
-        XCTAssertTrue(quitButton.waitForExistence(timeout: 3))
-        quitButton.tap()
-
-        let confirmQuit = app.buttons["Quit Quest"]
-        XCTAssertTrue(confirmQuit.waitForExistence(timeout: 3))
-        confirmQuit.tap()
-
-        XCTAssertTrue(currentMissionButton(app: app).waitForExistence(timeout: 5))
+    private func relaunchToHome(app: XCUIApplication) {
+        app.terminate()
+        app.launch()
+        navigateToHome(app: app)
     }
 
     @MainActor

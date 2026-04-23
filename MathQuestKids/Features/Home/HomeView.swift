@@ -334,25 +334,12 @@ struct HomeView: View {
 
     @ViewBuilder
     private func companionAvatar(_ companion: ThemeCompanion, size: CGFloat) -> some View {
-        ZStack {
-            Circle()
-                .fill(appState.selectedTheme.primary.opacity(0.22))
-            Circle()
-                .stroke(appState.selectedTheme.primary.opacity(0.4), lineWidth: 1.5)
-
-            if !companion.imageName.isEmpty {
-                Image(companion.imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size, height: size)
-                    .clipShape(Circle())
-            } else {
-                Image(systemName: companion.symbol)
-                    .font(.system(size: size * 0.42, weight: .black))
-                    .foregroundStyle(AppTheme.textPrimary)
-            }
-        }
-        .frame(width: size + 8, height: size + 8)
+        ThemeCompanionArtworkView(
+            companion: companion,
+            theme: appState.selectedTheme,
+            size: size,
+            highlighted: companion.id == appState.selectedCompanionID
+        )
     }
 }
 

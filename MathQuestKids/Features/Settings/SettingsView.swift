@@ -656,23 +656,12 @@ private struct CompanionCard: View {
         Button(action: onSelect) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .top, spacing: 12) {
-                    ZStack {
-                        Circle()
-                            .fill(theme.primary.opacity(0.22))
-                        Circle()
-                            .stroke(theme.primary.opacity(0.45), lineWidth: 1.5)
-                        if !companion.imageName.isEmpty {
-                            Image(companion.imageName)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 56, height: 56)
-                                .clipShape(Circle())
-                        } else {
-                            Image(systemName: companion.symbol)
-                                .font(.system(size: 28, weight: .black)) // SF Symbol icon size
-                                .foregroundStyle(AppTheme.textPrimary)
-                        }
-                    }
+                    ThemeCompanionArtworkView(
+                        companion: companion,
+                        theme: theme,
+                        size: 56,
+                        highlighted: isSelected
+                    )
                     .frame(width: 64, height: 64)
 
                     VStack(alignment: .leading, spacing: 4) {

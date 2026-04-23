@@ -31,16 +31,28 @@ struct SkillTrailView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Quest Trail")
-                .kidText(.h2)
-                .foregroundStyle(AppTheme.textPrimary)
-                .padding(.bottom, 6)
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(headerTitle)
+                        .kidText(.h2)
+                        .foregroundStyle(AppTheme.textPrimary)
 
-            Text("Tap any glowing stop to jump back into your adventure.")
-                .kidText(.body)
-                .foregroundStyle(AppTheme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 12)
+                    Text(headerSubtitle)
+                        .kidText(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+
+                ThemeCompanionArtworkView(
+                    companion: appState.activeCompanion,
+                    theme: appState.selectedTheme,
+                    size: 42,
+                    highlighted: true
+                )
+            }
+            .padding(.bottom, 12)
 
             ForEach(trailGroups, id: \.title) { group in
                 VStack(alignment: .leading, spacing: 8) {
@@ -48,7 +60,7 @@ struct SkillTrailView: View {
                         Text(group.title)
                             .kidText(.caption)
                             .foregroundStyle(appState.selectedTheme.primary)
-                        Image(systemName: "star.fill")
+                        Image(systemName: groupIconName)
                             .kidText(.caption)
                             .foregroundStyle(AppTheme.accent)
                     }
@@ -71,18 +83,87 @@ struct SkillTrailView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                        .background {
+                            TrailLaneBackground(nodeCount: group.nodes.count, theme: appState.selectedTheme)
+                                .padding(.horizontal, 10)
+                        }
                     }
                 }
                 .padding(.bottom, 16)
             }
         }
         .padding(18)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 22))
-        .overlay(RoundedRectangle(cornerRadius: 22)
-            .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1))
+        .background {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(AppTheme.card)
+                .overlay {
+                    if themedTrailUsesArtwork {
+                        ZStack {
+                            Image(appState.selectedTheme.backgroundAssetName)
+                                .resizable()
+                                .scaledToFill()
+                            LinearGradient(
+                                colors: trailCardOverlayColors,
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                        .opacity(trailArtworkOpacity)
+                    }
+                }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
+        )
         .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 6)
+    }
+
+    private var headerTitle: String {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return "Star Map"
+        case .candyland:
+            return "Candy Path"
+        default:
+            return "Quest Trail"
+        }
+    }
+
+    private var headerSubtitle: String {
+        if appState.selectedTheme == .starsSpace {
+            return "Follow the glowing route and jump into any mission stop."
+        }
+        if appState.selectedTheme == .candyland {
+            return "Skip along the frosting path and pop into any sweet challenge."
+        }
+        return "Tap any glowing stop to jump back into your adventure."
+    }
+
+    private var groupIconName: String {
+        appState.selectedTheme == .candyland ? "heart.fill" : "star.fill"
+    }
+
+    private var themedTrailUsesArtwork: Bool {
+        appState.selectedTheme == .starsSpace || appState.selectedTheme == .candyland
+    }
+
+    private var trailArtworkOpacity: Double {
+        appState.selectedTheme == .candyland ? 0.24 : 0.30
+    }
+
+    private var trailCardOverlayColors: [Color] {
+        if appState.selectedTheme == .candyland {
+            return [
+                Color.white.opacity(0.10),
+                Color(red: 0.62, green: 0.20, blue: 0.41).opacity(0.16),
+                Color(red: 0.38, green: 0.10, blue: 0.20).opacity(0.22)
+            ]
+        }
+        return [Color.black.opacity(0.18), Color.black.opacity(0.32)]
     }
 }
 
@@ -189,5 +270,128 @@ struct SkillTrailNodeView: View {
         case .completed: return "Completed"
         case .mastered: return "Mastered"
         }
+    }
+}
+
+private struct TrailLaneBackground: View {
+    let nodeCount: Int
+    let theme: VisualTheme
+
+    var body: some View {
+        GeometryReader { proxy in
+            let points = lanePoints(in: proxy.size)
+
+            ZStack {
+                if points.count > 1 {
+                    Path { path in
+                        path.move(to: points[0])
+                        for index in 1..<points.count {
+                            let previous = points[index - 1]
+                            let current = points[index]
+                            let midX = (previous.x + current.x) / 2
+                            path.addCurve(
+                                to: current,
+                                control1: CGPoint(x: midX, y: previous.y),
+                                control2: CGPoint(x: midX, y: current.y)
+                            )
+                        }
+                    }
+                    .stroke(laneGradient, style: laneStrokeStyle)
+                }
+
+                ForEach(Array(points.enumerated()), id: \.offset) { index, point in
+                    Circle()
+                        .fill(theme.accent.opacity(index.isMultiple(of: 2) ? 0.28 : 0.18))
+                        .frame(width: 16, height: 16)
+                        .blur(radius: 8)
+                        .position(point)
+                }
+
+                if theme == .starsSpace {
+                    ForEach(starPositions(in: proxy.size), id: \.self) { point in
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(Color.white.opacity(0.34))
+                            .position(point)
+                    }
+                } else if theme == .candyland {
+                    ForEach(candyPositions(in: proxy.size), id: \.self) { point in
+                        Circle()
+                            .fill(Color.white.opacity(0.34))
+                            .frame(width: 10, height: 10)
+                            .overlay(
+                                Circle()
+                                    .fill(theme.accent.opacity(0.72))
+                                    .frame(width: 4, height: 4)
+                            )
+                            .position(point)
+                    }
+                }
+            }
+        }
+        .frame(height: 84)
+        .allowsHitTesting(false)
+    }
+
+    private var laneGradient: LinearGradient {
+        if theme == .candyland {
+            return LinearGradient(
+                colors: [
+                    theme.primary.opacity(0.52),
+                    Color.white.opacity(0.92),
+                    theme.accent.opacity(0.74),
+                    theme.primary.opacity(0.52)
+                ],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        }
+        return LinearGradient(
+            colors: [
+                theme.primary.opacity(0.35),
+                theme.accent.opacity(0.65),
+                theme.primary.opacity(0.35)
+            ],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
+
+    private var laneStrokeStyle: StrokeStyle {
+        if theme == .candyland {
+            return StrokeStyle(lineWidth: 5, lineCap: .round, dash: [6, 10])
+        }
+        return StrokeStyle(lineWidth: 4, lineCap: .round, dash: [10, 10])
+    }
+
+    private func lanePoints(in size: CGSize) -> [CGPoint] {
+        guard nodeCount > 0 else { return [] }
+        let usableWidth = max(size.width - 36, 1)
+        let step = nodeCount == 1 ? 0 : usableWidth / CGFloat(nodeCount - 1)
+
+        return (0..<nodeCount).map { index in
+            let wave = sin(CGFloat(index) * 0.8) * 10
+            return CGPoint(
+                x: 18 + CGFloat(index) * step,
+                y: 42 + wave
+            )
+        }
+    }
+
+    private func starPositions(in size: CGSize) -> [CGPoint] {
+        [
+            CGPoint(x: size.width * 0.12, y: 16),
+            CGPoint(x: size.width * 0.48, y: 72),
+            CGPoint(x: size.width * 0.82, y: 18)
+        ]
+    }
+
+    private func candyPositions(in size: CGSize) -> [CGPoint] {
+        [
+            CGPoint(x: size.width * 0.16, y: 20),
+            CGPoint(x: size.width * 0.38, y: 66),
+            CGPoint(x: size.width * 0.63, y: 18),
+            CGPoint(x: size.width * 0.86, y: 62)
+        ]
     }
 }

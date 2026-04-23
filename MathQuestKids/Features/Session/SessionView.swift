@@ -121,19 +121,37 @@ struct SessionView: View {
 
             Spacer()
 
-            Text("Keep going, \(appState.activeCompanion.name) is cheering for you.")
-                .kidText(.caption)
-                .foregroundStyle(AppTheme.textSecondary)
-                .padding(.horizontal, 12)
+            if appState.selectedTheme == .starsSpace || appState.selectedTheme == .candyland {
+                HStack(spacing: 8) {
+                    ThemeCompanionArtworkView(
+                        companion: appState.activeCompanion,
+                        theme: appState.selectedTheme,
+                        size: 28,
+                        highlighted: true
+                    )
+
+                    Text(sessionEncouragement)
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+                .padding(.horizontal, 10)
                 .padding(.vertical, 8)
-                .background(Color.white.opacity(0.66), in: Capsule())
+                .background(sessionBadgeBackground, in: Capsule())
+                .overlay(Capsule().stroke(appState.selectedTheme.accent.opacity(0.24), lineWidth: 1))
+            } else {
+                Text("Keep going, \(appState.activeCompanion.name) is cheering for you.")
+                    .kidText(.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.66), in: Capsule())
+            }
         }
     }
 
     private func topBar(runtime: SessionRuntime, progress: Double) -> some View {
         ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 18)
-                .fill(AppTheme.card)
+            sessionPanelBackground(cornerRadius: 18)
 
             GeometryReader { proxy in
                 RoundedRectangle(cornerRadius: 18)
@@ -160,10 +178,10 @@ struct SessionView: View {
 
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Quest Step")
+                    Text(progressTitle)
                         .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("\(runtime.index + 1) of \(runtime.items.count) · \(runtime.correctCount) stars earned")
+                    Text(progressSubtitle(for: runtime))
                         .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -178,8 +196,8 @@ struct SessionView: View {
         }
         .frame(height: 64)
         .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(AppTheme.card.opacity(0.45), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(sessionPanelStroke, lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
     }
@@ -235,7 +253,13 @@ struct SessionView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+        .background {
+            sessionPanelBackground(cornerRadius: 20)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(sessionPanelStroke, lineWidth: 1)
+        }
     }
 
     private func feedbackCard(_ feedback: String) -> some View {
@@ -268,14 +292,8 @@ struct SessionView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.18) : appState.selectedTheme.primary.opacity(0.12),
-            in: RoundedRectangle(cornerRadius: 18)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(accentColor.opacity(0.22), lineWidth: 1)
-        )
+        .background(feedbackBackground(accentColor: accentColor), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(accentColor.opacity(0.22), lineWidth: 1))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.updatesFrequently)
     }
@@ -309,7 +327,13 @@ struct SessionView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+        .background {
+            sessionPanelBackground(cornerRadius: 20)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(sessionPanelStroke, lineWidth: 1)
+        }
     }
 
     private var answerHelperText: String {
@@ -498,8 +522,149 @@ struct SessionView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 20))
+        .background {
+            sessionPanelBackground(cornerRadius: 20)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(sessionPanelStroke, lineWidth: 1)
+        }
         .transition(.opacity.combined(with: .move(edge: .bottom)))
+    }
+
+    private var sessionBadgeBackground: Color {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return Color.white.opacity(0.12)
+        case .candyland:
+            return Color.white.opacity(0.40)
+        default:
+            return Color.white.opacity(0.66)
+        }
+    }
+
+    private func progressSubtitle(for runtime: SessionRuntime) -> String {
+        if appState.selectedTheme == .starsSpace {
+            return "\(runtime.index + 1) of \(runtime.items.count) · \(runtime.correctCount) stars collected"
+        }
+        if appState.selectedTheme == .candyland {
+            return "\(runtime.index + 1) of \(runtime.items.count) · \(runtime.correctCount) sweet wins"
+        }
+        return "\(runtime.index + 1) of \(runtime.items.count) · \(runtime.correctCount) stars earned"
+    }
+
+    private var progressTitle: String {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return "Mission Step"
+        case .candyland:
+            return "Sweet Step"
+        default:
+            return "Quest Step"
+        }
+    }
+
+    private var sessionEncouragement: String {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return "Mission control is with you."
+        case .candyland:
+            return "Your candy guide is cheering you on."
+        default:
+            return "Keep going, \(appState.activeCompanion.name) is cheering for you."
+        }
+    }
+
+    private var sessionPanelStroke: Color {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return appState.selectedTheme.accent.opacity(0.22)
+        case .candyland:
+            return appState.selectedTheme.primary.opacity(0.20)
+        default:
+            return AppTheme.card.opacity(0.45)
+        }
+    }
+
+    @ViewBuilder
+    private func sessionPanelBackground(cornerRadius: CGFloat) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
+        if appState.selectedTheme == .starsSpace {
+            shape
+                .fill(Color.white.opacity(0.09))
+                .background {
+                    ZStack {
+                        Image(appState.selectedTheme.backgroundAssetName)
+                            .resizable()
+                            .scaledToFill()
+                        LinearGradient(
+                            colors: [Color.black.opacity(0.28), Color.black.opacity(0.44)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    }
+                    .clipShape(shape)
+                }
+                .overlay {
+                    shape
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.06), .clear, appState.selectedTheme.accent.opacity(0.06)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+        } else if appState.selectedTheme == .candyland {
+            shape
+                .fill(Color.white.opacity(0.76))
+                .background {
+                    ZStack {
+                        Image(appState.selectedTheme.backgroundAssetName)
+                            .resizable()
+                            .scaledToFill()
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.14),
+                                Color(red: 0.86, green: 0.33, blue: 0.55).opacity(0.20),
+                                Color(red: 0.54, green: 0.17, blue: 0.28).opacity(0.18)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    }
+                    .clipShape(shape)
+                }
+                .overlay {
+                    shape
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.34),
+                                    appState.selectedTheme.accent.opacity(0.10),
+                                    appState.selectedTheme.primary.opacity(0.06)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+        } else {
+            shape.fill(AppTheme.card)
+        }
+    }
+
+    private func feedbackBackground(accentColor: Color) -> Color {
+        if appState.selectedTheme == .starsSpace {
+            return accentColor.opacity(feedbackTone == .positive ? 0.22 : 0.16)
+        }
+        if appState.selectedTheme == .candyland {
+            return feedbackTone == .positive
+                ? Color(red: 1.00, green: 0.88, blue: 0.64).opacity(0.54)
+                : Color(red: 1.00, green: 0.76, blue: 0.85).opacity(0.68)
+        }
+        return feedbackTone == .positive ? appState.selectedTheme.accent.opacity(0.18) : appState.selectedTheme.primary.opacity(0.12)
     }
 
     private func recordDefer() {

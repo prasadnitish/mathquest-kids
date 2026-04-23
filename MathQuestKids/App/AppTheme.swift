@@ -146,10 +146,10 @@ enum VisualTheme: String, CaseIterable, Identifiable {
 
     var backgroundAssetName: String {
         switch self {
-        case .candyland: return "CandylandBackground"
+        case .candyland: return "CandylandBackgroundV2"
         case .axolotl: return "AxolotlBackground"
         case .rainbowUnicorn: return "RainbowUnicornBackground"
-        case .starsSpace: return "StarsSpaceBackground"
+        case .starsSpace: return "StarsSpaceBackgroundV2"
         case .superhero: return "SuperheroBackground"
         case .turboCars: return "TurboCarsBackground"
         }
