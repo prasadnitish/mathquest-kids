@@ -70,14 +70,15 @@ struct AnswerButton: View {
         case .selected: return Color.white.opacity(0.3)
         case .correct:  return DesignTokens.correct
         case .wrong:    return DesignTokens.incorrect
-        case .idk:      return Color.white.opacity(0.3)
+        case .idk:      return theme.primary.opacity(0.18)
         }
     }
 
     private var numberForeground: Color {
         switch state {
         case .default, .correct, .wrong: return .white
-        case .selected, .idk:            return .white
+        case .selected:                  return .white
+        case .idk:                       return theme.primary
         }
     }
 
@@ -87,7 +88,7 @@ struct AnswerButton: View {
         case .selected: return theme.primary
         case .correct:  return DesignTokens.correctBg
         case .wrong:    return DesignTokens.incorrectBg
-        case .idk:      return Color.white.opacity(0.15)
+        case .idk:      return Color.white.opacity(0.96)
         }
     }
 
@@ -97,7 +98,7 @@ struct AnswerButton: View {
         case .selected: return .white
         case .correct:  return DesignTokens.correctText
         case .wrong:    return DesignTokens.incorrectText
-        case .idk:      return .white
+        case .idk:      return AppTheme.textPrimary
         }
     }
 
@@ -107,7 +108,7 @@ struct AnswerButton: View {
         case .selected: return theme.primary
         case .correct:  return DesignTokens.correct
         case .wrong:    return DesignTokens.incorrect
-        case .idk:      return Color.white.opacity(0.5)
+        case .idk:      return theme.primary.opacity(0.28)
         }
     }
 
