@@ -9,6 +9,7 @@ import SwiftUI
 struct CelebrationModal<StickerContent: View>: View {
     let theme: VisualTheme
     let companion: ThemeCompanion
+    let eyebrow: String?
     let title: String
     let subtitle: String?
     let ctaTitle: String
@@ -58,6 +59,15 @@ struct CelebrationModal<StickerContent: View>: View {
                                         : Motion.kidPopIn,
                                     value: hasPopped
                                 )
+                        }
+
+                        if let eyebrow {
+                            Text(eyebrow)
+                                .kidText(.caption)
+                                .foregroundStyle(theme.primary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 7)
+                                .background(theme.primary.opacity(0.10), in: Capsule())
                         }
 
                         Text(title)
@@ -202,6 +212,7 @@ extension CelebrationModal where StickerContent == Text {
     ) {
         self.theme = theme
         self.companion = companion
+        self.eyebrow = nil
         self.title = title
         self.subtitle = subtitle
         self.ctaTitle = ctaTitle

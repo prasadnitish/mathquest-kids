@@ -12,6 +12,7 @@ struct RewardSplashView: View {
             CelebrationModal(
                 theme: appState.selectedTheme,
                 companion: appState.activeCompanion,
+                eyebrow: rewardEyebrow,
                 title: rewardTitle,
                 subtitle: sticker.title,
                 ctaTitle: rewardCTA,
@@ -55,6 +56,20 @@ struct RewardSplashView: View {
         default:
             return "Awesome!"
         }
+    }
+
+    private var rewardEyebrow: String? {
+        let count = appState.stickerCollection.earnedCount
+        if count <= 1 {
+            return appState.selectedTheme == .starsSpace ? "First badge" : "First treasure"
+        }
+        if count.isMultiple(of: 10) {
+            return appState.selectedTheme == .starsSpace ? "Galaxy milestone" : "Candy kingdom milestone"
+        }
+        if count.isMultiple(of: 5) {
+            return appState.selectedTheme == .starsSpace ? "Mission milestone" : "Sweet streak"
+        }
+        return appState.selectedTheme == .starsSpace ? "Fresh discovery" : "Fresh find"
     }
 
     private func stickerImageView(_ icon: StickerIcon) -> some View {

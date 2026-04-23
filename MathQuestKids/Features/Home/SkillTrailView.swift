@@ -4,7 +4,16 @@ struct SkillTrailView: View {
     @EnvironmentObject private var appState: AppState
     let trail: SkillTrail
 
-    private var trailGroups: [(title: String, subtitle: String, nodes: [TrailNode])] {
+    private struct TrailChapter: Identifiable {
+        let id: String
+        let chapterLabel: String
+        let title: String
+        let subtitle: String
+        let landmark: String
+        let nodes: [TrailNode]
+    }
+
+    private var trailGroups: [TrailChapter] {
         let kUnits: Set<UnitType> = [.kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
                                       .subtractionStories, .kCompareGroups, .kShapeAttributes, .teenPlaceValue]
         let g1Units: Set<UnitType> = [.g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
@@ -19,14 +28,28 @@ struct SkillTrailView: View {
         let g5Units: Set<UnitType> = [.fractionOfWhole, .volumeAndDecimals,
                                        .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios]
 
-        return [
-            ("Trail 1", "Count & Play", trail.nodes.filter { kUnits.contains($0.unit) }),
-            ("Trail 2", "Add & Solve", trail.nodes.filter { g1Units.contains($0.unit) }),
-            ("Trail 3", "Build Big Numbers", trail.nodes.filter { g2Units.contains($0.unit) }),
-            ("Trail 4", "Groups & Fractions", trail.nodes.filter { g3Units.contains($0.unit) }),
-            ("Trail 5", "Bigger Challenges", trail.nodes.filter { g4Units.contains($0.unit) }),
-            ("Trail 6", "Patterns & Power", trail.nodes.filter { g5Units.contains($0.unit) }),
-        ].filter { !$0.nodes.isEmpty }
+        let configuredChapters = zip(chapterTitles, [
+            trail.nodes.filter { kUnits.contains($0.unit) },
+            trail.nodes.filter { g1Units.contains($0.unit) },
+            trail.nodes.filter { g2Units.contains($0.unit) },
+            trail.nodes.filter { g3Units.contains($0.unit) },
+            trail.nodes.filter { g4Units.contains($0.unit) },
+            trail.nodes.filter { g5Units.contains($0.unit) }
+        ])
+
+        return configuredChapters.enumerated().compactMap { index, pair in
+            let chapter = pair.0
+            let nodes = pair.1
+            guard !nodes.isEmpty else { return nil }
+            return TrailChapter(
+                id: "chapter-\(index)",
+                chapterLabel: chapter.chapterLabel,
+                title: chapter.title,
+                subtitle: chapter.subtitle,
+                landmark: chapter.landmark,
+                nodes: nodes
+            )
+        }
     }
 
     var body: some View {
@@ -54,26 +77,49 @@ struct SkillTrailView: View {
             }
             .padding(.bottom, 12)
 
-            ForEach(trailGroups, id: \.title) { group in
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 6) {
-                        Text(group.title)
-                            .kidText(.caption)
-                            .foregroundStyle(appState.selectedTheme.primary)
-                        Image(systemName: groupIconName)
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.accent)
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(appState.selectedTheme.primary.opacity(0.10),
-                                in: Capsule())
-                    .padding(.bottom, 4)
+            mapStatusBanner
+                .padding(.bottom, 16)
 
-                    Text(group.subtitle)
-                        .kidText(.body)
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .padding(.horizontal, 4)
+            ForEach(Array(trailGroups.enumerated()), id: \.element.id) { index, group in
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .center, spacing: 12) {
+                        TrailLandmarkView(
+                            chapterLabel: group.chapterLabel,
+                            title: group.title,
+                            symbol: group.landmark,
+                            theme: appState.selectedTheme,
+                            isCurrent: currentChapter?.id == group.id
+                        )
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 6) {
+                                Text(group.chapterLabel)
+                                    .kidText(.caption)
+                                    .foregroundStyle(appState.selectedTheme.primary)
+                                Image(systemName: groupIconName)
+                                    .kidText(.caption)
+                                    .foregroundStyle(AppTheme.accent)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(appState.selectedTheme.primary.opacity(0.10),
+                                        in: Capsule())
+
+                            Text(group.subtitle)
+                                .kidText(.body)
+                                .foregroundStyle(AppTheme.textSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            ChapterStatusPill(
+                                text: statusText(for: group),
+                                theme: appState.selectedTheme,
+                                isCurrent: currentChapter?.id == group.id
+                            )
+                        }
+
+                        Spacer(minLength: 0)
+                    }
+                    .padding(.bottom, 6)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 14) {
@@ -86,11 +132,22 @@ struct SkillTrailView: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 10)
                         .background {
-                            TrailLaneBackground(nodeCount: group.nodes.count, theme: appState.selectedTheme)
+                            TrailLaneBackground(
+                                nodeCount: group.nodes.count,
+                                theme: appState.selectedTheme,
+                                chapterIndex: index,
+                                isCurrent: currentChapter?.id == group.id
+                            )
                                 .padding(.horizontal, 10)
                         }
                     }
                 }
+                .padding(14)
+                .background(chapterBackground(for: group), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(chapterBorder(for: group), lineWidth: currentChapter?.id == group.id ? 1.4 : 1)
+                )
                 .padding(.bottom, 16)
             }
         }
@@ -120,6 +177,38 @@ struct SkillTrailView: View {
                 .stroke(appState.selectedTheme.primary.opacity(0.14), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 6)
+    }
+
+    private var mapStatusBanner: some View {
+        HStack(spacing: 10) {
+            Image(systemName: headerBadgeSymbol)
+                .kidText(.h2)
+                .foregroundStyle(appState.selectedTheme.primary)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(currentChapter?.title ?? "Adventure ready")
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+                Text(mapStatusText)
+                    .kidText(.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
+            }
+
+            Spacer(minLength: 0)
+
+            Text("\(completedChapterCount)/\(trailGroups.count) done")
+                .kidText(.caption)
+                .foregroundStyle(appState.selectedTheme.primary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(appState.selectedTheme.primary.opacity(0.10), in: Capsule())
+        }
+        .padding(14)
+        .background(Color.white.opacity(0.58), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(appState.selectedTheme.primary.opacity(0.12), lineWidth: 1)
+        )
     }
 
     private var headerTitle: String {
@@ -164,6 +253,159 @@ struct SkillTrailView: View {
             ]
         }
         return [Color.black.opacity(0.18), Color.black.opacity(0.32)]
+    }
+
+    private var currentChapter: TrailChapter? {
+        trailGroups.first { chapter in
+            chapter.nodes.contains(where: { node in
+                node.isRecommended || {
+                    switch node.nodeState {
+                    case .available, .inProgress:
+                        return true
+                    default:
+                        return false
+                    }
+                }()
+            })
+        } ?? trailGroups.first
+    }
+
+    private var completedChapterCount: Int {
+        trailGroups.filter(isChapterComplete).count
+    }
+
+    private var mapStatusText: String {
+        guard let currentChapter else {
+            return "Every chapter path is ready to explore."
+        }
+        if isChapterComplete(currentChapter) {
+            return "You cleared this chapter. A new route is glowing ahead."
+        }
+        let readyCount = currentChapter.nodes.filter {
+            switch $0.nodeState {
+            case .available, .inProgress:
+                return true
+            default:
+                return false
+            }
+        }.count
+        return readyCount == 1
+            ? "One glowing stop is ready in this chapter."
+            : "\(readyCount) glowing stops are ready in this chapter."
+    }
+
+    private var headerBadgeSymbol: String {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return "sparkles.rectangle.stack.fill"
+        case .candyland:
+            return "birthday.cake.fill"
+        default:
+            return appState.selectedTheme.heroSymbol
+        }
+    }
+
+    private func chapterBackground(for chapter: TrailChapter) -> some ShapeStyle {
+        AnyShapeStyle(
+            LinearGradient(
+                colors: chapterBackgroundColors(for: chapter),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+    }
+
+    private func chapterBackgroundColors(for chapter: TrailChapter) -> [Color] {
+        let base: [Color]
+        switch appState.selectedTheme {
+        case .starsSpace:
+            base = [
+                Color.white.opacity(0.06),
+                appState.selectedTheme.primary.opacity(0.16),
+                appState.selectedTheme.accent.opacity(0.08)
+            ]
+        case .candyland:
+            base = [
+                Color.white.opacity(0.26),
+                Color(red: 1.00, green: 0.86, blue: 0.92).opacity(0.34),
+                Color(red: 1.00, green: 0.85, blue: 0.66).opacity(0.22)
+            ]
+        default:
+            base = [
+                Color.white.opacity(0.52),
+                appState.selectedTheme.primary.opacity(0.08),
+                appState.selectedTheme.accent.opacity(0.05)
+            ]
+        }
+        if currentChapter?.id == chapter.id {
+            return base.map { $0.opacity(1.0) }
+        }
+        return base.map { $0.opacity(0.82) }
+    }
+
+    private func chapterBorder(for chapter: TrailChapter) -> Color {
+        if currentChapter?.id == chapter.id {
+            return appState.selectedTheme.accent.opacity(0.42)
+        }
+        return appState.selectedTheme.primary.opacity(0.12)
+    }
+
+    private func statusText(for chapter: TrailChapter) -> String {
+        if isChapterComplete(chapter) {
+            return appState.selectedTheme == .starsSpace ? "Chapter cleared" : "Chapter complete"
+        }
+        let readyCount = chapter.nodes.filter {
+            switch $0.nodeState {
+            case .available, .inProgress:
+                return true
+            default:
+                return false
+            }
+        }.count
+        return readyCount == 1 ? "1 stop ready" : "\(readyCount) stops ready"
+    }
+
+    private func isChapterComplete(_ chapter: TrailChapter) -> Bool {
+        chapter.nodes.allSatisfy {
+            switch $0.nodeState {
+            case .completed, .mastered:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+
+    private var chapterTitles: [(chapterLabel: String, title: String, subtitle: String, landmark: String)] {
+        switch appState.selectedTheme {
+        case .starsSpace:
+            return [
+                ("Launch 1", "Moon Meadow", "Warm up with the first glowing mission stops.", "moon.stars.fill"),
+                ("Launch 2", "Comet Crossing", "Hop over bright number bridges and quick facts.", "sparkles"),
+                ("Launch 3", "Orbit Station", "Build bigger numbers and steady mission power.", "circle.grid.3x3.fill"),
+                ("Launch 4", "Nebula Grove", "Float through groups, arrays, and fraction trails.", "sparkle.magnifyingglass"),
+                ("Launch 5", "Meteor Ridge", "Tackle brave new challenges with steady thinking.", "flame.fill"),
+                ("Launch 6", "Galaxy Gate", "Finish strong with your biggest adventure puzzles.", "star.square.on.square.fill")
+            ]
+        case .candyland:
+            return [
+                ("Treat 1", "Frosting Fields", "Start with the sweetest warm-up steps.", "birthday.cake.fill"),
+                ("Treat 2", "Lollipop Lane", "Bounce through adding, solving, and first big wins.", "lollipop"),
+                ("Treat 3", "Gumdrop Grove", "Stack bigger numbers and candy-sized ideas.", "circle.grid.2x2.fill"),
+                ("Treat 4", "Taffy Trail", "Stretch into groups, fractions, and chewy challenges.", "sparkles"),
+                ("Treat 5", "Marshmallow Mountain", "Climb into brave, bigger-thinking quests.", "mountain.2.fill"),
+                ("Treat 6", "Sprinkle Castle", "Finish the world with your fanciest math moves.", "crown.fill")
+            ]
+        default:
+            return [
+                ("Trail 1", "Count & Play", "Warm up with bright first adventures.", "star.fill"),
+                ("Trail 2", "Add & Solve", "Keep the journey moving with quick wins.", "sparkles"),
+                ("Trail 3", "Build Big Numbers", "Grow stronger with bigger ideas.", "circle.grid.3x3.fill"),
+                ("Trail 4", "Groups & Fractions", "Notice parts, groups, and patterns.", "square.stack.3d.up.fill"),
+                ("Trail 5", "Bigger Challenges", "Stretch your thinking with brave steps.", "flame.fill"),
+                ("Trail 6", "Patterns & Power", "Finish with your strongest adventure skills.", "star.circle.fill")
+            ]
+        }
     }
 }
 
@@ -276,6 +518,8 @@ struct SkillTrailNodeView: View {
 private struct TrailLaneBackground: View {
     let nodeCount: Int
     let theme: VisualTheme
+    let chapterIndex: Int
+    let isCurrent: Bool
 
     var body: some View {
         GeometryReader { proxy in
@@ -301,21 +545,21 @@ private struct TrailLaneBackground: View {
 
                 ForEach(Array(points.enumerated()), id: \.offset) { index, point in
                     Circle()
-                        .fill(theme.accent.opacity(index.isMultiple(of: 2) ? 0.28 : 0.18))
-                        .frame(width: 16, height: 16)
-                        .blur(radius: 8)
+                        .fill(theme.accent.opacity(index.isMultiple(of: 2) ? 0.32 : 0.18))
+                        .frame(width: isCurrent ? 18 : 16, height: isCurrent ? 18 : 16)
+                        .blur(radius: isCurrent ? 10 : 8)
                         .position(point)
                 }
 
                 if theme == .starsSpace {
-                    ForEach(starPositions(in: proxy.size), id: \.self) { point in
+                    ForEach(Array(starPositions(in: proxy.size).enumerated()), id: \.offset) { _, point in
                         Image(systemName: "sparkles")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(Color.white.opacity(0.34))
                             .position(point)
                     }
                 } else if theme == .candyland {
-                    ForEach(candyPositions(in: proxy.size), id: \.self) { point in
+                    ForEach(Array(candyPositions(in: proxy.size).enumerated()), id: \.offset) { _, point in
                         Circle()
                             .fill(Color.white.opacity(0.34))
                             .frame(width: 10, height: 10)
@@ -327,6 +571,8 @@ private struct TrailLaneBackground: View {
                             .position(point)
                     }
                 }
+
+                chapterLandmark(in: proxy.size)
             }
         }
         .frame(height: 84)
@@ -337,10 +583,10 @@ private struct TrailLaneBackground: View {
         if theme == .candyland {
             return LinearGradient(
                 colors: [
-                    theme.primary.opacity(0.52),
+                    theme.primary.opacity(isCurrent ? 0.68 : 0.52),
                     Color.white.opacity(0.92),
-                    theme.accent.opacity(0.74),
-                    theme.primary.opacity(0.52)
+                    theme.accent.opacity(isCurrent ? 0.88 : 0.74),
+                    theme.primary.opacity(isCurrent ? 0.68 : 0.52)
                 ],
                 startPoint: .leading,
                 endPoint: .trailing
@@ -348,9 +594,9 @@ private struct TrailLaneBackground: View {
         }
         return LinearGradient(
             colors: [
-                theme.primary.opacity(0.35),
-                theme.accent.opacity(0.65),
-                theme.primary.opacity(0.35)
+                theme.primary.opacity(isCurrent ? 0.48 : 0.35),
+                theme.accent.opacity(isCurrent ? 0.82 : 0.65),
+                theme.primary.opacity(isCurrent ? 0.48 : 0.35)
             ],
             startPoint: .leading,
             endPoint: .trailing
@@ -393,5 +639,105 @@ private struct TrailLaneBackground: View {
             CGPoint(x: size.width * 0.63, y: 18),
             CGPoint(x: size.width * 0.86, y: 62)
         ]
+    }
+
+    @ViewBuilder
+    private func chapterLandmark(in size: CGSize) -> some View {
+        if theme == .starsSpace {
+            Image(systemName: chapterIndex.isMultiple(of: 2) ? "sparkles" : "moon.fill")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(theme.accent.opacity(isCurrent ? 0.88 : 0.58))
+                .position(x: size.width * 0.94, y: 18)
+        } else if theme == .candyland {
+            Circle()
+                .fill(Color.white.opacity(0.92))
+                .frame(width: 18, height: 18)
+                .overlay(
+                    Circle()
+                        .fill(theme.primary.opacity(0.65))
+                        .frame(width: 8, height: 8)
+                )
+                .position(x: size.width * 0.92, y: 18)
+        }
+    }
+}
+
+private struct TrailLandmarkView: View {
+    let chapterLabel: String
+    let title: String
+    let symbol: String
+    let theme: VisualTheme
+    let isCurrent: Bool
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(LinearGradient(colors: panelColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 68, height: 78)
+
+                Image(systemName: symbol)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(iconColor)
+            }
+
+            Text(title)
+                .kidText(.caption)
+                .foregroundStyle(AppTheme.textPrimary)
+                .multilineTextAlignment(.center)
+                .frame(width: 78)
+                .lineLimit(2)
+        }
+        .overlay(alignment: .top) {
+            if isCurrent {
+                Text("Now")
+                    .kidText(.caption)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(theme.primary, in: Capsule())
+                    .offset(y: -10)
+            }
+        }
+    }
+
+    private var panelColors: [Color] {
+        switch theme {
+        case .starsSpace:
+            return [theme.primary.opacity(0.92), theme.accent.opacity(0.26)]
+        case .candyland:
+            return [Color.white.opacity(0.88), theme.accent.opacity(0.48), theme.primary.opacity(0.30)]
+        default:
+            return [theme.primary.opacity(0.24), theme.accent.opacity(0.16)]
+        }
+    }
+
+    private var iconColor: Color {
+        switch theme {
+        case .starsSpace:
+            return .white
+        case .candyland:
+            return theme.primary
+        default:
+            return AppTheme.textPrimary
+        }
+    }
+}
+
+private struct ChapterStatusPill: View {
+    let text: String
+    let theme: VisualTheme
+    let isCurrent: Bool
+
+    var body: some View {
+        Text(text)
+            .kidText(.caption)
+            .foregroundStyle(isCurrent ? theme.primary : AppTheme.textSecondary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                isCurrent ? theme.accent.opacity(0.18) : Color.white.opacity(0.50),
+                in: Capsule()
+            )
     }
 }
