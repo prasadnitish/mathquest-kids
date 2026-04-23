@@ -10,122 +10,36 @@ struct SessionSummaryView: View {
             VStack(spacing: 20) {
                 Spacer()
 
-                Text(summaryTitle)
-                    .kidText(.display)
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .minimumScaleFactor(0.7)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
-                    .background(Color.white.opacity(0.84), in: RoundedRectangle(cornerRadius: 16))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(0.45), lineWidth: 1)
-                    )
+                SummaryTitlePill(title: summaryTitle)
 
                 if let summary = appState.latestSummary {
-                    let summaryContext: MascotVoice.Context = summary.chapterCelebration != nil
-                        ? .chapterUnlocked
-                        : ((appState.dashboard.streakDays > 0) ? .streakMilestone : .rewardEarned)
-
                     MascotBlock(
                         companion: appState.activeCompanion,
-                        context: summaryContext,
+                        context: summaryContext(for: summary),
                         theme: appState.selectedTheme
                     )
                     .padding(.horizontal, DesignTokens.Spacing.sp4)
                     .padding(.bottom, DesignTokens.Spacing.sp4)
 
-                    VStack(spacing: 12) {
-                        Image(systemName: summaryBadgeSymbol)
-                            .font(.system(size: 72))
-                            .foregroundStyle(AppTheme.accent)
-                            .scaleEffect(animateBadge ? 1.0 : 0.82)
-                            .opacity(animateBadge ? 1.0 : 0.7)
-                            .animation(
-                                reduceMotion ? nil : Motion.kidCelebratePulse,
-                                value: animateBadge
-                            )
-
-                        if let chapterCelebration = summary.chapterCelebration {
-                            chapterCelebrationBanner(chapterCelebration)
-                        }
-
-                        Text("\(summary.correctItems) of \(summary.totalItems) correct")
-                            .kidText(.h2)
-                        Text("Reward: \(summary.rewardTitle)")
-                            .kidText(.h2)
-                        Text(summary.nextRecommendation)
-                            .kidText(.body)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.secondary)
-
-                        if let nextLesson = appState.adaptivePath.recommendedLessons.first {
-                            Text("Next quest: \(nextLesson.title)")
-                                .kidText(.body)
-                                .foregroundStyle(AppTheme.textPrimary)
-                        }
-                    }
-                    .padding()
-                    .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
-                    .accessibilityLabel("Session summary")
+                    SessionSummaryCard(
+                        summary: summary,
+                        nextLessonTitle: appState.adaptivePath.recommendedLessons.first?.title,
+                        badgeSymbol: summaryBadgeSymbol,
+                        animateBadge: animateBadge,
+                        reduceMotion: reduceMotion,
+                        theme: appState.selectedTheme
+                    )
 
                     if !summary.missedItems.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "lightbulb.fill")
-                                    .foregroundStyle(.orange)
-                                Text("Questions to Review")
-                                    .kidText(.body)
-                                    .foregroundStyle(AppTheme.textPrimary)
-                            }
-
-                            ForEach(summary.missedItems) { missed in
-                                HStack(alignment: .top, spacing: 10) {
-                                    Image(systemName: "arrow.turn.down.right")
-                                        .kidText(.caption)
-                                        .foregroundStyle(AppTheme.textSecondary)
-                                        .padding(.top, 3)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(missed.prompt)
-                                            .kidText(.body)
-                                            .foregroundStyle(AppTheme.textPrimary)
-                                            .fixedSize(horizontal: false, vertical: true)
-                                        HStack(spacing: 4) {
-                                            Text("Answer:")
-                                                .kidText(.body)
-                                                .foregroundStyle(AppTheme.textSecondary)
-                                            Text(missed.correctAnswer)
-                                                .kidText(.body)
-                                                .foregroundStyle(.green)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .padding()
-                        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
-                        .accessibilityLabel("Questions to review")
+                        ReviewItemsCard(missedItems: summary.missedItems)
                     }
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) {
-                        Button("Start Next Quest") { appState.startRecommendedSession() }
-                            .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
-                            .accessibilityLabel("Start next recommended quest")
-                        Button("Back to Home") { appState.goHome() }
-                            .buttonStyle(SecondaryButtonStyle())
-                            .accessibilityLabel("Back to Home")
-                    }
-                    VStack(spacing: 8) {
-                        Button("Start Next Quest") { appState.startRecommendedSession() }
-                            .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
-                            .accessibilityLabel("Start next recommended quest")
-                        Button("Back to Home") { appState.goHome() }
-                            .buttonStyle(SecondaryButtonStyle())
-                            .accessibilityLabel("Back to Home")
-                    }
-                }
+                SummaryActionButtons(
+                    theme: appState.selectedTheme,
+                    startNextQuest: appState.startRecommendedSession,
+                    goHome: appState.goHome
+                )
 
                 Spacer()
             }
@@ -163,19 +77,93 @@ struct SessionSummaryView: View {
         appState.latestSummary?.chapterCelebration != nil ? "sparkles.rectangle.stack.fill" : "star.circle.fill"
     }
 
-    @ViewBuilder
-    private func chapterCelebrationBanner(_ celebration: ChapterCelebration) -> some View {
+    private func summaryContext(for summary: SessionSummary) -> MascotVoice.Context {
+        if summary.chapterCelebration != nil {
+            return .chapterUnlocked
+        }
+        return appState.dashboard.streakDays > 0 ? .streakMilestone : .rewardEarned
+    }
+}
+
+private struct SummaryTitlePill: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .kidText(.display)
+            .foregroundStyle(AppTheme.textPrimary)
+            .minimumScaleFactor(0.7)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 10)
+            .background(Color.white.opacity(0.84), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+            )
+    }
+}
+
+private struct SessionSummaryCard: View {
+    let summary: SessionSummary
+    let nextLessonTitle: String?
+    let badgeSymbol: String
+    let animateBadge: Bool
+    let reduceMotion: Bool
+    let theme: VisualTheme
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: badgeSymbol)
+                .font(.system(size: 72))
+                .foregroundStyle(AppTheme.accent)
+                .scaleEffect(animateBadge ? 1.0 : 0.82)
+                .opacity(animateBadge ? 1.0 : 0.7)
+                .animation(
+                    reduceMotion ? nil : Motion.kidCelebratePulse,
+                    value: animateBadge
+                )
+
+            if let chapterCelebration = summary.chapterCelebration {
+                ChapterCelebrationBanner(celebration: chapterCelebration, theme: theme)
+            }
+
+            Text("\(summary.correctItems) of \(summary.totalItems) correct")
+                .kidText(.h2)
+            Text("Reward: \(summary.rewardTitle)")
+                .kidText(.h2)
+            Text(summary.nextRecommendation)
+                .kidText(.body)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+
+            if let nextLessonTitle {
+                Text("Next quest: \(nextLessonTitle)")
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+            }
+        }
+        .padding()
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+        .accessibilityLabel("Session summary")
+    }
+}
+
+private struct ChapterCelebrationBanner: View {
+    let celebration: ChapterCelebration
+    let theme: VisualTheme
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                Image(systemName: celebrationBadgeSymbol(for: celebration))
-                    .foregroundStyle(appState.selectedTheme.primary)
-                Text(chapterHeadline(for: celebration))
+                Image(systemName: celebration.summaryBadgeSymbol)
+                    .foregroundStyle(theme.primary)
+                Text(celebration.summaryHeadline)
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Text(chapterSubtitle(for: celebration))
+            Text(celebration.summarySubtitle)
                 .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -183,47 +171,84 @@ struct SessionSummaryView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(appState.selectedTheme.primary.opacity(0.10), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(theme.primary.opacity(0.10), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(appState.selectedTheme.primary.opacity(0.18), lineWidth: 1)
+                .stroke(theme.primary.opacity(0.18), lineWidth: 1)
         )
     }
+}
 
-    private func chapterHeadline(for celebration: ChapterCelebration) -> String {
-        if celebration.isFinale {
-            return "You cleared the final chapter."
+private struct ReviewItemsCard: View {
+    let missedItems: [MissedItem]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "lightbulb.fill")
+                    .foregroundStyle(.orange)
+                Text("Questions to Review")
+                    .kidText(.body)
+                    .foregroundStyle(AppTheme.textPrimary)
+            }
+
+            ForEach(missedItems) { missed in
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "arrow.turn.down.right")
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .padding(.top, 3)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(missed.prompt)
+                            .kidText(.body)
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 4) {
+                            Text("Answer:")
+                                .kidText(.body)
+                                .foregroundStyle(AppTheme.textSecondary)
+                            Text(missed.correctAnswer)
+                                .kidText(.body)
+                                .foregroundStyle(.green)
+                        }
+                    }
+                }
+            }
         }
-        if let unlocked = celebration.unlockedChapter {
-            return "\(unlocked.title) is now open."
+        .padding()
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+        .accessibilityLabel("Questions to review")
+    }
+}
+
+private struct SummaryActionButtons: View {
+    let theme: VisualTheme
+    let startNextQuest: () -> Void
+    let goHome: () -> Void
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                nextQuestButton
+                homeButton
+            }
+            VStack(spacing: 8) {
+                nextQuestButton
+                homeButton
+            }
         }
-        if let cleared = celebration.clearedChapter {
-            return "You cleared \(cleared.title)."
-        }
-        return "A new route is ready."
     }
 
-    private func chapterSubtitle(for celebration: ChapterCelebration) -> String {
-        if celebration.isFinale {
-            return "You made it all the way through the full adventure trail."
-        }
-        if let cleared = celebration.clearedChapter, let unlocked = celebration.unlockedChapter {
-            return "You wrapped up \(cleared.chapterLabel) and unlocked \(unlocked.chapterLabel)."
-        }
-        if let unlocked = celebration.unlockedChapter {
-            return "\(unlocked.chapterLabel) is glowing on your map now."
-        }
-        if let cleared = celebration.clearedChapter {
-            return "\(cleared.chapterLabel) is complete and ready to shine on your trail."
-        }
-        return "Your adventure map just opened a new path."
+    private var nextQuestButton: some View {
+        Button("Start Next Quest", action: startNextQuest)
+            .buttonStyle(CTAButtonStyle(theme: theme))
+            .accessibilityLabel("Start next recommended quest")
     }
 
-    private func celebrationBadgeSymbol(for celebration: ChapterCelebration) -> String {
-        if celebration.isFinale {
-            return "crown.fill"
-        }
-        return celebration.unlockedChapter != nil ? "map.fill" : "checkmark.seal.fill"
+    private var homeButton: some View {
+        Button("Back to Home", action: goHome)
+            .buttonStyle(SecondaryButtonStyle())
+            .accessibilityLabel("Back to Home")
     }
 }
 
@@ -356,5 +381,43 @@ private struct ChapterCelebrationOverlay: View {
         return celebration.unlockedChapter?.landmark
             ?? celebration.clearedChapter?.landmark
             ?? appState.selectedTheme.heroSymbol
+    }
+}
+
+private extension ChapterCelebration {
+    var summaryHeadline: String {
+        if isFinale {
+            return "You cleared the final chapter."
+        }
+        if let unlocked = unlockedChapter {
+            return "\(unlocked.title) is now open."
+        }
+        if let cleared = clearedChapter {
+            return "You cleared \(cleared.title)."
+        }
+        return "A new route is ready."
+    }
+
+    var summarySubtitle: String {
+        if isFinale {
+            return "You made it all the way through the full adventure trail."
+        }
+        if let cleared = clearedChapter, let unlocked = unlockedChapter {
+            return "You wrapped up \(cleared.chapterLabel) and unlocked \(unlocked.chapterLabel)."
+        }
+        if let unlocked = unlockedChapter {
+            return "\(unlocked.chapterLabel) is glowing on your map now."
+        }
+        if let cleared = clearedChapter {
+            return "\(cleared.chapterLabel) is complete and ready to shine on your trail."
+        }
+        return "Your adventure map just opened a new path."
+    }
+
+    var summaryBadgeSymbol: String {
+        if isFinale {
+            return "crown.fill"
+        }
+        return unlockedChapter != nil ? "map.fill" : "checkmark.seal.fill"
     }
 }

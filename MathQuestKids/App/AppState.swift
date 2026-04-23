@@ -711,19 +711,7 @@ final class AppState: ObservableObject {
         do {
             try repository.deleteLearningData(childID: profile.id, deleteProfile: false)
             clearDiagnosticResult(childID: profile.id)
-            cancelQuestionReadTask()
-            clearDiagnosticFeedbackState()
-            sessionAdvanceTask?.cancel()
-            sessionAdvanceTask = nil
-            pendingSettingsDismissAction = nil
-            currentSession = nil
-            latestSummary = nil
-            pendingStickerReward = nil
-            pendingChapterCelebration = nil
-            diagnosticSession = nil
-            diagnosticResult = nil
-            temporarilySkippedDiagnostic = false
-            showParentDashboard = false
+            clearLearningRuntimeState()
             refreshDashboard()
             route = .home
             setStatus("Learning progress reset on this device.")
@@ -738,22 +726,8 @@ final class AppState: ObservableObject {
         do {
             try repository.deleteLearningData(childID: profile.id, deleteProfile: true)
             clearDiagnosticResult(childID: profile.id)
-            cancelQuestionReadTask()
-            clearDiagnosticFeedbackState()
-            sessionAdvanceTask?.cancel()
-            sessionAdvanceTask = nil
-            pendingSettingsDismissAction = nil
-            currentSession = nil
-            latestSummary = nil
-            pendingStickerReward = nil
-            pendingChapterCelebration = nil
-            diagnosticSession = nil
-            diagnosticResult = nil
-            temporarilySkippedDiagnostic = false
-            showParentDashboard = false
-            parentGateFailureCount = 0
-            parentGateLockedUntil = nil
-            parentGateRequired = false
+            clearLearningRuntimeState()
+            clearParentGateState()
             dashboard = .empty
             stickerCollection = StickerCollection(stickers: [])
             adaptivePath = adaptivePlanner.buildPath(result: nil, catalog: curriculumCatalog)
@@ -833,6 +807,28 @@ final class AppState: ObservableObject {
     private func playSFX(_ event: SFXEvent) {
         guard soundEffectsEnabled else { return }
         sfxService.play(event, theme: selectedTheme)
+    }
+
+    private func clearLearningRuntimeState() {
+        cancelQuestionReadTask()
+        clearDiagnosticFeedbackState()
+        sessionAdvanceTask?.cancel()
+        sessionAdvanceTask = nil
+        pendingSettingsDismissAction = nil
+        currentSession = nil
+        latestSummary = nil
+        pendingStickerReward = nil
+        pendingChapterCelebration = nil
+        diagnosticSession = nil
+        diagnosticResult = nil
+        temporarilySkippedDiagnostic = false
+        showParentDashboard = false
+    }
+
+    private func clearParentGateState() {
+        parentGateFailureCount = 0
+        parentGateLockedUntil = nil
+        parentGateRequired = false
     }
 
     private func refreshDashboard() {

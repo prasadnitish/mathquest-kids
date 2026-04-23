@@ -197,31 +197,3 @@ private func starY(index: Int, height: CGFloat) -> CGFloat {
     let normalized = CGFloat((index * 41) % 100) / 100
     return 20 + normalized * max(height - 40, 1)
 }
-
-// MARK: - Emoji convenience initialiser
-
-extension CelebrationModal where StickerContent == Text {
-    /// Convenience init for emoji stickers (the common design-system case).
-    init(
-        theme: VisualTheme,
-        companion: ThemeCompanion,
-        sticker: String,
-        title: String,
-        subtitle: String? = nil,
-        ctaTitle: String,
-        onDismiss: @escaping () -> Void
-    ) {
-        self.theme = theme
-        self.companion = companion
-        self.mascotContext = .rewardEarned
-        self.eyebrow = nil
-        self.title = title
-        self.subtitle = subtitle
-        self.ctaTitle = ctaTitle
-        self.onDismiss = onDismiss
-        self.stickerContent = {
-            Text(sticker)
-                .font(.system(size: 64))
-        }
-    }
-}

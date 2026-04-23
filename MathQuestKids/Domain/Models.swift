@@ -223,10 +223,6 @@ enum TrailChapterCatalog {
             }
     }
 
-    static func chapter(for unit: UnitType, theme: VisualTheme) -> TrailChapterInfo? {
-        chapters(for: theme).first { $0.units.contains(unit) }
-    }
-
     private static func chapterMetadata(for theme: VisualTheme) -> [(chapterLabel: String, title: String, subtitle: String, landmark: String)] {
         switch theme {
         case .starsSpace:
