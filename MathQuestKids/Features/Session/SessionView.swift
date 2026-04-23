@@ -34,6 +34,7 @@ struct SessionView: View {
     private func sessionContent(runtime: SessionRuntime) -> some View {
         let item = runtime.currentItem
         let progress = Double(runtime.answeredCount) / Double(max(runtime.items.count, 1))
+        let showsAnswerDock = !runtime.pendingCorrection
 
         return ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -57,26 +58,17 @@ struct SessionView: View {
                     correctionOverlay(item: item)
                 } else {
                     answerStage(for: item)
-
-                    if sizeClass == .regular {
-                        HStack(spacing: 12) {
-                            readAloudButton
-                            hintButton
-                        }
-                    } else {
-                        VStack(spacing: 12) {
-                            readAloudButton
-                            hintButton
-                        }
-                    }
-
-                    submitButton(item: item)
                 }
             }
-            .padding(.bottom, 24)
+            .padding(.bottom, showsAnswerDock ? 172 : 24)
         }
         .scrollIndicators(.hidden)
         .background(.clear)
+        .safeAreaInset(edge: .bottom) {
+            if showsAnswerDock {
+                answerActionDock(item: item)
+            }
+        }
         .alert(appState.activeCompanion.name, isPresented: $showingHint, actions: {
             Button("OK", role: .cancel) { }
         }, message: {
@@ -405,6 +397,44 @@ struct SessionView: View {
         .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
         .disabled(selectedChoice.isEmpty)
         .accessibilityLabel("Submit Answer")
+    }
+
+    private func answerActionDock(item: PracticeItem) -> some View {
+        VStack(spacing: 12) {
+            if sizeClass == .regular {
+                HStack(spacing: 12) {
+                    readAloudButton
+                    hintButton
+                }
+            } else {
+                VStack(spacing: 12) {
+                    readAloudButton
+                    hintButton
+                }
+            }
+
+            submitButton(item: item)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 12)
+        .background {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .overlay(alignment: .top) {
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.82), Color.white.opacity(0.35), .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .ignoresSafeArea(edges: .bottom)
+        }
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color.black.opacity(0.06))
+                .frame(height: 1)
+        }
     }
 
     @ViewBuilder
