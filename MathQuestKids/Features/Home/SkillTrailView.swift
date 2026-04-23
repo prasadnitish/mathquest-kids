@@ -5,48 +5,22 @@ struct SkillTrailView: View {
     let trail: SkillTrail
 
     private struct TrailChapter: Identifiable {
-        let id: String
-        let chapterLabel: String
-        let title: String
-        let subtitle: String
-        let landmark: String
+        let info: TrailChapterInfo
         let nodes: [TrailNode]
+
+        var id: String { info.id }
+        var chapterLabel: String { info.chapterLabel }
+        var title: String { info.title }
+        var subtitle: String { info.subtitle }
+        var landmark: String { info.landmark }
     }
 
     private var trailGroups: [TrailChapter] {
-        let kUnits: Set<UnitType> = [.kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
-                                      .subtractionStories, .kCompareGroups, .kShapeAttributes, .teenPlaceValue]
-        let g1Units: Set<UnitType> = [.g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
-                                       .g1AddSub100, .g1MeasureLength]
-        let g2Units: Set<UnitType> = [.g2AddWithin100, .g2SubWithin100, .threeDigitComparison,
-                                       .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups,
-                                       .g2TimeMoney, .g2DataIntro]
-        let g3Units: Set<UnitType> = [.multiplicationArrays, .g3DivMeaning, .g3FractionUnit,
-                                       .g3FractionCompare, .g3AreaConcept, .g3MultiStep]
-        let g4Units: Set<UnitType> = [.fractionComparison, .g4PlaceValueMillion, .g4MultMultiDigit,
-                                       .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure]
-        let g5Units: Set<UnitType> = [.fractionOfWhole, .volumeAndDecimals,
-                                       .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios]
-
-        let configuredChapters = zip(chapterTitles, [
-            trail.nodes.filter { kUnits.contains($0.unit) },
-            trail.nodes.filter { g1Units.contains($0.unit) },
-            trail.nodes.filter { g2Units.contains($0.unit) },
-            trail.nodes.filter { g3Units.contains($0.unit) },
-            trail.nodes.filter { g4Units.contains($0.unit) },
-            trail.nodes.filter { g5Units.contains($0.unit) }
-        ])
-
-        return configuredChapters.enumerated().compactMap { index, pair in
-            let chapter = pair.0
-            let nodes = pair.1
+        TrailChapterCatalog.chapters(for: appState.selectedTheme).compactMap { chapter in
+            let nodes = trail.nodes.filter { chapter.units.contains($0.unit) }
             guard !nodes.isEmpty else { return nil }
             return TrailChapter(
-                id: "chapter-\(index)",
-                chapterLabel: chapter.chapterLabel,
-                title: chapter.title,
-                subtitle: chapter.subtitle,
-                landmark: chapter.landmark,
+                info: chapter,
                 nodes: nodes
             )
         }
@@ -376,37 +350,6 @@ struct SkillTrailView: View {
         }
     }
 
-    private var chapterTitles: [(chapterLabel: String, title: String, subtitle: String, landmark: String)] {
-        switch appState.selectedTheme {
-        case .starsSpace:
-            return [
-                ("Launch 1", "Moon Meadow", "Warm up with the first glowing mission stops.", "moon.stars.fill"),
-                ("Launch 2", "Comet Crossing", "Hop over bright number bridges and quick facts.", "sparkles"),
-                ("Launch 3", "Orbit Station", "Build bigger numbers and steady mission power.", "circle.grid.3x3.fill"),
-                ("Launch 4", "Nebula Grove", "Float through groups, arrays, and fraction trails.", "sparkle.magnifyingglass"),
-                ("Launch 5", "Meteor Ridge", "Tackle brave new challenges with steady thinking.", "flame.fill"),
-                ("Launch 6", "Galaxy Gate", "Finish strong with your biggest adventure puzzles.", "star.square.on.square.fill")
-            ]
-        case .candyland:
-            return [
-                ("Treat 1", "Frosting Fields", "Start with the sweetest warm-up steps.", "birthday.cake.fill"),
-                ("Treat 2", "Lollipop Lane", "Bounce through adding, solving, and first big wins.", "lollipop"),
-                ("Treat 3", "Gumdrop Grove", "Stack bigger numbers and candy-sized ideas.", "circle.grid.2x2.fill"),
-                ("Treat 4", "Taffy Trail", "Stretch into groups, fractions, and chewy challenges.", "sparkles"),
-                ("Treat 5", "Marshmallow Mountain", "Climb into brave, bigger-thinking quests.", "mountain.2.fill"),
-                ("Treat 6", "Sprinkle Castle", "Finish the world with your fanciest math moves.", "crown.fill")
-            ]
-        default:
-            return [
-                ("Trail 1", "Count & Play", "Warm up with bright first adventures.", "star.fill"),
-                ("Trail 2", "Add & Solve", "Keep the journey moving with quick wins.", "sparkles"),
-                ("Trail 3", "Build Big Numbers", "Grow stronger with bigger ideas.", "circle.grid.3x3.fill"),
-                ("Trail 4", "Groups & Fractions", "Notice parts, groups, and patterns.", "square.stack.3d.up.fill"),
-                ("Trail 5", "Bigger Challenges", "Stretch your thinking with brave steps.", "flame.fill"),
-                ("Trail 6", "Patterns & Power", "Finish with your strongest adventure skills.", "star.circle.fill")
-            ]
-        }
-    }
 }
 
 struct SkillTrailNodeView: View {

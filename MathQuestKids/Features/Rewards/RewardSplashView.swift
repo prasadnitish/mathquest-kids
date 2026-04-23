@@ -12,6 +12,7 @@ struct RewardSplashView: View {
             CelebrationModal(
                 theme: appState.selectedTheme,
                 companion: appState.activeCompanion,
+                mascotContext: .rewardEarned,
                 eyebrow: rewardEyebrow,
                 title: rewardTitle,
                 subtitle: sticker.title,

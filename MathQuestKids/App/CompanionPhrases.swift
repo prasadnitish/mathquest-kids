@@ -103,6 +103,27 @@ enum CompanionPhrases {
         ]
     ]
 
+    // MARK: - Chapter unlocked
+
+    static func chapterUnlocked(tone: CompanionTone) -> String {
+        pool(for: tone, from: chapterUnlockedPools).randomElement()!
+    }
+
+    private static let chapterUnlockedPools: [CompanionTone: [String]] = [
+        .encouraging: [
+            "You opened a new chapter!",
+            "A fresh adventure is ready!"
+        ],
+        .energetic: [
+            "New chapter unlocked!",
+            "Boom! A new route is glowing!"
+        ],
+        .calm: [
+            "A new chapter is ready.",
+            "The next route is now open."
+        ]
+    ]
+
     // MARK: - Correction (shown after 2 wrong answers with the correct answer)
 
     static func correction(tone: CompanionTone) -> String {

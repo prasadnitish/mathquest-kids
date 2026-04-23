@@ -9,6 +9,7 @@ enum MascotVoice {
         case answerWrong
         case answerIdk
         case rewardEarned
+        case chapterUnlocked
         case streakMilestone
     }
 
@@ -56,6 +57,12 @@ enum MascotVoice {
             case .calm:        return "You earned a sticker. Beautifully done."
             case .energetic:   return "WOW! New sticker! You're on fire!"
             case .encouraging: return "Amazing! A shiny new sticker for you!"
+            }
+        case .chapterUnlocked:
+            switch tone {
+            case .calm:        return "A new chapter is open. Nicely earned."
+            case .energetic:   return "New route unlocked! Let's blast off!"
+            case .encouraging: return "You opened a new chapter. Let's keep going!"
             }
         case .streakMilestone:
             switch tone {

@@ -177,6 +177,108 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
     }
 }
 
+extension UnitType {
+    static var chapterUnits: [[UnitType]] {
+        [
+            Array(learningPath[0...7]),
+            Array(learningPath[8...14]),
+            Array(learningPath[15...20]),
+            Array(learningPath[21...26]),
+            Array(learningPath[27...32]),
+            Array(learningPath[33...37])
+        ]
+    }
+
+    static func chapterIndex(for unit: UnitType) -> Int? {
+        chapterUnits.firstIndex { $0.contains(unit) }
+    }
+}
+
+struct TrailChapterInfo: Equatable, Identifiable {
+    let index: Int
+    let chapterLabel: String
+    let title: String
+    let subtitle: String
+    let landmark: String
+    let units: [UnitType]
+
+    var id: String { "chapter-\(index)" }
+}
+
+enum TrailChapterCatalog {
+    static func chapters(for theme: VisualTheme) -> [TrailChapterInfo] {
+        zip(chapterMetadata(for: theme), UnitType.chapterUnits)
+            .enumerated()
+            .map { index, pair in
+                let metadata = pair.0
+                let units = pair.1
+                return TrailChapterInfo(
+                    index: index,
+                    chapterLabel: metadata.chapterLabel,
+                    title: metadata.title,
+                    subtitle: metadata.subtitle,
+                    landmark: metadata.landmark,
+                    units: units
+                )
+            }
+    }
+
+    static func chapter(for unit: UnitType, theme: VisualTheme) -> TrailChapterInfo? {
+        chapters(for: theme).first { $0.units.contains(unit) }
+    }
+
+    private static func chapterMetadata(for theme: VisualTheme) -> [(chapterLabel: String, title: String, subtitle: String, landmark: String)] {
+        switch theme {
+        case .starsSpace:
+            return [
+                ("Launch 1", "Moon Meadow", "Warm up with the first glowing mission stops.", "moon.stars.fill"),
+                ("Launch 2", "Comet Crossing", "Hop over bright number bridges and quick facts.", "sparkles"),
+                ("Launch 3", "Orbit Station", "Build bigger numbers and steady mission power.", "circle.grid.3x3.fill"),
+                ("Launch 4", "Nebula Grove", "Float through groups, arrays, and fraction trails.", "sparkle.magnifyingglass"),
+                ("Launch 5", "Meteor Ridge", "Tackle brave new challenges with steady thinking.", "flame.fill"),
+                ("Launch 6", "Galaxy Gate", "Finish strong with your biggest adventure puzzles.", "star.square.on.square.fill")
+            ]
+        case .candyland:
+            return [
+                ("Treat 1", "Frosting Fields", "Start with the sweetest warm-up steps.", "birthday.cake.fill"),
+                ("Treat 2", "Lollipop Lane", "Bounce through adding, solving, and first big wins.", "lollipop"),
+                ("Treat 3", "Gumdrop Grove", "Stack bigger numbers and candy-sized ideas.", "circle.grid.2x2.fill"),
+                ("Treat 4", "Taffy Trail", "Stretch into groups, fractions, and chewy challenges.", "sparkles"),
+                ("Treat 5", "Marshmallow Mountain", "Climb into brave, bigger-thinking quests.", "mountain.2.fill"),
+                ("Treat 6", "Sprinkle Castle", "Finish the world with your fanciest math moves.", "crown.fill")
+            ]
+        default:
+            return [
+                ("Trail 1", "Count & Play", "Warm up with bright first adventures.", "star.fill"),
+                ("Trail 2", "Add & Solve", "Keep the journey moving with quick wins.", "sparkles"),
+                ("Trail 3", "Build Big Numbers", "Grow stronger with bigger ideas.", "circle.grid.3x3.fill"),
+                ("Trail 4", "Groups & Fractions", "Notice parts, groups, and patterns.", "square.stack.3d.up.fill"),
+                ("Trail 5", "Bigger Challenges", "Stretch your thinking with brave steps.", "flame.fill"),
+                ("Trail 6", "Patterns & Power", "Finish with your strongest adventure skills.", "star.circle.fill")
+            ]
+        }
+    }
+}
+
+struct ChapterCelebration: Equatable, Identifiable {
+    let clearedChapter: TrailChapterInfo?
+    let unlockedChapter: TrailChapterInfo?
+
+    var id: String {
+        [
+            clearedChapter?.id,
+            unlockedChapter?.id
+        ]
+        .compactMap { $0 }
+        .joined(separator: "-")
+    }
+
+    var isFinale: Bool {
+        guard let clearedChapter, unlockedChapter == nil else { return false }
+        return clearedChapter.index == UnitType.chapterUnits.count - 1
+    }
+}
+
 enum MasteryStatus: String, Codable {
     case learning
     case practicing
@@ -291,6 +393,7 @@ struct SessionSummary: Equatable {
     let rewardTitle: String
     let nextRecommendation: String
     let missedItems: [MissedItem]
+    let chapterCelebration: ChapterCelebration?
 }
 
 struct UnitProgress: Equatable, Identifiable {

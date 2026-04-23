@@ -102,7 +102,7 @@ struct MascotBlock: View {
 
     private var reactionStyle: ReactionStyle {
         switch context {
-        case .answerCorrect, .rewardEarned, .streakMilestone:
+        case .answerCorrect, .rewardEarned, .chapterUnlocked, .streakMilestone:
             return .celebrate
         case .answerWrong, .answerIdk:
             return .coach
@@ -129,6 +129,8 @@ struct MascotBlock: View {
             return "Let's solve it"
         case .rewardEarned:
             return "Treasure found"
+        case .chapterUnlocked:
+            return "New chapter"
         case .streakMilestone:
             return "Streak shine"
         }

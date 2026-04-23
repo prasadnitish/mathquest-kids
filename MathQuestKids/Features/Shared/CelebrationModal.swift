@@ -9,6 +9,7 @@ import SwiftUI
 struct CelebrationModal<StickerContent: View>: View {
     let theme: VisualTheme
     let companion: ThemeCompanion
+    let mascotContext: MascotVoice.Context
     let eyebrow: String?
     let title: String
     let subtitle: String?
@@ -81,7 +82,7 @@ struct CelebrationModal<StickerContent: View>: View {
                                 .multilineTextAlignment(.center)
                         }
 
-                        MascotBlock(companion: companion, context: .rewardEarned, theme: theme)
+                        MascotBlock(companion: companion, context: mascotContext, theme: theme)
 
                         Button(ctaTitle, action: onDismiss)
                             .buttonStyle(CTAButtonStyle(theme: theme))
@@ -212,6 +213,7 @@ extension CelebrationModal where StickerContent == Text {
     ) {
         self.theme = theme
         self.companion = companion
+        self.mascotContext = .rewardEarned
         self.eyebrow = nil
         self.title = title
         self.subtitle = subtitle

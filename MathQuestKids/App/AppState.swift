@@ -50,6 +50,7 @@ final class AppState: ObservableObject {
     @Published var soundEffectsEnabled: Bool
 
     @Published var pendingStickerReward: Sticker?
+    @Published var pendingChapterCelebration: ChapterCelebration?
     @Published var stickerCollection: StickerCollection = StickerCollection(stickers: [])
     @Published var showParentDashboard = false
 
@@ -280,6 +281,7 @@ final class AppState: ObservableObject {
 
         do {
             cancelQuestionReadTask()
+            pendingChapterCelebration = nil
             let targetItemCount = FeatureFlags.adaptiveSessionItems(for: unit, placedGrade: diagnosticResult?.placedGrade)
             let blueprint = try sessionComposer.composeSession(
                 childID: profile.id,
@@ -440,16 +442,8 @@ final class AppState: ObservableObject {
     private func finishSession(_ rt: SessionRuntime, lastItem: PracticeItem, lastCorrect: Bool) {
         guard let profile else { return }
         cancelQuestionReadTask()
+        let previousDashboard = dashboard
         let reward = contentPack.rewards.randomElement()?.title ?? "Explorer Sticker"
-        let summary = SessionSummary(
-            sessionID: rt.sessionID,
-            unit: rt.focusUnit,
-            totalItems: rt.items.count,
-            correctItems: rt.correctCount,
-            rewardTitle: reward,
-            nextRecommendation: masteryEngine.nextRecommendation(for: lastItem.skillID, childID: profile.id),
-            missedItems: rt.missedItems
-        )
 
         do {
             try repository.finishSession(
@@ -463,9 +457,25 @@ final class AppState: ObservableObject {
         } catch {
         }
 
-        latestSummary = summary
         currentSession = nil
         refreshDashboard()
+        let chapterCelebration = chapterCelebration(
+            from: previousDashboard,
+            to: dashboard,
+            finishedUnit: rt.focusUnit
+        )
+        let summary = SessionSummary(
+            sessionID: rt.sessionID,
+            unit: rt.focusUnit,
+            totalItems: rt.items.count,
+            correctItems: rt.correctCount,
+            rewardTitle: reward,
+            nextRecommendation: masteryEngine.nextRecommendation(for: lastItem.skillID, childID: profile.id),
+            missedItems: rt.missedItems,
+            chapterCelebration: chapterCelebration
+        )
+        latestSummary = summary
+        pendingChapterCelebration = chapterCelebration
         checkAndAwardSticker(for: rt.focusUnit)
         route = .summary
         narrationService.speakFeedback(lastCorrect ? "Great finish!" : "Nice persistence. You did it!", style: narrationStyle, interrupt: true)
@@ -621,6 +631,8 @@ final class AppState: ObservableObject {
         route = profile == nil ? .profileSetup : .home
         currentSession = nil
         latestSummary = nil
+        pendingStickerReward = nil
+        pendingChapterCelebration = nil
         refreshDashboard()
     }
 
@@ -707,6 +719,7 @@ final class AppState: ObservableObject {
             currentSession = nil
             latestSummary = nil
             pendingStickerReward = nil
+            pendingChapterCelebration = nil
             diagnosticSession = nil
             diagnosticResult = nil
             temporarilySkippedDiagnostic = false
@@ -733,6 +746,7 @@ final class AppState: ObservableObject {
             currentSession = nil
             latestSummary = nil
             pendingStickerReward = nil
+            pendingChapterCelebration = nil
             diagnosticSession = nil
             diagnosticResult = nil
             temporarilySkippedDiagnostic = false
@@ -918,5 +932,52 @@ final class AppState: ObservableObject {
             dashboard: dashboard,
             stickerCollection: stickerCollection
         )
+    }
+
+    func chapterCelebration(
+        from previousDashboard: DashboardSnapshot,
+        to currentDashboard: DashboardSnapshot,
+        finishedUnit: UnitType
+    ) -> ChapterCelebration? {
+        let chapters = TrailChapterCatalog.chapters(for: selectedTheme)
+        guard
+            let finishedChapterIndex = UnitType.chapterIndex(for: finishedUnit),
+            chapters.indices.contains(finishedChapterIndex)
+        else {
+            return nil
+        }
+
+        let clearedChapter = chapters[finishedChapterIndex]
+        let didClearChapter = !isChapterComplete(clearedChapter, in: previousDashboard)
+            && isChapterComplete(clearedChapter, in: currentDashboard)
+
+        var unlockedChapter: TrailChapterInfo?
+        let nextChapterIndex = finishedChapterIndex + 1
+        if chapters.indices.contains(nextChapterIndex) {
+            let candidate = chapters[nextChapterIndex]
+            let wasUnlocked = isChapterUnlocked(candidate, in: previousDashboard)
+            let isUnlockedNow = isChapterUnlocked(candidate, in: currentDashboard)
+            if !wasUnlocked && isUnlockedNow {
+                unlockedChapter = candidate
+            }
+        }
+
+        guard didClearChapter || unlockedChapter != nil else { return nil }
+        return ChapterCelebration(
+            clearedChapter: didClearChapter ? clearedChapter : nil,
+            unlockedChapter: unlockedChapter
+        )
+    }
+
+    private func isChapterComplete(_ chapter: TrailChapterInfo, in dashboard: DashboardSnapshot) -> Bool {
+        chapter.units.allSatisfy { unit in
+            dashboard.unitProgress.first(where: { $0.unit == unit })?.completedSessions ?? 0 > 0
+        }
+    }
+
+    private func isChapterUnlocked(_ chapter: TrailChapterInfo, in dashboard: DashboardSnapshot) -> Bool {
+        chapter.units.contains { unit in
+            dashboard.unitProgress.first(where: { $0.unit == unit })?.unlocked == true
+        }
     }
 }

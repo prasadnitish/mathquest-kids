@@ -1092,6 +1092,67 @@ struct MathQuestKidsTests {
         #expect(state.currentSession?.focusUnit == path.last)
     }
 
+    @MainActor
+    @Test
+    func chapterCelebrationDetectsChapterClearAndNextRouteUnlock() {
+        let state = AppState(
+            repository: ProgressRepository(coreDataStack: CoreDataStack(inMemory: true)),
+            parentPINStore: InMemoryParentPINStore()
+        )
+        state.setTheme(.starsSpace)
+
+        let firstChapter = UnitType.chapterUnits[0]
+        let nextChapterFirstUnit = UnitType.chapterUnits[1][0]
+        let previous = makeDashboardSnapshot(
+            completedUnits: Set(firstChapter.dropLast()),
+            unlockedUnits: Set(firstChapter)
+        )
+        let current = makeDashboardSnapshot(
+            completedUnits: Set(firstChapter),
+            unlockedUnits: Set(firstChapter + [nextChapterFirstUnit])
+        )
+
+        let celebration = state.chapterCelebration(
+            from: previous,
+            to: current,
+            finishedUnit: firstChapter.last ?? .teenPlaceValue
+        )
+
+        #expect(celebration?.clearedChapter?.chapterLabel == "Launch 1")
+        #expect(celebration?.unlockedChapter?.chapterLabel == "Launch 2")
+        #expect(celebration?.isFinale == false)
+    }
+
+    @MainActor
+    @Test
+    func chapterCelebrationMarksFinaleForLastChapter() {
+        let state = AppState(
+            repository: ProgressRepository(coreDataStack: CoreDataStack(inMemory: true)),
+            parentPINStore: InMemoryParentPINStore()
+        )
+        state.setTheme(.candyland)
+
+        let allUnits = Set(UnitType.learningPath)
+        let previous = makeDashboardSnapshot(
+            completedUnits: Set(UnitType.learningPath.dropLast()),
+            unlockedUnits: allUnits
+        )
+        let current = makeDashboardSnapshot(
+            completedUnits: allUnits,
+            unlockedUnits: allUnits
+        )
+
+        let celebration = state.chapterCelebration(
+            from: previous,
+            to: current,
+            finishedUnit: .g5PreRatios
+        )
+
+        #expect(celebration?.clearedChapter?.chapterLabel == "Treat 6")
+        #expect(celebration?.unlockedChapter == nil)
+        #expect(celebration?.isFinale == true)
+    }
+
     // MARK: - Test Helpers
 
     private func makeMiniCatalog() -> CurriculumCatalog {
@@ -1209,6 +1270,24 @@ struct MathQuestKidsTests {
             rewards: [
                 RewardDefinition(id: "reward-1", title: "Explorer Sticker", description: "A shiny surprise")
             ]
+        )
+    }
+
+    private func makeDashboardSnapshot(
+        completedUnits: Set<UnitType>,
+        unlockedUnits: Set<UnitType>
+    ) -> DashboardSnapshot {
+        DashboardSnapshot(
+            completedSessions: completedUnits.count,
+            averageAccuracy: 0.9,
+            streakDays: 3,
+            unitProgress: UnitType.learningPath.map { unit in
+                UnitProgress(
+                    unit: unit,
+                    completedSessions: completedUnits.contains(unit) ? 1 : 0,
+                    unlocked: unlockedUnits.contains(unit)
+                )
+            }
         )
     }
 
