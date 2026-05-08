@@ -142,7 +142,7 @@ extension AppState {
             item.narrationText,
             style: narrationStyle,
             interrupt: true,
-            itemID: item.templateID
+            itemID: item.audioLookupID
         )
     }
 
@@ -152,7 +152,7 @@ extension AppState {
         let expectedSessionID = runtime.sessionID
         let expectedItemID = runtime.currentItem.id
         let narrationText = runtime.currentItem.narrationText
-        let templateID = runtime.currentItem.templateID
+        let audioLookupID = runtime.currentItem.audioLookupID
 
         questionReadTask = Task { [weak self] in
             for _ in 0..<Timing.narrationPollCount {
@@ -177,7 +177,7 @@ extension AppState {
                 narrationText,
                 style: self.narrationStyle,
                 interrupt: true,
-                itemID: templateID
+                itemID: audioLookupID
             )
         }
     }

@@ -40,29 +40,40 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
     case g5FractionAddSubUnlike
     case g5LinePlotsFractions
     case g5PreRatios
+    case kSpatialShapeHunt
+    case kSpatialPositionWords
+    case k2SpatialRotateMatch
+    case g1SpatialBuildShapes
+    case g1SpatialSymmetryMirror
+    case g2SpatialGridPaths
+    case g2SpatialSolidAttributes
+    case g4SpatialNetsPreview
 
     var id: String { rawValue }
 
     static var learningPath: [UnitType] {
         [
-            // Kindergarten (8)
-            .kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
-            .subtractionStories, .kCompareGroups, .kShapeAttributes, .teenPlaceValue,
-            // Grade 1 (6)
+            // Kindergarten
+            .kCountObjects, .kComposeDecompose, .kSpatialShapeHunt, .kSpatialPositionWords,
+            .kAddWithin5, .kAddWithin10, .subtractionStories, .kCompareGroups,
+            .kShapeAttributes, .teenPlaceValue,
+            // Grade 1
             .g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
+            .g1SpatialBuildShapes, .k2SpatialRotateMatch, .g1SpatialSymmetryMirror,
             .g1AddSub100, .g1MeasureLength,
-            // Grade 1-2 bridge
+            // Grade 2
             .g2AddWithin100, .g2SubWithin100,
-            // Grade 2 (6)
             .threeDigitComparison, .g2PlaceValue1000, .g2AddSubRegroup,
-            .g2EqualGroups, .g2TimeMoney, .g2DataIntro,
-            // Grade 3 (6)
+            .g2EqualGroups, .g2SpatialGridPaths, .g2SpatialSolidAttributes,
+            .g2TimeMoney, .g2DataIntro,
+            // Grade 3
             .multiplicationArrays, .g3DivMeaning, .g3FractionUnit,
             .g3FractionCompare, .g3AreaConcept, .g3MultiStep,
-            // Grade 4 (6)
+            // Grade 4
             .fractionComparison, .g4PlaceValueMillion, .g4MultMultiDigit,
             .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure,
-            // Grade 5 (5)
+            .g4SpatialNetsPreview,
+            // Grade 5
             .fractionOfWhole, .volumeAndDecimals,
             .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios,
         ]
@@ -108,6 +119,14 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .g5FractionAddSubUnlike: return "Unlike Denominators"
         case .g5LinePlotsFractions: return "Line Plots"
         case .g5PreRatios:        return "Ratios & Patterns"
+        case .kSpatialShapeHunt:  return "Shape Hunt"
+        case .kSpatialPositionWords: return "Position Words"
+        case .k2SpatialRotateMatch: return "Rotate to Match"
+        case .g1SpatialBuildShapes: return "Build Shapes"
+        case .g1SpatialSymmetryMirror: return "Mirror Pictures"
+        case .g2SpatialGridPaths: return "Grid Paths"
+        case .g2SpatialSolidAttributes: return "3D Shape Clues"
+        case .g4SpatialNetsPreview: return "Cube Nets"
         }
     }
 
@@ -151,6 +170,14 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .g5FractionAddSubUnlike: return "Add and subtract fractions with different denominators"
         case .g5LinePlotsFractions: return "Read line plots with fraction data"
         case .g5PreRatios:        return "Find and extend ratio patterns"
+        case .kSpatialShapeHunt:  return "Find and count shapes in a scene"
+        case .kSpatialPositionWords: return "Use above, below, left, and right"
+        case .k2SpatialRotateMatch: return "Turn shapes in your mind"
+        case .g1SpatialBuildShapes: return "Compose bigger shapes from pieces"
+        case .g1SpatialSymmetryMirror: return "Complete matching mirror halves"
+        case .g2SpatialGridPaths: return "Follow movement on a grid"
+        case .g2SpatialSolidAttributes: return "Match 3D solids to their attributes"
+        case .g4SpatialNetsPreview: return "Preview nets that fold into cubes"
         }
     }
 
@@ -173,6 +200,10 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
         case .g3DivMeaning, .g3FractionUnit, .g3FractionCompare, .g3AreaConcept, .g3MultiStep: return "3"
         case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure: return "4"
         case .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios: return "5"
+        case .kSpatialShapeHunt, .kSpatialPositionWords: return "K"
+        case .k2SpatialRotateMatch, .g1SpatialBuildShapes, .g1SpatialSymmetryMirror: return "1"
+        case .g2SpatialGridPaths, .g2SpatialSolidAttributes: return "2"
+        case .g4SpatialNetsPreview: return "4"
         }
     }
 }
@@ -180,12 +211,34 @@ enum UnitType: String, Codable, CaseIterable, Identifiable {
 extension UnitType {
     static var chapterUnits: [[UnitType]] {
         [
-            Array(learningPath[0...7]),
-            Array(learningPath[8...14]),
-            Array(learningPath[15...20]),
-            Array(learningPath[21...26]),
-            Array(learningPath[27...32]),
-            Array(learningPath[33...37])
+            [
+                .kCountObjects, .kComposeDecompose, .kSpatialShapeHunt, .kSpatialPositionWords,
+                .kAddWithin5, .kAddWithin10, .subtractionStories, .kCompareGroups,
+                .kShapeAttributes, .teenPlaceValue
+            ],
+            [
+                .g1AddWithin20, .g1FactFamilies, .twoDigitComparison,
+                .g1SpatialBuildShapes, .k2SpatialRotateMatch, .g1SpatialSymmetryMirror,
+                .g1AddSub100, .g1MeasureLength
+            ],
+            [
+                .g2AddWithin100, .g2SubWithin100, .threeDigitComparison,
+                .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups,
+                .g2SpatialGridPaths, .g2SpatialSolidAttributes, .g2TimeMoney, .g2DataIntro
+            ],
+            [
+                .multiplicationArrays, .g3DivMeaning, .g3FractionUnit,
+                .g3FractionCompare, .g3AreaConcept, .g3MultiStep
+            ],
+            [
+                .fractionComparison, .g4PlaceValueMillion, .g4MultMultiDigit,
+                .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure,
+                .g4SpatialNetsPreview
+            ],
+            [
+                .fractionOfWhole, .volumeAndDecimals,
+                .g5FractionAddSubUnlike, .g5LinePlotsFractions, .g5PreRatios
+            ]
         ]
     }
 
@@ -313,6 +366,14 @@ enum ItemFormat: String, Codable {
     case angleMeasure         // angle visual + degree options
     case fractionAddSub       // fraction strip addition/subtraction
     case ratioTable           // ratio/pattern table completion
+    case shapeHunt
+    case positionWords
+    case rotateToMatch
+    case buildShape
+    case symmetryMirror
+    case gridPath
+    case solidAttributes
+    case netPreview
 }
 
 enum SupportType: String, Codable {
@@ -460,6 +521,7 @@ struct PracticeItem: Identifiable, Equatable {
     let format: ItemFormat
     let prompt: String
     let spokenForm: String?
+    let audioID: String?
     let answer: String
     let supports: [SupportType]
     let payload: ItemPayload
@@ -468,6 +530,37 @@ struct PracticeItem: Identifiable, Equatable {
 
     /// The text that TTS should read aloud. Falls back to prompt.
     var narrationText: String { spokenForm ?? prompt }
+    var audioLookupID: String { audioID ?? templateID }
+
+    init(
+        id: String,
+        templateID: String,
+        unit: UnitType,
+        skillID: String,
+        format: ItemFormat,
+        prompt: String,
+        spokenForm: String?,
+        audioID: String? = nil,
+        answer: String,
+        supports: [SupportType],
+        payload: ItemPayload,
+        options: [String],
+        isReview: Bool
+    ) {
+        self.id = id
+        self.templateID = templateID
+        self.unit = unit
+        self.skillID = skillID
+        self.format = format
+        self.prompt = prompt
+        self.spokenForm = spokenForm
+        self.audioID = audioID
+        self.answer = answer
+        self.supports = supports
+        self.payload = payload
+        self.options = options
+        self.isReview = isReview
+    }
 }
 
 struct SessionBlueprint: Equatable {

@@ -1321,3 +1321,280 @@ struct RatioTableInteraction: View {
         }
     }
 }
+
+struct SpatialChoiceInteraction: View {
+    let item: PracticeItem
+    @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
+
+    var body: some View {
+        VStack(spacing: 16) {
+            spatialCue
+
+            VStack(spacing: 8) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                    AnswerButton(
+                        index: index,
+                        title: option,
+                        state: selection == option ? .selected : .default,
+                        theme: theme,
+                        action: { selection = option }
+                    )
+                }
+                AnswerButton(
+                    index: 0,
+                    title: "I don't know yet",
+                    state: .idk,
+                    theme: theme,
+                    action: { onDefer?() }
+                )
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    private var spatialCue: some View {
+        VStack(spacing: 12) {
+            Image(systemName: iconName)
+                .font(.system(size: 42, weight: .bold))
+                .foregroundStyle(theme.primary)
+                .frame(width: 82, height: 82)
+                .background(theme.primary.opacity(0.12), in: Circle())
+
+            if item.format == .shapeHunt, let scene = item.payload.scene, let gridSize = item.payload.gridSize {
+                ShapeHuntSceneView(
+                    scene: scene,
+                    gridSize: gridSize,
+                    targetShape: item.payload.targetShape,
+                    theme: theme
+                )
+            }
+
+            if let spatialDetail {
+                Text(spatialDetail)
+                    .kidText(.caption)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(theme.accent.opacity(0.16), in: Capsule())
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Text(cueText)
+                .kidText(.body)
+                .foregroundStyle(AppTheme.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
+    }
+
+    private var cueText: String {
+        switch item.format {
+        case .shapeHunt:
+            return "Look across the scene and count only the matching shapes."
+        case .positionWords:
+            return "Find the named object first, then use the position word."
+        case .rotateToMatch:
+            return "Turn the shape in your mind and pick the matching choice."
+        case .buildShape:
+            return "Imagine the pieces sliding together to make the target."
+        case .symmetryMirror:
+            return "Each side should match after the mirror line folds."
+        case .gridPath:
+            return "Move one step at a time on the grid."
+        case .solidAttributes:
+            return "Match the clue to faces, edges, points, or curved parts."
+        case .netPreview:
+            return "Picture the squares folding into a solid."
+        default:
+            return "Use the visual clue, then choose the best match."
+        }
+    }
+
+    private var spatialDetail: String? {
+        switch item.format {
+        case .shapeHunt:
+            guard let targetShape = item.payload.targetShape else { return nil }
+            if let context = item.payload.context {
+                return "Find the \(targetShape)s in the \(context)."
+            }
+            return "Find the \(targetShape)s."
+        case .positionWords:
+            guard let relation = item.payload.relation, let anchor = item.payload.anchor else { return nil }
+            return "Look \(relation) the \(anchor)."
+        case .rotateToMatch:
+            guard let shape = item.payload.shape, let degrees = item.payload.rotationDegrees else { return nil }
+            return "Turn the \(shape) \(degrees) degrees."
+        case .buildShape:
+            guard let targetShape = item.payload.targetShape, let pieces = item.payload.correctPieces else { return nil }
+            return "Build a \(targetShape) with \(pieces)."
+        case .symmetryMirror:
+            guard let object = item.payload.object, let axis = item.payload.axis else { return nil }
+            return "Mirror the \(object) across a \(axis) line."
+        case .gridPath:
+            guard let start = item.payload.start, let moves = item.payload.moves else { return nil }
+            return "Start at the \(start), then move \(moves)."
+        case .solidAttributes:
+            return item.payload.attribute
+        case .netPreview:
+            guard let solid = item.payload.targetSolid else { return nil }
+            return "Pick the net that folds into a \(solid)."
+        default:
+            return nil
+        }
+    }
+
+    private var iconName: String {
+        switch item.format {
+        case .shapeHunt:
+            return "square.on.circle"
+        case .positionWords:
+            return "arrow.up.and.down.and.arrow.left.and.right"
+        case .rotateToMatch:
+            return "rotate.right"
+        case .buildShape:
+            return "square.on.square"
+        case .symmetryMirror:
+            return "rectangle.split.2x1"
+        case .gridPath:
+            return "point.topleft.down.curvedto.point.bottomright.up"
+        case .solidAttributes:
+            return "cube"
+        case .netPreview:
+            return "square.grid.3x3"
+        default:
+            return "sparkles"
+        }
+    }
+}
+
+private struct ShapeHuntSceneView: View {
+    let scene: [SpatialSceneObject]
+    let gridSize: SpatialGridSize
+    let targetShape: String?
+    let theme: VisualTheme
+
+    var body: some View {
+        GeometryReader { proxy in
+            let columns = max(gridSize.columns, 1)
+            let rows = max(gridSize.rows, 1)
+            let cellWidth = proxy.size.width / CGFloat(columns)
+            let cellHeight = proxy.size.height / CGFloat(rows)
+            let shapeSize = min(cellWidth, cellHeight) * 0.62
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(theme.primary.opacity(0.07))
+                gridLines(columns: columns, rows: rows)
+
+                ForEach(Array(scene.enumerated()), id: \.offset) { _, object in
+                    spatialShape(object)
+                        .frame(width: shapeSize, height: shapeSize)
+                        .rotationEffect(.degrees(Double(object.rotation ?? 0)))
+                        .overlay {
+                            if object.target == true {
+                                Circle()
+                                    .stroke(theme.accent.opacity(0.55), lineWidth: 3)
+                                    .scaleEffect(1.22)
+                            }
+                        }
+                        .position(
+                            x: (CGFloat(object.x) + 0.5) * cellWidth,
+                            y: (CGFloat(object.y) + 0.5) * cellHeight
+                        )
+                }
+            }
+        }
+        .aspectRatio(CGFloat(max(gridSize.columns, 1)) / CGFloat(max(gridSize.rows, 1)), contentMode: .fit)
+        .frame(maxHeight: 190)
+        .accessibilityLabel(accessibilitySummary)
+    }
+
+    private func gridLines(columns: Int, rows: Int) -> some View {
+        GeometryReader { proxy in
+            Path { path in
+                for column in 1..<columns {
+                    let x = proxy.size.width * CGFloat(column) / CGFloat(columns)
+                    path.move(to: CGPoint(x: x, y: 0))
+                    path.addLine(to: CGPoint(x: x, y: proxy.size.height))
+                }
+                for row in 1..<rows {
+                    let y = proxy.size.height * CGFloat(row) / CGFloat(rows)
+                    path.move(to: CGPoint(x: 0, y: y))
+                    path.addLine(to: CGPoint(x: proxy.size.width, y: y))
+                }
+            }
+            .stroke(AppTheme.textSecondary.opacity(0.14), lineWidth: 1)
+        }
+    }
+
+    @ViewBuilder
+    private func spatialShape(_ object: SpatialSceneObject) -> some View {
+        let color = spatialColor(named: object.color)
+        switch object.shape ?? object.name ?? "" {
+        case "circle":
+            Circle().fill(color)
+        case "oval":
+            Capsule().fill(color)
+        case "triangle":
+            TriangleShape().fill(color)
+        case "diamond", "rhombus":
+            DiamondShape().fill(color)
+        case "rectangle":
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(color)
+                .aspectRatio(1.45, contentMode: .fit)
+        default:
+            RoundedRectangle(cornerRadius: 8, style: .continuous).fill(color)
+        }
+    }
+
+    private func spatialColor(named name: String?) -> Color {
+        switch name {
+        case "blue": return .blue
+        case "green": return .green
+        case "yellow": return .yellow
+        case "purple": return .purple
+        case "orange": return .orange
+        case "pink": return .pink
+        case "teal": return .teal
+        case "red": return .red
+        default: return theme.primary
+        }
+    }
+
+    private var accessibilitySummary: String {
+        let targetCount = scene.filter { $0.target == true }.count
+        let target = targetShape ?? "matching shapes"
+        return "Shape hunt scene with \(targetCount) \(target)"
+    }
+}
+
+private struct DiamondShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+            path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+            path.closeSubpath()
+        }
+    }
+}
+
+private struct TriangleShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.closeSubpath()
+        }
+    }
+}

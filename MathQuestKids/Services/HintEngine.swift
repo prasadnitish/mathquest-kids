@@ -96,16 +96,30 @@ struct DeterministicHintEngine: HintEngine {
             return "Count each group one by one. Point to each dot as you count."
         case .kShapeAttributes:
             return "Look at the shape. Count the sides and corners."
+        case .kSpatialShapeHunt:
+            return "Look for one target shape at a time. Point to each match, then count."
+        case .kSpatialPositionWords:
+            return "Put your finger on the named object first. Then move above, below, left, or right."
         case .g1AddSub100:
             return "Break the numbers into tens and ones. Add or subtract each part."
         case .g1MeasureLength:
             return "Line up the object with the ruler. Count the unit marks."
+        case .k2SpatialRotateMatch:
+            return "Trace the shape, then turn your finger the same way. A turn is not a flip."
+        case .g1SpatialBuildShapes:
+            return "Look at the target outline. Match sides and corners with the pieces."
+        case .g1SpatialSymmetryMirror:
+            return "Find the mirror line. Each part should match on the other side."
         case .g2PlaceValue1000:
             return "Think about how many hundreds, tens, and ones make the number."
         case .g2AddSubRegroup:
             return "When the ones add up to more than 9, regroup 10 ones as 1 ten."
         case .g2EqualGroups:
             return "Put the same number of items in each group."
+        case .g2SpatialGridPaths:
+            return "Start on the named object. Move one direction at a time on the grid."
+        case .g2SpatialSolidAttributes:
+            return "Check flat faces, curved parts, edges, and points."
         case .g2TimeMoney:
             if context.payload.hours != nil {
                 return "The short hand shows the hour. The long hand shows the minutes."
@@ -133,6 +147,8 @@ struct DeterministicHintEngine: HintEngine {
             return "When denominators match, add or subtract the numerators. Keep the denominator."
         case .g4AngleMeasure:
             return "A right angle is 90\u{00B0}. Is this angle smaller, equal, or bigger?"
+        case .g4SpatialNetsPreview:
+            return "A cube needs six square faces. Imagine folding the squares around the center."
         case .g5FractionAddSubUnlike:
             return "Find a common denominator first. Then add or subtract the numerators."
         case .g5LinePlotsFractions:
@@ -199,16 +215,30 @@ struct DeterministicHintEngine: HintEngine {
             return "Count each group. Write both numbers. Which is bigger?"
         case .kShapeAttributes:
             return "Trace each side with your finger. Count the corners where sides meet."
+        case .kSpatialShapeHunt:
+            return "Scan left to right so you do not miss a matching shape."
+        case .kSpatialPositionWords:
+            return "Start at the anchor object, then follow the position word exactly."
         case .g1AddSub100:
             return "Use a number line. Jump by tens first, then by ones."
         case .g1MeasureLength:
             return "Start at zero on the ruler. Count each space, not each mark."
+        case .k2SpatialRotateMatch:
+            return "A matching shape can be turned, but it should not be mirrored."
+        case .g1SpatialBuildShapes:
+            return "Try matching long sides to long sides and corners to corners."
+        case .g1SpatialSymmetryMirror:
+            return "Imagine folding the picture on the mirror line. Matching parts should touch."
         case .g2PlaceValue1000:
             return "Write the number in expanded form: hundreds + tens + ones."
         case .g2AddSubRegroup:
             return "Add the ones column first. If you get 10 or more, carry one ten to the tens column."
         case .g2EqualGroups:
             return "Deal items one at a time into each group, like dealing cards."
+        case .g2SpatialGridPaths:
+            return "Move one direction first, then the next. Count each grid step."
+        case .g2SpatialSolidAttributes:
+            return "Match the clue to the solid's attributes before choosing."
         case .g2TimeMoney:
             if context.payload.hours != nil {
                 return "Find the hour first (short hand), then count by 5s for the minute hand."
@@ -236,6 +266,8 @@ struct DeterministicHintEngine: HintEngine {
             return "Keep the denominator the same. Only add or subtract the numerators."
         case .g4AngleMeasure:
             return "Compare to a right angle (90\u{00B0}). Acute is less, obtuse is more."
+        case .g4SpatialNetsPreview:
+            return "Check that the net has six squares and can fold without overlap."
         case .g5FractionAddSubUnlike:
             return "Find the least common denominator. Convert both fractions, then add or subtract."
         case .g5LinePlotsFractions:
@@ -336,6 +368,12 @@ struct DeterministicHintEngine: HintEngine {
             let sides = context.payload.sides ?? 0
             let corners = context.payload.corners ?? 0
             return "This shape has \(sides) sides and \(corners) corners. That makes it a \(context.payload.shapeName ?? "shape")."
+        case .kSpatialShapeHunt, .kSpatialPositionWords, .k2SpatialRotateMatch,
+             .g1SpatialBuildShapes, .g1SpatialSymmetryMirror, .g2SpatialGridPaths,
+             .g2SpatialSolidAttributes, .g4SpatialNetsPreview:
+            return context.prompt.isEmpty
+                ? "Use the visual clue step by step, then match the best answer choice."
+                : "Use the visual clue step by step. Match the choice that answers: \(context.prompt)"
         case .g1AddSub100:
             let a = context.payload.left ?? context.payload.minuend ?? 0
             let b = context.payload.right ?? context.payload.subtrahend ?? 0

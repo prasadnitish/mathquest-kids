@@ -93,6 +93,25 @@ struct CopyAuditTests {
     }
 
     @Test
+    func childFeaturesHaveNoIncompleteReleaseCopy() throws {
+        let parentOnly = ["ParentDashboardView.swift", "DomainCoverageCard.swift", "LegalDocumentView.swift"]
+        let forbidden = [
+            "coming soon",
+            "Coming soon",
+            "Coming up soon",
+            "More adventures soon",
+            "AI tutor"
+        ]
+        for file in swiftFiles(in: featuresDir) where !parentOnly.contains(file.lastPathComponent) {
+            let source = try String(contentsOf: file)
+            for phrase in forbidden {
+                #expect(!source.contains(phrase),
+                        "Child file \(file.lastPathComponent) contains incomplete release copy: \(phrase)")
+            }
+        }
+    }
+
+    @Test
     func companionPhrasesAreAtMost12Words() throws {
         let source = try String(contentsOf: appDir.appendingPathComponent("CompanionPhrases.swift"))
         // Match: a line like `return "..."` where the string is up to 200 chars.

@@ -58,9 +58,39 @@ struct ItemTemplate: Codable {
     let difficulty: Int
     let prompt: String
     let spokenForm: String?
+    let choices: [String]?
+    let audioID: String?
     let answer: String
     let supports: [SupportType]
     let payload: ItemPayload
+
+    init(
+        id: String,
+        unit: UnitType,
+        skill: String,
+        format: ItemFormat,
+        difficulty: Int,
+        prompt: String,
+        spokenForm: String?,
+        choices: [String]? = nil,
+        audioID: String? = nil,
+        answer: String,
+        supports: [SupportType],
+        payload: ItemPayload
+    ) {
+        self.id = id
+        self.unit = unit
+        self.skill = skill
+        self.format = format
+        self.difficulty = difficulty
+        self.prompt = prompt
+        self.spokenForm = spokenForm
+        self.choices = choices
+        self.audioID = audioID
+        self.answer = answer
+        self.supports = supports
+        self.payload = payload
+    }
 
     /// The text that should be read aloud by TTS.
     /// Falls back to `prompt` when no spoken form is provided.
@@ -114,6 +144,39 @@ struct ItemPayload: Codable, Equatable {
     let ratioLeft: Int?
     let ratioRight: Int?
 
+    // Spatial reasoning
+    let targetShape: String?
+    let targetCount: Int?
+    let context: String?
+    let gridSize: SpatialGridSize?
+    let scene: [SpatialSceneObject]?
+    let relation: String?
+    let anchor: String?
+    let objects: [SpatialSceneObject]?
+    let shape: String?
+    let color: String?
+    let rotationDegrees: Int?
+    let options: [SpatialOption]?
+    let correctPieces: String?
+    let distractorPieces: [String]?
+    let rotationAllowed: Bool?
+    let object: String?
+    let axis: String?
+    let answerChoice: String?
+    let start: String?
+    let startPosition: SpatialGridPoint?
+    let moves: String?
+    let delta: SpatialGridPoint?
+    let targetPosition: SpatialGridPoint?
+    let targetObject: String?
+    let solidName: String?
+    let faces: Int?
+    let edges: Int?
+    let vertices: Int?
+    let attribute: String?
+    let realWorldObjects: [String]?
+    let targetSolid: String?
+
     init(
         left: Int? = nil,
         right: Int? = nil,
@@ -146,7 +209,38 @@ struct ItemPayload: Codable, Equatable {
         barValues: [Int]? = nil,
         barLabels: [String]? = nil,
         ratioLeft: Int? = nil,
-        ratioRight: Int? = nil
+        ratioRight: Int? = nil,
+        targetShape: String? = nil,
+        targetCount: Int? = nil,
+        context: String? = nil,
+        gridSize: SpatialGridSize? = nil,
+        scene: [SpatialSceneObject]? = nil,
+        relation: String? = nil,
+        anchor: String? = nil,
+        objects: [SpatialSceneObject]? = nil,
+        shape: String? = nil,
+        color: String? = nil,
+        rotationDegrees: Int? = nil,
+        options: [SpatialOption]? = nil,
+        correctPieces: String? = nil,
+        distractorPieces: [String]? = nil,
+        rotationAllowed: Bool? = nil,
+        object: String? = nil,
+        axis: String? = nil,
+        answerChoice: String? = nil,
+        start: String? = nil,
+        startPosition: SpatialGridPoint? = nil,
+        moves: String? = nil,
+        delta: SpatialGridPoint? = nil,
+        targetPosition: SpatialGridPoint? = nil,
+        targetObject: String? = nil,
+        solidName: String? = nil,
+        faces: Int? = nil,
+        edges: Int? = nil,
+        vertices: Int? = nil,
+        attribute: String? = nil,
+        realWorldObjects: [String]? = nil,
+        targetSolid: String? = nil
     ) {
         self.left = left
         self.right = right
@@ -180,7 +274,69 @@ struct ItemPayload: Codable, Equatable {
         self.barLabels = barLabels
         self.ratioLeft = ratioLeft
         self.ratioRight = ratioRight
+        self.targetShape = targetShape
+        self.targetCount = targetCount
+        self.context = context
+        self.gridSize = gridSize
+        self.scene = scene
+        self.relation = relation
+        self.anchor = anchor
+        self.objects = objects
+        self.shape = shape
+        self.color = color
+        self.rotationDegrees = rotationDegrees
+        self.options = options
+        self.correctPieces = correctPieces
+        self.distractorPieces = distractorPieces
+        self.rotationAllowed = rotationAllowed
+        self.object = object
+        self.axis = axis
+        self.answerChoice = answerChoice
+        self.start = start
+        self.startPosition = startPosition
+        self.moves = moves
+        self.delta = delta
+        self.targetPosition = targetPosition
+        self.targetObject = targetObject
+        self.solidName = solidName
+        self.faces = faces
+        self.edges = edges
+        self.vertices = vertices
+        self.attribute = attribute
+        self.realWorldObjects = realWorldObjects
+        self.targetSolid = targetSolid
     }
+}
+
+struct SpatialGridSize: Codable, Equatable {
+    let columns: Int
+    let rows: Int
+}
+
+struct SpatialGridPoint: Codable, Equatable {
+    let x: Int
+    let y: Int
+}
+
+struct SpatialSceneObject: Codable, Equatable {
+    let name: String?
+    let shape: String?
+    let color: String?
+    let x: Int
+    let y: Int
+    let rotation: Int?
+    let target: Bool?
+}
+
+struct SpatialOption: Codable, Equatable {
+    let label: String?
+    let shape: String?
+    let rotation: Int?
+    let mirrored: Bool?
+    let mirrorsCorrectly: Bool?
+    let pattern: String?
+    let description: String?
+    let foldsToCube: Bool?
 }
 
 struct HintTemplate: Codable {

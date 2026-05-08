@@ -144,7 +144,23 @@ private struct SessionSummaryCard: View {
         }
         .padding()
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
-        .accessibilityLabel("Session summary")
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(summaryAccessibilityLabel)
+    }
+
+    private var summaryAccessibilityLabel: String {
+        var parts = [
+            "Session summary",
+            "\(summary.correctItems) of \(summary.totalItems) correct",
+            "Reward: \(summary.rewardTitle)",
+            summary.nextRecommendation
+        ]
+
+        if let nextLessonTitle {
+            parts.append("Next quest: \(nextLessonTitle)")
+        }
+
+        return parts.joined(separator: ", ")
     }
 }
 

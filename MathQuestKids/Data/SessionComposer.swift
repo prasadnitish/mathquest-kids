@@ -133,6 +133,8 @@ final class SessionComposer {
         case .measureLength, .areaTiling, .angleMeasure, .ratioTable, .divisionGroups:
             let answer = Int(template.answer) ?? Int(template.payload.target ?? 0)
             options = makeNumericOptions(answer: answer)
+        case .shapeHunt, .positionWords, .rotateToMatch, .buildShape, .symmetryMirror, .gridPath, .solidAttributes, .netPreview:
+            options = spatialOptions(for: template)
         case .fractionAddSub:
             let parts = template.answer.split(separator: "/").compactMap { Int($0) }
             if parts.count == 2 {
@@ -160,6 +162,7 @@ final class SessionComposer {
             format: template.format,
             prompt: normalizedPrompt(template.prompt, format: template.format),
             spokenForm: template.spokenForm,
+            audioID: template.audioID,
             answer: template.answer,
             supports: template.supports,
             payload: template.payload,
@@ -191,6 +194,23 @@ final class SessionComposer {
             }
         }
         return deterministic ? ensureAnswer.sorted().map(String.init) : ensureAnswer.shuffled().map(String.init)
+    }
+
+    private func spatialOptions(for template: ItemTemplate) -> [String] {
+        guard var choices = template.choices, !choices.isEmpty else {
+            return [template.answer]
+        }
+
+        if !choices.contains(template.answer) {
+            choices.insert(template.answer, at: 0)
+        }
+
+        let unique = choices.reduce(into: [String]()) { result, choice in
+            if !result.contains(choice) {
+                result.append(choice)
+            }
+        }
+        return deterministic ? unique : unique.shuffled()
     }
 
     private func makeTimeOptions(hours: Int, minutes: Int, answer: String) -> [String] {

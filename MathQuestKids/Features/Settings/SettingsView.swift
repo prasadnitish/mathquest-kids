@@ -241,6 +241,17 @@ struct SettingsView: View {
                                 }
                                 .buttonStyle(.plain)
 
+                                NavigationLink {
+                                    LegalDocumentView(document: .support)
+                                } label: {
+                                    SettingsLinkRow(
+                                        title: "Support",
+                                        subtitle: "Contact support@sproutmath.app for help, questions, or privacy requests.",
+                                        symbol: "questionmark.circle"
+                                    )
+                                }
+                                .buttonStyle(.plain)
+
                                 Button(role: .destructive) {
                                     pendingDataAction = .resetProgress
                                 } label: {

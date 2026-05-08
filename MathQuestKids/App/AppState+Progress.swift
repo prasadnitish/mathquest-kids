@@ -137,14 +137,22 @@ extension AppState {
 
     private func placementUnlockIndex(for grade: GradeBand?) -> Int {
         guard let grade else { return 0 }
+        let boundaryUnit: UnitType
         switch grade {
-        case .kindergarten: return 7
-        case .grade1: return 12
-        case .grade2: return 20
-        case .grade3: return 26
-        case .grade4: return 32
-        case .grade5: return 37
+        case .kindergarten:
+            boundaryUnit = .teenPlaceValue
+        case .grade1:
+            boundaryUnit = .g1MeasureLength
+        case .grade2:
+            boundaryUnit = .g2DataIntro
+        case .grade3:
+            boundaryUnit = .g3MultiStep
+        case .grade4:
+            boundaryUnit = .g4SpatialNetsPreview
+        case .grade5:
+            boundaryUnit = .g5PreRatios
         }
+        return UnitType.learningPath.firstIndex(of: boundaryUnit) ?? 0
     }
 
     private func buildUnlockedUnits(

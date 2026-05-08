@@ -206,5 +206,43 @@ final class AppState: ObservableObject {
             route = .profileSetup
             adaptivePath = self.adaptivePlanner.buildPath(result: nil, catalog: catalog)
         }
+
+        if isUITest,
+           let unit = Self.uiTestStartUnit(from: launchArgs) {
+            launchUITestSession(unit: unit, repository: sharedRepository)
+        }
+    }
+
+    private static func uiTestStartUnit(from launchArgs: [String]) -> UnitType? {
+        guard let flagIndex = launchArgs.firstIndex(of: "-ui-test-start-unit") else {
+            return nil
+        }
+        let valueIndex = launchArgs.index(after: flagIndex)
+        guard launchArgs.indices.contains(valueIndex) else {
+            return nil
+        }
+        return UnitType(rawValue: launchArgs[valueIndex])
+    }
+
+    private func launchUITestSession(unit: UnitType, repository: ProgressRepository) {
+        do {
+            let profile = try repository.createOrLoadProfile(name: "UI Test Kid")
+            self.profile = profile
+            diagnosticResult = nil
+            adaptivePath = adaptivePlanner.buildPath(result: nil, catalog: curriculumCatalog)
+            refreshDashboard()
+
+            let targetItemCount = FeatureFlags.adaptiveSessionItems(for: unit, placedGrade: nil)
+            let blueprint = try sessionComposer.composeSession(
+                childID: profile.id,
+                focusUnit: unit,
+                targetItemCount: targetItemCount
+            )
+            currentSession = SessionRuntime(blueprint: blueprint)
+            route = .session
+        } catch {
+            route = .home
+            setStatus("Unable to launch UI test quest.")
+        }
     }
 }

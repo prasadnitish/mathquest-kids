@@ -190,9 +190,9 @@ private struct LessonQuestCard: View {
             return "Ready to play"
         }
         if lesson.isPlayableInApp {
-            return "Coming up soon"
+            return "Build up to unlock"
         }
-        return "More adventures soon"
+        return "Included in this trail"
     }
 
     private var buttonTitle: String {
@@ -202,7 +202,7 @@ private struct LessonQuestCard: View {
         if lesson.isPlayableInApp {
             return "Locked"
         }
-        return "Soon"
+        return "Locked"
     }
 
     var body: some View {
@@ -280,6 +280,6 @@ private struct LessonQuestCard: View {
         if lesson.isPlayableInApp {
             return "\(lesson.title) is locked for now"
         }
-        return "\(lesson.title) is coming soon"
+        return "\(lesson.title) is locked for now"
     }
 }

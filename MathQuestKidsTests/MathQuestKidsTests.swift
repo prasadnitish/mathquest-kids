@@ -739,6 +739,32 @@ struct MathQuestKidsTests {
         #expect(playable.count >= 4)
     }
 
+    @Test
+    func spatialLessonsArePlayableAndBackedByTemplates() throws {
+        let catalog = try CurriculumService.loadDefaultCatalog()
+        let pack = try ContentLoader.loadDefaultPack()
+
+        let lesson = catalog.lesson(id: "k-spatial-shape-hunt")
+        #expect(lesson?.isPlayableInApp == true)
+        #expect(lesson?.linkedUnit == .kSpatialShapeHunt)
+
+        let templates = pack.templates(for: .kSpatialShapeHunt)
+        #expect(templates.count == 80)
+        #expect(templates.allSatisfy { $0.format == .shapeHunt })
+        #expect(templates.allSatisfy { ($0.choices?.isEmpty == false) && ($0.audioID?.isEmpty == false) })
+    }
+
+    @Test
+    func futureAudioIndexCoversSpatialTemplateAudioIDs() throws {
+        let pack = try ContentLoader.loadDefaultPack()
+        let spatialTemplates = pack.templates(for: .kSpatialShapeHunt)
+        let audioIDs = Set(spatialTemplates.compactMap(\.audioID))
+        let index = try NarrationAudioIndex.load(bundle: .main)
+
+        #expect(audioIDs.count == 80)
+        #expect(audioIDs.allSatisfy { index[$0] != nil })
+    }
+
     // MARK: - Recommended Quest Tests
 
     @Test
@@ -1032,6 +1058,20 @@ struct MathQuestKidsTests {
         }
     }
 
+    @Test
+    func appStoreComplianceDisclosuresStayOfflineAndSupportReady() {
+        #expect(FeatureFlags.networkDisabled)
+        #expect(LegalDocument.support.summary.contains("support@sproutmath.app"))
+        #expect(LegalDocument.privacyPolicy.summary.contains("developer does not collect"))
+        #expect(LegalDocument.privacyPolicy.summary.contains("Learning data stays on the device"))
+        #expect(LegalDocument.privacyPolicy.sections.flatMap(\.paragraphs).contains { paragraph in
+            paragraph.contains("does not include third-party analytics SDKs")
+        })
+        #expect(LegalDocument.termsOfUse.sections.flatMap(\.paragraphs).contains { paragraph in
+            paragraph.contains("no account system, no subscriptions, no in-app purchases, no ads")
+        })
+    }
+
     @MainActor
     @Test
     func recommendedProgressionWalksFromFirstQuestThroughGradeFiveAndAwardsStickers() throws {
@@ -1196,14 +1236,8 @@ struct MathQuestKidsTests {
     }
 
     private func makeProgressionCatalog() -> CurriculumCatalog {
-        let grouped: [(GradeBand, [UnitType])] = [
-            (.kindergarten, Array(UnitType.learningPath[0...7])),
-            (.grade1, Array(UnitType.learningPath[8...14])),
-            (.grade2, Array(UnitType.learningPath[15...20])),
-            (.grade3, Array(UnitType.learningPath[21...26])),
-            (.grade4, Array(UnitType.learningPath[27...32])),
-            (.grade5, Array(UnitType.learningPath[33...37]))
-        ]
+        let grouped: [(GradeBand, [UnitType])] = zip(GradeBand.allCases, UnitType.chapterUnits)
+            .map { grade, units in (grade, units) }
 
         let grades = grouped.map { grade, units in
             GradePlan(
@@ -1297,7 +1331,10 @@ struct MathQuestKidsTests {
             return .countingCardinality
         case .kCompareGroups, .g2DataIntro, .g2TimeMoney, .g5LinePlotsFractions, .volumeAndDecimals:
             return .measurementData
-        case .kShapeAttributes, .g1MeasureLength, .g3AreaConcept, .g4AngleMeasure:
+        case .kShapeAttributes, .kSpatialShapeHunt, .kSpatialPositionWords,
+             .g1MeasureLength, .g1SpatialBuildShapes, .k2SpatialRotateMatch,
+             .g1SpatialSymmetryMirror, .g2SpatialGridPaths, .g2SpatialSolidAttributes,
+             .g3AreaConcept, .g4AngleMeasure, .g4SpatialNetsPreview:
             return .geometry
         case .subtractionStories, .kComposeDecompose, .kAddWithin5, .kAddWithin10,
              .g1AddWithin20, .g1FactFamilies, .g1AddSub100, .g2AddWithin100,

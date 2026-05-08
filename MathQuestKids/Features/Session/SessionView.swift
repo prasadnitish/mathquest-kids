@@ -235,7 +235,7 @@ struct SessionView: View {
                 .minimumScaleFactor(0.65)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
-                .accessibilityLabel("Problem prompt")
+                .accessibilityLabel(item.prompt)
                 .accessibilityIdentifier("problemPrompt")
 
             Text(questionHelperText(for: runtime))
@@ -485,6 +485,8 @@ struct SessionView: View {
             FractionAddSubInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .ratioTable:
             RatioTableInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
+        case .shapeHunt, .positionWords, .rotateToMatch, .buildShape, .symmetryMirror, .gridPath, .solidAttributes, .netPreview:
+            SpatialChoiceInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         }
     }
 
@@ -768,6 +770,22 @@ struct SessionView: View {
                 return "Great fraction work! You combined the parts correctly."
             case .ratioTable:
                 return "Nice pattern thinking! You extended the ratio."
+            case .shapeHunt:
+                return "Nice looking. You found the matching shapes."
+            case .positionWords:
+                return "Great spatial thinking. You used the position clue."
+            case .rotateToMatch:
+                return "Nice mental turn. You matched the rotated shape."
+            case .buildShape:
+                return "Great building. You picked pieces that make the shape."
+            case .symmetryMirror:
+                return "Nice mirror thinking. Both sides matched."
+            case .gridPath:
+                return "Great grid work. You followed the path carefully."
+            case .solidAttributes:
+                return "Nice 3D shape thinking. You matched the clue."
+            case .netPreview:
+                return "Great folding idea. You found the net that works."
             }
         }
 
@@ -818,6 +836,22 @@ struct SessionView: View {
             return "Try adding the numerators over the same denominator."
         case .ratioTable:
             return "Look at how the numbers grow in each row."
+        case .shapeHunt:
+            return "Scan the scene one shape at a time."
+        case .positionWords:
+            return "Start at the named object, then move in the position word."
+        case .rotateToMatch:
+            return "Turn the shape in your mind, but do not flip it."
+        case .buildShape:
+            return "Match the pieces to the outline and corners."
+        case .symmetryMirror:
+            return "Imagine folding on the mirror line."
+        case .gridPath:
+            return "Move one grid direction at a time."
+        case .solidAttributes:
+            return "Check faces, edges, points, and curved parts."
+        case .netPreview:
+            return "Imagine folding each square around the center."
         }
     }
 }

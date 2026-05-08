@@ -81,10 +81,40 @@ struct LegalDocument {
 }
 
 extension LegalDocument {
+    static let support = LegalDocument(
+        title: "Support",
+        effectiveDate: "May 7, 2026",
+        lastUpdated: "May 7, 2026",
+        summary: "Questions, support requests, and privacy questions for Sprout Math can be sent to support@sproutmath.app. Please do not include a child's full name, school, address, or other sensitive personal information in support messages.",
+        sections: [
+            LegalSection(
+                title: "1. Contact",
+                paragraphs: [
+                    "Email support@sproutmath.app for help with Sprout Math.",
+                    "Sprout Math is built and supported by Nitish Prasad in Washington, United States."
+                ]
+            ),
+            LegalSection(
+                title: "2. What to Include",
+                paragraphs: [
+                    "Please include a short description of the issue and the device type, such as iPhone or iPad, if known.",
+                    "Do not send a child's full name, school, address, screenshots with sensitive information, or other private family details."
+                ]
+            ),
+            LegalSection(
+                title: "3. Privacy Reminder",
+                paragraphs: [
+                    "Sprout Math does not use accounts, ads, analytics SDKs, telemetry, cloud sync, or third-party support logging.",
+                    "Learning progress and preferences stay on the device. Parent Settings includes local controls to reset learning progress or delete the child profile and local learning data."
+                ]
+            )
+        ]
+    )
+
     static let termsOfUse = LegalDocument(
         title: "Terms of Use",
         effectiveDate: "March 10, 2026",
-        lastUpdated: "March 10, 2026",
+        lastUpdated: "May 7, 2026",
         summary: "Sprout Math is a free, offline educational app for math practice. It supports learning at home, but it does not replace classroom instruction, teacher evaluation, or formal assessment.",
         sections: [
             LegalSection(
@@ -159,13 +189,13 @@ extension LegalDocument {
     static let privacyPolicy = LegalDocument(
         title: "Privacy Policy",
         effectiveDate: "March 10, 2026",
-        lastUpdated: "April 21, 2026",
-        summary: "Sprout Math does not collect, transmit, or store personal information on a server. There are no accounts, analytics SDKs, ads, telemetry systems, or diagnostics exports in the app. Learning data stays on the device, parent settings are protected by a 4-digit PIN, and local data can be deleted from parent settings.",
+        lastUpdated: "May 7, 2026",
+        summary: "The developer does not collect, transmit, or store personal information on a server. There are no accounts, analytics SDKs, ads, telemetry systems, or diagnostics exports in the app. Learning data stays on the device, parent settings are protected by a 4-digit PIN, and local data can be deleted from parent settings.",
         sections: [
             LegalSection(
-                title: "1. Information We Collect",
+                title: "1. Information the Developer Collects",
                 paragraphs: [
-                    "Sprout Math does not collect personal information from children or adults.",
+                    "The developer of Sprout Math does not collect personal information from children or adults.",
                     "The app does not transmit names, email addresses, phone numbers, device identifiers, advertising IDs, IP addresses, location data, or behavioral analytics.",
                     "The app does not access photos, contacts, camera, microphone input, or similar device sensors."
                 ]
@@ -195,7 +225,7 @@ extension LegalDocument {
                 title: "5. Children’s Privacy",
                 paragraphs: [
                     "Sprout Math is designed for children ages 5 through 11.",
-                    "The app does not collect personal information from children as defined by COPPA because it does not transmit child data to any server or third party.",
+                    "The developer does not collect personal information from children through the app because child data is not transmitted to any server or third party.",
                     "Parent-facing settings are protected by a 4-digit parent PIN stored on the device. The app does not include social features, messaging, or user-generated content."
                 ]
             ),

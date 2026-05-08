@@ -59,14 +59,16 @@ enum FeatureFlags {
             case .grade5:
                 target = 9
             }
-        case .kCountObjects, .kComposeDecompose, .kAddWithin5, .kAddWithin10:
+        case .kCountObjects, .kComposeDecompose, .kSpatialShapeHunt, .kSpatialPositionWords,
+             .kAddWithin5, .kAddWithin10:
             switch placedGrade ?? .kindergarten {
             case .kindergarten:
                 target = 5
             default:
                 target = 6
             }
-        case .g1AddWithin20, .g1FactFamilies:
+        case .g1AddWithin20, .g1FactFamilies, .g1SpatialBuildShapes,
+             .k2SpatialRotateMatch, .g1SpatialSymmetryMirror:
             switch placedGrade ?? .grade1 {
             case .kindergarten, .grade1:
                 target = 6
@@ -96,7 +98,8 @@ enum FeatureFlags {
             default:
                 target = 7
             }
-        case .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups, .g2TimeMoney, .g2DataIntro:
+        case .g2PlaceValue1000, .g2AddSubRegroup, .g2EqualGroups,
+             .g2SpatialGridPaths, .g2SpatialSolidAttributes, .g2TimeMoney, .g2DataIntro:
             switch placedGrade ?? .grade2 {
             case .kindergarten, .grade1:
                 target = 6
@@ -116,7 +119,8 @@ enum FeatureFlags {
             default:
                 target = 9
             }
-        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients, .g4FractionAddSub, .g4AngleMeasure:
+        case .g4PlaceValueMillion, .g4MultMultiDigit, .g4DivPartialQuotients,
+             .g4FractionAddSub, .g4AngleMeasure, .g4SpatialNetsPreview:
             switch placedGrade ?? .grade4 {
             case .kindergarten, .grade1:
                 target = 6

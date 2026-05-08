@@ -107,6 +107,45 @@
           "activityPrompt": "Sort mixed shape cards and explain rules in a class math talk."
         },
         {
+          "id": "k-spatial-shape-hunt",
+          "grade": "kindergarten",
+          "title": "Shape Hunt",
+          "domain": "geometry",
+          "objective": "Find and count shapes in visual scenes.",
+          "standards": [
+            "K.G.A.2",
+            "K.CC.B.4"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "variationTheory",
+            "mathTalk"
+          ],
+          "estimatedMinutes": 16,
+          "isPlayableInApp": true,
+          "linkedUnit": "kSpatialShapeHunt",
+          "activityPrompt": "Search a scene, name the target shape, and count each match."
+        },
+        {
+          "id": "k-spatial-position-words",
+          "grade": "kindergarten",
+          "title": "Position Words",
+          "domain": "geometry",
+          "objective": "Use above, below, left, and right to describe object locations.",
+          "standards": [
+            "K.G.A.1"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "mathTalk",
+            "variationTheory"
+          ],
+          "estimatedMinutes": 15,
+          "isPlayableInApp": true,
+          "linkedUnit": "kSpatialPositionWords",
+          "activityPrompt": "Place objects on a grid and describe where they are in relation to each other."
+        },
+        {
           "id": "k-teen-intro",
           "grade": "kindergarten",
           "title": "Teen Number Intro",
@@ -295,6 +334,65 @@
           "activityPrompt": "Measure classroom objects with paper clips and explain why gaps matter."
         },
         {
+          "id": "k2-spatial-rotate-match",
+          "grade": "grade1",
+          "title": "Rotate to Match",
+          "domain": "geometry",
+          "objective": "Mentally rotate shapes and match the same orientation.",
+          "standards": [
+            "1.G.A.1",
+            "2.G.A.1"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "variationTheory",
+            "errorAnalysis"
+          ],
+          "estimatedMinutes": 18,
+          "isPlayableInApp": true,
+          "linkedUnit": "k2SpatialRotateMatch",
+          "activityPrompt": "Turn shape cards and explain which choices are rotations, not flips."
+        },
+        {
+          "id": "g1-spatial-build-shapes",
+          "grade": "grade1",
+          "title": "Build Shapes",
+          "domain": "geometry",
+          "objective": "Compose larger shapes from smaller pieces.",
+          "standards": [
+            "1.G.A.2",
+            "2.G.A.1"
+          ],
+          "strategies": [
+            "concretePictorialAbstract",
+            "guidedDiscovery",
+            "mathTalk"
+          ],
+          "estimatedMinutes": 18,
+          "isPlayableInApp": true,
+          "linkedUnit": "g1SpatialBuildShapes",
+          "activityPrompt": "Use shape pieces to build target outlines and explain why the pieces fit."
+        },
+        {
+          "id": "g1-spatial-symmetry-mirror",
+          "grade": "grade1",
+          "title": "Mirror Pictures",
+          "domain": "geometry",
+          "objective": "Complete symmetrical pictures across a mirror line.",
+          "standards": [
+            "4.G.A.3"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "variationTheory",
+            "mathTalk"
+          ],
+          "estimatedMinutes": 18,
+          "isPlayableInApp": true,
+          "linkedUnit": "g1SpatialSymmetryMirror",
+          "activityPrompt": "Fold or mirror a simple picture and choose the matching half."
+        },
+        {
           "id": "g1-add-within-20",
           "grade": "grade1",
           "title": "Addition Within 20",
@@ -402,6 +500,46 @@
           "isPlayableInApp": true,
           "linkedUnit": "g2EqualGroups",
           "activityPrompt": "Build arrays with tiles and write matching repeated-addition equations."
+        },
+        {
+          "id": "g2-spatial-grid-paths",
+          "grade": "grade2",
+          "title": "Grid Paths",
+          "domain": "geometry",
+          "objective": "Follow directional movement on a grid.",
+          "standards": [
+            "2.G.A.1",
+            "5.G.A.1"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "mathTalk",
+            "patternGeneralization"
+          ],
+          "estimatedMinutes": 18,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2SpatialGridPaths",
+          "activityPrompt": "Start at a grid object and move step by step to find the landing place."
+        },
+        {
+          "id": "g2-spatial-solid-attributes",
+          "grade": "grade2",
+          "title": "3D Shape Clues",
+          "domain": "geometry",
+          "objective": "Match solid shapes to faces, edges, vertices, and real objects.",
+          "standards": [
+            "K.G.B.4",
+            "2.G.A.1"
+          ],
+          "strategies": [
+            "concretePictorialAbstract",
+            "variationTheory",
+            "mathTalk"
+          ],
+          "estimatedMinutes": 18,
+          "isPlayableInApp": true,
+          "linkedUnit": "g2SpatialSolidAttributes",
+          "activityPrompt": "Sort solids by attributes and connect clues to real-world objects."
         },
         {
           "id": "g2-time-money",
@@ -737,6 +875,25 @@
           "isPlayableInApp": true,
           "linkedUnit": "g4AngleMeasure",
           "activityPrompt": "Use protractors and angle decomposition challenges to reason."
+        },
+        {
+          "id": "g4-spatial-nets-preview",
+          "grade": "grade4",
+          "title": "Cube Nets",
+          "domain": "geometry",
+          "objective": "Preview which flat nets can fold into a cube.",
+          "standards": [
+            "5.G.B.3"
+          ],
+          "strategies": [
+            "guidedDiscovery",
+            "variationTheory",
+            "errorAnalysis"
+          ],
+          "estimatedMinutes": 20,
+          "isPlayableInApp": true,
+          "linkedUnit": "g4SpatialNetsPreview",
+          "activityPrompt": "Imagine folding square nets and explain why one folds without overlap."
         }
       ]
     },

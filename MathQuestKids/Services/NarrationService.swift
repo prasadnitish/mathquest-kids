@@ -1,6 +1,55 @@
 import AVFoundation
 import Foundation
 
+enum NarrationAudioIndex {
+    static func load(bundle: Bundle = .main) throws -> [String: String] {
+        var resolved: [String: String] = [:]
+        for resource in resourceCandidates {
+            guard let url = bundle.url(forResource: resource.name, withExtension: resource.ext, subdirectory: resource.subdirectory)
+                ?? bundle.url(forResource: resource.name, withExtension: resource.ext)
+            else {
+                continue
+            }
+            let data = try Data(contentsOf: url)
+            let raw = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
+            for (key, value) in raw {
+                if let str = value as? String {
+                    resolved[key] = str
+                } else if let dict = value as? [String: Any], let file = dict["file"] as? String {
+                    resolved[key] = file
+                }
+            }
+        }
+        return resolved
+    }
+
+    static func loadTextMappings(bundle: Bundle = .main) -> [String: String] {
+        guard let url = bundle.url(
+            forResource: "audio_recording_set_2026_04_26",
+            withExtension: "json",
+            subdirectory: "Audio/future"
+        ) ?? bundle.url(forResource: "audio_recording_set_2026_04_26", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let raw = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let clips = raw["clips"] as? [[String: Any]]
+        else {
+            return [:]
+        }
+
+        var mappings: [String: String] = [:]
+        for clip in clips {
+            guard let text = clip["text"] as? String, let id = clip["id"] as? String else { continue }
+            mappings[text.trimmingCharacters(in: .whitespacesAndNewlines)] = id
+        }
+        return mappings
+    }
+
+    private static let resourceCandidates = [
+        (name: "audio_index", ext: "json", subdirectory: Optional("Audio")),
+        (name: "audio_recording_set_2026_04_26_index", ext: "json", subdirectory: Optional("Audio/future"))
+    ]
+}
+
 enum NarrationStyle: String, CaseIterable, Identifiable {
     case calm
     case playful
@@ -25,6 +74,7 @@ final class NarrationService {
 
     private var audioPlayer: AVAudioPlayer?
     private let audioIndex: [String: String]  // id → relative path
+    private let textAudioIndex: [String: String]  // spoken text → id
 
     // MARK: - Fallback TTS
 
@@ -38,29 +88,14 @@ final class NarrationService {
     // MARK: - Init
 
     init() {
-        // Load the audio index that maps IDs to file paths
-        // Try subdirectory first (folder reference), then root (flattened copy)
-        let url = Bundle.main.url(forResource: "audio_index", withExtension: "json", subdirectory: "Audio")
-            ?? Bundle.main.url(forResource: "audio_index", withExtension: "json")
-
-        if let url,
-           let data = try? Data(contentsOf: url),
-           let raw = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            // Support both flat strings ("id": "path") and dicts ("id": {"file": "path", ...})
-            var resolved: [String: String] = [:]
-            for (key, value) in raw {
-                if let str = value as? String {
-                    resolved[key] = str
-                } else if let dict = value as? [String: Any], let file = dict["file"] as? String {
-                    resolved[key] = file
-                }
-            }
+        if let resolved = try? NarrationAudioIndex.load() {
             audioIndex = resolved
             print("[NarrationService] Loaded audio index: \(resolved.count) entries")
         } else {
             audioIndex = [:]
             print("[NarrationService] audio_index.json not found in bundle")
         }
+        textAudioIndex = NarrationAudioIndex.loadTextMappings()
     }
 
     // MARK: - Public API
@@ -235,6 +270,7 @@ final class NarrationService {
         let allMappings = knownMappings
             .merging(companionMappings) { a, _ in a }
             .merging(praiseMappings) { a, _ in a }
+            .merging(textAudioIndex) { a, _ in a }
 
         if let id = allMappings[trimmed] {
             return playPreGenerated(id: id)

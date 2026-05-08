@@ -160,6 +160,34 @@ final class MathQuestKidsUITests: XCTestCase {
         attachScreenshot(app: app, name: "StickerBook")
     }
 
+    @MainActor
+    func testSpatialShapeHuntRendersSceneAndChoices() throws {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "-deterministic-session",
+            "-ui-test",
+            "-ui-test-start-unit",
+            "kSpatialShapeHunt"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["problemPrompt"].waitForExistence(timeout: 5))
+
+        // The composer intentionally inserts one quick review before the focus unit.
+        scrollToElement(app.buttons["Option 4: 3"], in: app, maxSwipes: 3)
+        XCTAssertTrue(app.buttons["Option 4: 3"].waitForExistence(timeout: 2))
+        app.buttons["Option 4: 3"].tap()
+        app.buttons["Submit Answer"].tap()
+
+        XCTAssertTrue(app.staticTexts["Find the circles in the star map."].waitForExistence(timeout: 5))
+        let cueText = app.staticTexts.containing(
+            NSPredicate(format: "label CONTAINS %@", "Look across the scene")
+        ).firstMatch
+        XCTAssertTrue(cueText.waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["Option 1: 3"].exists)
+        attachScreenshot(app: app, name: "SpatialShapeHunt")
+    }
+
     private func assertMinTapTarget(_ element: XCUIElement, label: String) {
         let frame = element.frame
         XCTAssertGreaterThanOrEqual(frame.width, 44.0, "\(label) width is below 44")
