@@ -472,13 +472,16 @@ final class LayoutMatrixUITests: XCTestCase {
         let element = target.element
         var findings: [String] = []
 
+        // Optional controls only apply to some screens; don't scroll around looking for them.
+        if !target.required && !element.exists {
+            return []
+        }
+
         if !isFullyOnScreen(element, in: app) {
             if scrolls, reveal(element, in: app) {
                 if target.aboveFold {
                     findings.append("[below-fold] \"\(target.name)\" is only reachable by scrolling")
                 }
-            } else if !element.exists && !target.required {
-                return []
             } else {
                 if target.required {
                     XCTFail("\(screen) [\(orientation.rawValue)]: \"\(target.name)\" can't be brought on screen")
@@ -582,7 +585,7 @@ final class LayoutMatrixUITests: XCTestCase {
                 return true
             }
         }
-        for _ in 0..<(maxSwipes * 2) {
+        for _ in 0..<(maxSwipes + 2) {
             app.swipeDown()
             if isFullyOnScreen(element, in: app) {
                 return true

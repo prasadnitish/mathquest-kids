@@ -17,6 +17,9 @@ DERIVED_DATA="${DERIVED_DATA:-$OUT_DIR/DerivedData}"
 PROJECT="$ROOT/MathQuestKids.xcodeproj"
 SCHEME="MathQuestKids"
 ONLY_TESTING="${ONLY_TESTING:-MathQuestKidsUITests/LayoutMatrixUITests}"
+# Release: launches fast enough for XCUITest's launch timeout on slow CI machines,
+# and matches what testers get from TestFlight.
+CONFIGURATION="${CONFIGURATION:-Release}"
 HERE="$ROOT/scripts/ux-matrix"
 
 mkdir -p "$OUT_DIR/results" "$OUT_DIR/devices"
@@ -33,6 +36,7 @@ set +e
 xcodebuild build-for-testing \
   -project "$PROJECT" \
   -scheme "$SCHEME" \
+  -configuration "$CONFIGURATION" \
   -destination "generic/platform=iOS Simulator" \
   -derivedDataPath "$DERIVED_DATA" \
   CODE_SIGNING_ALLOWED=NO \
@@ -45,11 +49,36 @@ if [[ $status -ne 0 ]]; then
   exit $status
 fi
 
+APP="$(find "$DERIVED_DATA/Build/Products/$CONFIGURATION-iphonesimulator" -maxdepth 1 -name '*.app' ! -name '*Runner.app' | head -1)"
+BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")"
+
+# Prints the useful part of a failed run: test errors plus any app crash report.
+show_failure_details() {
+  local log="$1"
+  echo "---- failure details ----"
+  grep -E "error:|Crash|crashed|Timed out|Failed to|failed \(" "$log" | head -60 || true
+  local crash
+  crash="$(ls -t "$HOME"/Library/Logs/DiagnosticReports/*Sprout* 2>/dev/null | head -1 || true)"
+  if [[ -n "$crash" ]]; then
+    echo "---- newest crash report: $crash ----"
+    head -c 4000 "$crash"
+    echo
+  fi
+  echo "-------------------------"
+}
+
 overall=0
 while IFS=$'\t' read -r slug udid model <&3; do
   echo "==> $model ($slug)"
   xcrun simctl shutdown "$udid" >/dev/null 2>&1 || true
   xcrun simctl erase "$udid"
+  # Boot fully (home screen ready) and pay the first-launch cost before XCUITest
+  # starts timing launches; "-ui-test" keeps the warm-up from saving a profile.
+  xcrun simctl bootstatus "$udid" -b >/dev/null
+  xcrun simctl install "$udid" "$APP"
+  xcrun simctl launch "$udid" "$BUNDLE_ID" -ui-test >/dev/null || true
+  sleep 20
+  xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1 || true
 
   result="$OUT_DIR/results/$slug.xcresult"
   rm -rf "$result"
@@ -57,6 +86,7 @@ while IFS=$'\t' read -r slug udid model <&3; do
   xcodebuild test-without-building \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
+    -configuration "$CONFIGURATION" \
     -destination "id=$udid" \
     -derivedDataPath "$DERIVED_DATA" \
     -only-testing:"$ONLY_TESTING" \
@@ -65,8 +95,11 @@ while IFS=$'\t' read -r slug udid model <&3; do
     > "$OUT_DIR/results/$slug.log" 2>&1
   status=$?
   set -e
-  grep -E "error:|failed|passed|Executed" "$OUT_DIR/results/$slug.log" | tail -40 || true
-  [[ $status -eq 0 ]] || overall=1
+  grep -E "Test Case .*(passed|failed)|Executed" "$OUT_DIR/results/$slug.log" | tail -12 || true
+  if [[ $status -ne 0 ]]; then
+    overall=1
+    show_failure_details "$OUT_DIR/results/$slug.log"
+  fi
 
   python3 "$HERE/make_report.py" collect \
     --xcresult "$result" --slug "$slug" --device "$model" --out "$OUT_DIR/devices/$slug"

@@ -45,7 +45,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Select newest Xcode 26
         run: |
@@ -70,7 +70,7 @@ jobs:
           grep -E "error:|✘|✔ Suite|Test run with|\*\* TEST|Executed" "$RUNNER_TEMP/unit-tests.log" | tail -120 || true
           exit $status
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: unit-tests-log
@@ -86,7 +86,7 @@ jobs:
       matrix:
         device: [iphone-small, iphone-standard, iphone-large, ipad-mini, ipad-standard, ipad-large]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Select newest Xcode 26
         run: |
@@ -99,7 +99,7 @@ jobs:
           OUT_DIR: ${{ runner.temp }}/ux
         run: scripts/ux-matrix/run.sh ${{ matrix.device }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ux-${{ matrix.device }}
@@ -118,9 +118,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: ux-*
           path: ${{ runner.temp }}/artifacts
@@ -133,7 +133,7 @@ jobs:
             --out "$RUNNER_TEMP/report" \
             --summary "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ux-matrix-report
           path: ${{ runner.temp }}/report
