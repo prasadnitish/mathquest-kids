@@ -1,0 +1,154 @@
+name: App checks
+
+# Unit tests plus the UX matrix: every screen and one quest per question format,
+# in portrait and landscape, on six iPhone/iPad simulators. See scripts/ux-matrix/.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the screenshot report to the ux-matrix-report branch
+        type: boolean
+        default: true
+  pull_request:
+    paths:
+      - MathQuestKids/**
+      - MathQuestKidsTests/**
+      - MathQuestKidsUITests/**
+      - MathQuestKids.xcodeproj/**
+      - MathQuestKids-Info.plist
+      - scripts/ux-matrix/**
+      - .github/workflows/app-checks.yml
+  push:
+    branches: [main, "claude/**"]
+    paths:
+      - MathQuestKids/**
+      - MathQuestKidsTests/**
+      - MathQuestKidsUITests/**
+      - MathQuestKids.xcodeproj/**
+      - MathQuestKids-Info.plist
+      - scripts/ux-matrix/**
+      - .github/workflows/app-checks.yml
+  schedule:
+    # Weekly, so layout regressions from new simulator/OS releases show up on their own.
+    - cron: "23 9 * * 1"
+
+concurrency:
+  group: app-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode 26
+        run: |
+          xcode="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      - name: Run unit tests
+        run: |
+          udid="$(python3 scripts/ux-matrix/pick_simulators.py iphone-standard | cut -f2)"
+          set +e
+          xcodebuild test \
+            -project MathQuestKids.xcodeproj \
+            -scheme MathQuestKids \
+            -destination "id=$udid" \
+            -only-testing:MathQuestKidsTests \
+            -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO \
+            > "$RUNNER_TEMP/unit-tests.log" 2>&1
+          status=$?
+          set -e
+          grep -E "error:|✘|✔ Suite|Test run with|\*\* TEST|Executed" "$RUNNER_TEMP/unit-tests.log" | tail -120 || true
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: unit-tests-log
+          path: ${{ runner.temp }}/unit-tests.log
+          retention-days: 14
+
+  layout:
+    name: Layout (${{ matrix.device }})
+    runs-on: macos-26
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [iphone-small, iphone-standard, iphone-large, ipad-mini, ipad-standard, ipad-large]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode 26
+        run: |
+          xcode="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      - name: Run layout matrix
+        env:
+          OUT_DIR: ${{ runner.temp }}/ux
+        run: scripts/ux-matrix/run.sh ${{ matrix.device }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ux-${{ matrix.device }}
+          path: |
+            ${{ runner.temp }}/ux/devices
+            ${{ runner.temp }}/ux/results/*.log
+            ${{ runner.temp }}/ux/build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+  report:
+    name: UX report
+    needs: layout
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ux-*
+          path: ${{ runner.temp }}/artifacts
+          merge-multiple: true
+
+      - name: Build report
+        run: |
+          python3 scripts/ux-matrix/make_report.py render \
+            --devices "$RUNNER_TEMP/artifacts/devices" \
+            --out "$RUNNER_TEMP/report" \
+            --summary "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ux-matrix-report
+          path: ${{ runner.temp }}/report
+          retention-days: 30
+
+      # A single force-pushed commit, so screenshots never pile up in history.
+      - name: Publish to ux-matrix-report branch
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/report"
+          git init -q -b ux-matrix-report
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "UX matrix report for ${GITHUB_SHA::7} on ${GITHUB_REF_NAME}"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ux-matrix-report
