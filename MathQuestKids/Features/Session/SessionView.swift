@@ -465,7 +465,7 @@ struct SessionView: View {
         case .subtractionStory:
             SubtractionStoryInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .teenPlaceValue:
-            TeenPlaceValueInteraction(item: item, selection: $selectedChoice)
+            TeenPlaceValueInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .twoDigitComparison:
             ComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .threeDigitComparison:
@@ -539,9 +539,12 @@ struct SessionView: View {
                     Text("The answer is")
                         .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
-                    Text(item.answer)
+                    Text(item.displayAnswer)
                         .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
+                }
+                if let picture = SpatialPictures.choice(item.answer, for: item) {
+                    picture
                 }
                 Spacer()
             }
@@ -723,8 +726,10 @@ struct SessionView: View {
     }
 
     private func recordDefer() {
-        activeHint = appState.requestHint()
-        showingHint = true
+        let latency = Date().timeIntervalSince(itemStartTime) * 1000
+        feedback = nil
+        selectedChoice = ""
+        appState.deferCurrentItem(latencyMs: latency)
     }
 
     private func submit(item: PracticeItem) {

@@ -85,10 +85,23 @@ struct SessionRuntime {
                 missedItems.append(MissedItem(
                     id: currentItem.id,
                     prompt: currentItem.prompt,
-                    correctAnswer: currentItem.answer
+                    correctAnswer: currentItem.displayAnswer
                 ))
             }
         }
+    }
+
+    /// "I don't know yet": counts the item as answered and missed, then goes straight to the
+    /// correction, so the child sees the answer and a worked explanation before moving on.
+    mutating func recordDeferral() {
+        guard !pendingAdvance, !pendingCorrection else { return }
+        answeredCount += 1
+        pendingCorrection = true
+        missedItems.append(MissedItem(
+            id: currentItem.id,
+            prompt: currentItem.prompt,
+            correctAnswer: currentItem.displayAnswer
+        ))
     }
 
     /// Called when the child taps "Got it" after seeing the correction.

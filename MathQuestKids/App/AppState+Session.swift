@@ -102,6 +102,41 @@ extension AppState {
         }
     }
 
+    /// "I don't know yet": saves the item as not known yet (so it comes back for review) and
+    /// shows the worked answer, which moves on to the next question when acknowledged.
+    func deferCurrentItem(latencyMs: Double) {
+        guard let profile, var runtime = currentSession,
+              !runtime.pendingAdvance, !runtime.pendingCorrection else { return }
+        cancelQuestionReadTask()
+        let item = runtime.currentItem
+
+        let attempt = AttemptInput(
+            childID: profile.id,
+            skillID: item.skillID,
+            unit: item.unit,
+            itemID: item.id,
+            sessionID: runtime.sessionID,
+            response: "",
+            correct: false,
+            latencyMs: latencyMs,
+            hintsUsed: Int16(runtime.hintsUsedForCurrentItem),
+            inputMode: .tap
+        )
+        do {
+            _ = try masteryEngine.recordAttempt(attempt)
+        } catch {
+            setStatus("We couldn't save that attempt.")
+        }
+
+        runtime.recordDeferral()
+        currentSession = runtime
+        playSFX(.hint)
+        narrationService.speakFeedback(
+            MascotVoice.phrase(for: .answerIdk, tone: activeCompanion.tone),
+            style: narrationStyle
+        )
+    }
+
     func acknowledgeCorrection() {
         guard profile != nil, var runtime = currentSession, runtime.pendingCorrection else { return }
         cancelQuestionReadTask()

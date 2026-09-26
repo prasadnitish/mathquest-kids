@@ -855,6 +855,37 @@ struct MathQuestKidsTests {
     }
 
     @Test
+    func dontKnowYetShowsTheAnswerThenMovesOn() {
+        let items = ["pv-1", "pv-2"].map { id in
+            PracticeItem(
+                id: "\(id)-0", templateID: id, unit: .teenPlaceValue, skillID: "teen_decompose",
+                format: .teenPlaceValue, prompt: "Build 13 with tens and ones.", spokenForm: nil,
+                answer: "1|3", supports: [], payload: ItemPayload(target: 13),
+                options: [], isReview: false
+            )
+        }
+        let blueprint = SessionBlueprint(
+            sessionID: UUID(), childID: UUID(), focusUnit: .teenPlaceValue,
+            items: items, startedAt: .now
+        )
+        var runtime = SessionRuntime(blueprint: blueprint)
+
+        runtime.recordDeferral()
+        #expect(runtime.pendingCorrection)
+        #expect(runtime.answeredCount == 1)
+        #expect(runtime.missedItems.map(\.correctAnswer) == ["13: 1 ten and 3 ones"])
+
+        // A second tap while the answer is showing changes nothing.
+        runtime.recordDeferral()
+        #expect(runtime.answeredCount == 1)
+        #expect(runtime.missedItems.count == 1)
+
+        runtime.acknowledgeCorrection()
+        #expect(runtime.index == 1)
+        #expect(!runtime.pendingCorrection)
+    }
+
+    @Test
     func sessionRuntimeCorrectAnswerIncrementsAnsweredCount() {
         let items = [
             PracticeItem(

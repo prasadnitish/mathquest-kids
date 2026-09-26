@@ -26,11 +26,17 @@ struct AnswerButton: View {
     let state: AnswerButtonState
     let theme: VisualTheme
     let action: () -> Void
+    /// Shown between the number and the title, for choices that are pictures.
+    var picture: AnyView? = nil
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: DesignTokens.Spacing.sp4) {
                 numberPill
+                if let picture {
+                    picture
+                        .padding(.vertical, 6)
+                }
                 Text(title)
                     .kidText(.answer)
                     .foregroundStyle(foreground)

@@ -532,6 +532,16 @@ struct PracticeItem: Identifiable, Equatable {
     var narrationText: String { spokenForm ?? prompt }
     var audioLookupID: String { audioID ?? templateID }
 
+    /// The answer as a child reads it. Place-value answers are stored as "tens|ones".
+    var displayAnswer: String {
+        guard format == .teenPlaceValue else { return answer }
+        let parts = answer.split(separator: "|").compactMap { Int($0) }
+        guard parts.count == 2 else { return answer }
+        let tens = parts[0]
+        let ones = parts[1]
+        return "\(tens * 10 + ones): \(tens) \(tens == 1 ? "ten" : "tens") and \(ones) \(ones == 1 ? "one" : "ones")"
+    }
+
     init(
         id: String,
         templateID: String,

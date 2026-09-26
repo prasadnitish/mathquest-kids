@@ -225,7 +225,10 @@ struct NumberBondInteraction: View {
 struct TeenPlaceValueInteraction: View {
     let item: PracticeItem
     @Binding var selection: String
+    let theme: VisualTheme
+    var onDefer: (() -> Void)? = nil
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var tens = 0
     @State private var ones = 0
 
@@ -241,94 +244,54 @@ struct TeenPlaceValueInteraction: View {
         item.payload.ones ?? targetNumber % 10
     }
 
+    /// Big enough for small fingers; two per column still fit an iPhone SE.
+    private var stepSize: CGFloat { sizeClass == .regular ? 72 : 56 }
+
+    /// Until the first tap on a question, the + buttons bounce to show where to start.
+    private var inviting: Bool { tens == 0 && ones == 0 }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Build the number with tens and ones")
                 .kidText(.body)
 
-            Text("Tap + or - to adjust the blocks. Big bars count as tens and small cubes count as ones.")
+            Text("Tap + to add blocks and - to take one away. Big bars count as tens and small cubes count as ones.")
                 .kidText(.body)
                 .foregroundStyle(AppTheme.textSecondary)
 
-            ZStack(alignment: .center) {
-                HStack(spacing: 12) {
-                    // Tens column: bucket + stepper
-                    VStack(spacing: 10) {
-                        PlaceValueBucket(title: "Tens", count: tens, targetCount: targetTens, kind: .ten)
+            HStack(alignment: .top, spacing: 12) {
+                placeValueColumn(.ten)
+                placeValueColumn(.one)
+            }
 
-                        HStack(spacing: 0) {
-                            Button { adjust(.ten, delta: -1) } label: {
-                                Image(systemName: "minus")
-                                    .font(.system(size: 16, weight: .bold))
-                                    .frame(width: 44, height: 44)
-                            }
-                            .disabled(tens == 0)
-
-                            Text("Tens")
-                                .kidText(.body)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-
-                            Button { adjust(.ten, delta: 1) } label: {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 16, weight: .bold))
-                                    .frame(width: 44, height: 44)
-                            }
-                        }
-                        .foregroundStyle(Color.green.opacity(0.9))
-                        .background(Color.green.opacity(0.10), in: Capsule())
-                        .overlay(Capsule().stroke(Color.green.opacity(0.25), lineWidth: 1))
-                    }
-
-                    // Ones column: bucket + stepper
-                    VStack(spacing: 10) {
-                        PlaceValueBucket(title: "Ones", count: ones, targetCount: targetOnes, kind: .one)
-
-                        HStack(spacing: 0) {
-                            Button { adjust(.one, delta: -1) } label: {
-                                Image(systemName: "minus")
-                                    .font(.system(size: 16, weight: .bold))
-                                    .frame(width: 44, height: 44)
-                            }
-                            .disabled(ones == 0)
-
-                            Text("Ones")
-                                .kidText(.body)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-
-                            Button { adjust(.one, delta: 1) } label: {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 16, weight: .bold))
-                                    .frame(width: 44, height: 44)
-                            }
-                        }
-                        .foregroundStyle(Color.blue.opacity(0.9))
-                        .background(Color.blue.opacity(0.10), in: Capsule())
-                        .overlay(Capsule().stroke(Color.blue.opacity(0.25), lineWidth: 1))
-                    }
+            HStack {
+                Spacer()
+                Button {
+                    tens = 0
+                    ones = 0
+                    refreshSelection()
+                } label: {
+                    Label("Start over", systemImage: "arrow.counterclockwise")
+                        .kidText(.body)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 44)
+                        .background(AppTheme.card, in: Capsule())
+                        .overlay(Capsule().stroke(AppTheme.textSecondary.opacity(0.25), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-
-                // Reset button floats centered in the gap between columns
-                VStack {
-                    Spacer()
-                    Button {
-                        tens = 0
-                        ones = 0
-                        refreshSelection()
-                    } label: {
-                        Image(systemName: "arrow.counterclockwise")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .frame(width: 40, height: 40)
-                            .background(AppTheme.card, in: Circle())
-                            .overlay(Circle().stroke(AppTheme.textSecondary.opacity(0.25), lineWidth: 1))
-                            .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
-                    }
-                    .buttonStyle(.plain)
-                }
+                .disabled(inviting)
+                .opacity(inviting ? 0.5 : 1)
+                Spacer()
             }
+
+            AnswerButton(
+                index: 0,
+                title: "I don't know yet",
+                state: .idk,
+                theme: theme,
+                action: { onDefer?() }
+            )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -345,8 +308,44 @@ struct TeenPlaceValueInteraction: View {
         }
     }
 
+    private func placeValueColumn(_ kind: TokenKind) -> some View {
+        let isTen = kind == .ten
+        let color: Color = isTen ? .green : .blue
+        let count = isTen ? tens : ones
+        let name = isTen ? "Ten" : "One"
+        return VStack(spacing: 12) {
+            PlaceValueBucket(title: isTen ? "Tens" : "Ones", count: count, targetCount: isTen ? targetTens : targetOnes, kind: kind)
+
+            HStack(spacing: 12) {
+                stepButton(symbol: "minus", color: color, filled: false) { adjust(kind, delta: -1) }
+                    .disabled(count == 0)
+                    .opacity(count == 0 ? 0.4 : 1)
+                    .accessibilityLabel("-1 \(name)")
+                stepButton(symbol: "plus", color: color, filled: true) { adjust(kind, delta: 1) }
+                    .modifier(InviteBounce(active: inviting))
+                    .accessibilityLabel("+1 \(name)")
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    private func stepButton(symbol: String, color: Color, filled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: stepSize * 0.42, weight: .heavy))
+                .foregroundStyle(filled ? Color.white : color)
+                .frame(width: stepSize, height: stepSize)
+                .background(filled ? color.opacity(0.9) : color.opacity(0.12), in: Circle())
+                .overlay(Circle().stroke(color.opacity(filled ? 0 : 0.55), lineWidth: 2.5))
+                .shadow(color: color.opacity(filled ? 0.35 : 0), radius: 6, y: 3)
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+    }
+
     private func refreshSelection() {
-        selection = "\(tens)|\(ones)"
+        // Nothing built yet isn't an answer, so Submit stays off until the first tap.
+        selection = inviting ? "" : "\(tens)|\(ones)"
     }
 
     private func adjust(_ kind: TokenKind, delta: Int) {
@@ -357,6 +356,24 @@ struct TeenPlaceValueInteraction: View {
             ones = max(0, ones + delta)
         }
         refreshSelection()
+    }
+}
+
+/// A gentle repeating bounce that says "tap here". Off when Reduce Motion is on.
+private struct InviteBounce: ViewModifier {
+    let active: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        if active && !reduceMotion {
+            content.phaseAnimator([false, true]) { view, raised in
+                view.scaleEffect(raised ? 1.14 : 1)
+            } animation: { _ in
+                .easeInOut(duration: 0.6)
+            }
+        } else {
+            content
+        }
     }
 }
 
@@ -1367,7 +1384,8 @@ struct SpatialChoiceInteraction: View {
                         title: option,
                         state: selection == option ? .selected : .default,
                         theme: theme,
-                        action: { selection = option }
+                        action: { selection = option },
+                        picture: SpatialPictures.choice(option, for: item)
                     )
                 }
                 AnswerButton(
@@ -1386,11 +1404,15 @@ struct SpatialChoiceInteraction: View {
 
     private var spatialCue: some View {
         VStack(spacing: 12) {
-            Image(systemName: iconName)
-                .font(.system(size: 42, weight: .bold))
-                .foregroundStyle(theme.primary)
-                .frame(width: 82, height: 82)
-                .background(theme.primary.opacity(0.12), in: Circle())
+            if let figure = SpatialPictures.figure(for: item, theme: theme) {
+                figure
+            } else {
+                Image(systemName: iconName)
+                    .font(.system(size: 42, weight: .bold))
+                    .foregroundStyle(theme.primary)
+                    .frame(width: 82, height: 82)
+                    .background(theme.primary.opacity(0.12), in: Circle())
+            }
 
             if item.format == .shapeHunt, let scene = item.payload.scene, let gridSize = item.payload.gridSize {
                 ShapeHuntSceneView(
@@ -1460,8 +1482,9 @@ struct SpatialChoiceInteraction: View {
             guard let shape = item.payload.shape, let degrees = item.payload.rotationDegrees else { return nil }
             return "Turn the \(shape) \(degrees) degrees."
         case .buildShape:
-            guard let targetShape = item.payload.targetShape, let pieces = item.payload.correctPieces else { return nil }
-            return "Build a \(targetShape) with \(pieces)."
+            // Naming the pieces here gave the answer away.
+            guard let targetShape = item.payload.targetShape else { return nil }
+            return "Which pieces fit together to make a \(targetShape)?"
         case .symmetryMirror:
             guard let object = item.payload.object, let axis = item.payload.axis else { return nil }
             return "Mirror the \(object) across a \(axis) line."
