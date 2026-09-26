@@ -96,7 +96,7 @@ struct ProfileSetupView: View {
                         .scaledToFill()
                     Color.white.opacity(0.82)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: 26))
             }
             .overlay(

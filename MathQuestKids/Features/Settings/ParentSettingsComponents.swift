@@ -398,7 +398,7 @@ struct CompanionCard: View {
                         AppTheme.card
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .overlay(

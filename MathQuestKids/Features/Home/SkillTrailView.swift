@@ -141,7 +141,7 @@ struct SkillTrailView: View {
                                 endPoint: .bottom
                             )
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                         .opacity(trailArtworkOpacity)
                     }

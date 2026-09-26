@@ -652,7 +652,7 @@ struct SessionView: View {
                             endPoint: .bottomTrailing
                         )
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                     .clipShape(shape)
                 }
                 .overlay {
@@ -683,7 +683,7 @@ struct SessionView: View {
                             endPoint: .bottomTrailing
                         )
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                     .clipShape(shape)
                 }
                 .overlay {

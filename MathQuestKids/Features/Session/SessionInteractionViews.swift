@@ -266,7 +266,8 @@ struct TeenPlaceValueInteraction: View {
 
                             Text("Tens")
                                 .kidText(.body)
-                                .frame(minWidth: 44)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
 
                             Button { adjust(.ten, delta: 1) } label: {
                                 Image(systemName: "plus")
@@ -293,7 +294,8 @@ struct TeenPlaceValueInteraction: View {
 
                             Text("Ones")
                                 .kidText(.body)
-                                .frame(minWidth: 44)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
 
                             Button { adjust(.one, delta: 1) } label: {
                                 Image(systemName: "plus")
@@ -372,6 +374,8 @@ struct PlaceValueBucket: View {
                 Spacer()
                 Text("Target \(targetCount)")
                     .kidText(.caption)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
                     .foregroundStyle(AppTheme.textSecondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)
@@ -796,9 +800,10 @@ struct GroupComparisonInteraction: View {
     var onDefer: (() -> Void)? = nil
     var body: some View {
         VStack(spacing: 16) {
-            HStack(spacing: 24) {
-                dotGroup(count: item.payload.left ?? 0, label: "Group A", color: AppTheme.accent)
-                dotGroup(count: item.payload.right ?? 0, label: "Group B", color: AppTheme.primary)
+            // Two five-wide dot grids don't fit side by side on an iPhone in portrait.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 24) { groupA; groupB }
+                VStack(spacing: 12) { groupA; groupB }
             }
             VStack(spacing: 8) {
                 ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
@@ -823,6 +828,8 @@ struct GroupComparisonInteraction: View {
         .frame(maxWidth: .infinity)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
     }
+    private var groupA: some View { dotGroup(count: item.payload.left ?? 0, label: "Group A", color: AppTheme.accent) }
+    private var groupB: some View { dotGroup(count: item.payload.right ?? 0, label: "Group B", color: AppTheme.primary) }
     private func dotGroup(count: Int, label: String, color: Color) -> some View {
         VStack(spacing: 6) {
             Text(label).kidText(.caption).foregroundStyle(AppTheme.textSecondary)
@@ -888,19 +895,10 @@ struct MeasureLengthInteraction: View {
     let theme: VisualTheme
     var onDefer: (() -> Void)? = nil
     private var objectLength: Int { Int(item.payload.target ?? 5) }
+    private let rulerMarks = 12
     var body: some View {
         VStack(spacing: 16) {
-            RoundedRectangle(cornerRadius: 6).fill(AppTheme.accent.opacity(0.6)).frame(width: CGFloat(objectLength) * 32, height: 24)
-            HStack(spacing: 0) {
-                ForEach(0...12, id: \.self) { tick in
-                    VStack(spacing: 2) {
-                        Rectangle().fill(AppTheme.textPrimary.opacity(0.6)).frame(width: 1, height: tick % 5 == 0 ? 18 : 10)
-                        Text("\(tick)").kidText(.caption).foregroundStyle(AppTheme.textSecondary)
-                    }.frame(width: 32)
-                }
-            }
-            .padding(.horizontal, 8).padding(.vertical, 6)
-            .background(Color.yellow.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
+            ruler
             VStack(spacing: 8) {
                 ForEach(Array(item.options.enumerated()), id: \.offset) { index, opt in
                     AnswerButton(
@@ -923,6 +921,36 @@ struct MeasureLengthInteraction: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    // Each mark gets an equal share of the width, up to 32 pt, so the ruler fits small
+    // iPhones instead of pushing the quest past both sides of the screen. The object
+    // starts at 0, the way a child lines something up to measure it.
+    private var ruler: some View {
+        VStack(spacing: 6) {
+            Color.clear.frame(width: 0, height: 24)
+            HStack(spacing: 0) {
+                ForEach(0...rulerMarks, id: \.self) { tick in
+                    VStack(spacing: 2) {
+                        Rectangle().fill(AppTheme.textPrimary.opacity(0.6)).frame(width: 1, height: tick % 5 == 0 ? 18 : 10)
+                        Text("\(tick)").kidText(.caption).foregroundStyle(AppTheme.textSecondary)
+                            .lineLimit(1).minimumScaleFactor(0.6)
+                    }
+                    .frame(idealWidth: 32, maxWidth: 32)
+                }
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            GeometryReader { proxy in
+                let unit = proxy.size.width / CGFloat(rulerMarks + 1)
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(AppTheme.accent.opacity(0.6))
+                    .frame(width: CGFloat(min(objectLength, rulerMarks)) * unit, height: 24)
+                    .offset(x: unit / 2)
+            }
+        }
+        .padding(.horizontal, 8).padding(.vertical, 6)
+        .background(Color.yellow.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
     }
 }
 
@@ -1314,7 +1342,7 @@ struct RatioTableInteraction: View {
                         Text(cells[i]).kidText(.body)
                     }
                 }
-                .frame(width: 54, height: 36)
+                .frame(idealWidth: 54, maxWidth: 54, minHeight: 36, maxHeight: 36)
                     .background(header ? AppTheme.primary.opacity(0.1) : (cells[i] == "?" ? AppTheme.accent.opacity(0.2) : Color.clear))
                     .overlay(Rectangle().stroke(AppTheme.primary.opacity(0.12), lineWidth: 0.5))
             }
