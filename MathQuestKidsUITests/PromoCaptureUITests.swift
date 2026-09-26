@@ -495,14 +495,14 @@ final class PromoCaptureUITests: XCTestCase {
     }
 
     /// Scrolls the content up by `distance` points (down for a negative distance) with one
-    /// slow drag that stops without a fling. The drag starts in the left margin, clear of
-    /// any buttons.
+    /// slow drag that stops without a fling. The drag starts mid-screen: the page margin is
+    /// outside the scroll view, and a drag that starts on a button still scrolls.
     @MainActor
     private func scroll(_ app: XCUIApplication, by distance: CGFloat) {
         let screen = app.frame
         let travel = max(-screen.height * 0.45, min(screen.height * 0.45, distance))
         let startY: CGFloat = travel > 0 ? 0.72 : 0.28
-        let start = app.coordinate(withNormalizedOffset: CGVector(dx: 12 / max(screen.width, 1), dy: startY))
+        let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: startY))
         let end = start.withOffset(CGVector(dx: 0, dy: -travel))
         start.press(forDuration: 0.08, thenDragTo: end, withVelocity: XCUIGestureVelocity(rawValue: 700), thenHoldForDuration: 0.25)
     }

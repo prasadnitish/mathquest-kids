@@ -26,6 +26,8 @@ on:
       - MathQuestKids-Info.plist
       - scripts/ux-matrix/**
       - .github/workflows/app-checks.yml
+      # Filming for the promo videos (promo-capture.yml) doesn't change any layout.
+      - "!MathQuestKidsUITests/PromoCaptureUITests.swift"
   push:
     branches: [main, "claude/**"]
     paths:
@@ -36,6 +38,7 @@ on:
       - MathQuestKids-Info.plist
       - scripts/ux-matrix/**
       - .github/workflows/app-checks.yml
+      - "!MathQuestKidsUITests/PromoCaptureUITests.swift"
   schedule:
     # Weekly, so layout regressions from new simulator/OS releases show up on their own.
     - cron: "23 9 * * 1"

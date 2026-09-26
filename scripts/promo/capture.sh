@@ -99,18 +99,17 @@ film_scene() {
 
   xcrun simctl io "$udid" recordVideo --codec=h264 --force "$raw" > "$rec_log" 2>&1 &
   local recorder=$!
-  local started=""
   for _ in $(seq 1 100); do
-    if grep -q "Recording started" "$rec_log" 2>/dev/null; then
-      started="$(now)"
-      break
-    fi
+    grep -q "Recording started" "$rec_log" 2>/dev/null && break
     sleep 0.1
   done
-  if [[ -z "$started" ]]; then
-    echo "   $scene: recorder didn't report a start; timing from now"
-    started="$(now)"
-  fi
+  # The recorder only writes a frame when the screen changes, and its video starts at the
+  # first one. Tick the status bar clock so that frame lands now, at a known time.
+  local started
+  started="$(now)"
+  xcrun simctl status_bar "$udid" override --time "9:42" >/dev/null 2>&1 || true
+  sleep 0.4
+  xcrun simctl status_bar "$udid" override --time "9:41" >/dev/null 2>&1 || true
 
   set +e
   xcodebuild test-without-building \
@@ -129,7 +128,14 @@ film_scene() {
   kill -INT "$recorder" 2>/dev/null || true
   wait "$recorder" 2>/dev/null || true
 
-  write_scene_log "$started" "$test_log" "$dir/$scene.log"
+  # If the recording's first frame still carries a start time, the transcode below drops it;
+  # count it so the log's times match the finished video.
+  local lead="0"
+  if [[ -s "$raw" ]] && command -v ffprobe >/dev/null; then
+    lead="$(ffprobe -v error -select_streams v:0 -show_entries stream=start_time -of csv=p=0 "$raw" 2>/dev/null | head -1)"
+    [[ "$lead" =~ ^[0-9.]+$ ]] || lead="0"
+  fi
+  write_scene_log "$(python3 -c "print($started + $lead)")" "$test_log" "$dir/$scene.log"
   echo "   $scene: test exit $status, $(grep -c '^MARK' "$dir/$scene.log" || true) marks, $(grep -c '^TAP' "$dir/$scene.log" || true) taps"
   # What the scene saw and any control it couldn't find, so a skipped moment explains itself.
   grep -E "PROMO-DEBUG|PROMO-MISSING" "$test_log" | head -16 | sed 's/^/     /' || true
@@ -137,9 +143,13 @@ film_scene() {
     grep -E "error:|failed" "$test_log" | head -20 || true
   fi
 
+  # iPads are filmed in landscape, but the recording keeps the screen's portrait shape with
+  # the picture on its side; turn it upright.
+  local turn=""
+  [[ "$dir" == *ipad* ]] && turn="transpose=2,"
   if command -v ffmpeg >/dev/null && [[ -s "$raw" ]]; then
     ffmpeg -loglevel error -y -i "$raw" \
-      -vf "fps=30,scale='if(gt(iw,ih),1920,-2)':'if(gt(iw,ih),-2,1920)':flags=lanczos,format=yuv420p" \
+      -vf "${turn}fps=30,scale='if(gt(iw,ih),1920,-2)':'if(gt(iw,ih),-2,1920)':flags=lanczos,format=yuv420p" \
       -c:v libx264 -preset slow -crf 19 -movflags +faststart -an "$dir/$scene.mp4"
     rm -f "$raw"
     while read -r kind name seconds; do

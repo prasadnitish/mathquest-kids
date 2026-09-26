@@ -46,12 +46,18 @@ jobs:
       - name: Install ffmpeg
         run: command -v ffmpeg || brew install ffmpeg
 
+      # A manual run's input, or a "Promo-Scenes:" line in the pushed commit, can film just
+      # some scenes, e.g. "Promo-Scenes: testSceneColumnAddition testSceneColumnSubtraction".
       - name: Film scenes
         env:
           OUT_DIR: ${{ runner.temp }}/promo
           SCENES: ${{ inputs.scenes }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          if [[ -z "$SCENES" ]]; then unset SCENES; fi
+          if [[ -z "$SCENES" ]]; then
+            SCENES="$(printf '%s\n' "$COMMIT_MESSAGE" | sed -n 's/^Promo-Scenes:[[:space:]]*//p' | head -1)"
+          fi
+          if [[ -z "$SCENES" ]]; then unset SCENES; else export SCENES; echo "Filming: $SCENES"; fi
           scripts/promo/capture.sh ${{ matrix.device }}
 
       - uses: actions/upload-artifact@v7
