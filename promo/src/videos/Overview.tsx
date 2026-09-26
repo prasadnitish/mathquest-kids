@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {BAR, brand, duckedVolume, fonts, themeOrder, themes, ThemeKey} from '../brand';
 import {Backdrop, Caption, Mascot, PopText, StatTile, TileRow, TileWipe, Wordmark} from '../components/Brand';
-import {Clip, Device} from '../components/Footage';
+import {Clip, Device, RampedClip, Zoom, rampTimeline, stretch} from '../components/Footage';
+import {moments} from '../moments';
 import {SlipScene, slipVoiceFrame} from '../components/SlipScene';
 
 // 46 seconds: 23 bars of the 120 BPM track. Sections start on bar lines.
@@ -131,7 +132,7 @@ const ThemeCut: React.FC<{theme: ThemeKey}> = ({theme}) => {
       </AbsoluteFill>
       <div style={{position: 'absolute', left: 110, top: 190, transform: `translateX(${(1 - enter) * -80}px)`, opacity: enter}}>
         <Device kind={IPAD} height={760} tilt={6}>
-          <Clip device={IPAD} scene="testSceneThemes" mark={`theme-${theme}`} offset={0.2} />
+          <RampedClip device={IPAD} scene="testSceneThemes" segments={stretch(moments[IPAD].themes?.[theme] ?? 0, 1.4).segments} />
         </Device>
       </div>
       <div style={{position: 'absolute', right: 90, top: 230, width: 560, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26}}>
@@ -161,15 +162,45 @@ const ColumnWork: React.FC = () => (
 );
 
 const Montage: React.FC = () => {
-  const cuts: Array<{theme: ThemeKey; scene: string; mark: string; offset: number; rate: number; text: string; emoji: string}> = [
-    {theme: 'turboCars', scene: 'testSceneTeenPlaceValue', mark: 'teen-start', offset: 1.6, rate: 1.2, text: 'Build numbers from tens and ones', emoji: '🧱'},
-    {theme: 'starsSpace', scene: 'testSceneSpatial', mark: 'spatial-k2SpatialRotateMatch', offset: 0.3, rate: 1, text: 'Turn, flip and fit shapes', emoji: '🔷'},
-    {theme: 'candyland', scene: 'testSceneColumnAddition', mark: 'celebration-1', offset: -0.3, rate: 1, text: 'Stickers to collect', emoji: '⭐'},
+  const ipad = moments[IPAD];
+  const teen = ipad.teen;
+  const cuts: Array<{theme: ThemeKey; scene: string; timeline: ReturnType<typeof rampTimeline>; ripples?: Array<[number, number, number]>; text: string; emoji: string}> = [
+    {
+      theme: 'turboCars',
+      scene: 'testSceneTeenPlaceValue',
+      timeline: teen
+        ? rampTimeline(
+            [
+              {at: teen.bounce, before: 0.2, after: 0.6},
+              {at: teen.ten, before: 0.3, after: 0.5},
+              {at: teen.one, before: 0.3, after: 0.8},
+            ],
+            {rate: 1.35, fastRate: 6, holdTo: BAR},
+          )
+        : stretch(0, 2),
+      ripples: teen?.taps,
+      text: 'Build numbers from tens and ones',
+      emoji: '🧱',
+    },
+    {
+      theme: 'starsSpace',
+      scene: 'testSceneSpatial',
+      timeline: stretch(ipad.spatial ?? 0, 2, {holdTo: BAR}),
+      text: 'Turn, flip and fit shapes',
+      emoji: '🔷',
+    },
+    {
+      theme: 'candyland',
+      scene: 'testSceneColumnAddition',
+      timeline: stretch(ipad.summary ?? 0, 2, {holdTo: BAR}),
+      text: 'Rewards to collect',
+      emoji: '⭐',
+    },
   ];
   return (
     <AbsoluteFill>
       {cuts.map((cut, i) => (
-        <Sequence key={cut.mark} from={i * BAR} durationInFrames={BAR}>
+        <Sequence key={cut.scene} from={i * BAR} durationInFrames={BAR}>
           <MontageCut {...cut} />
           <Audio src={staticFile('audio/sfx-pop.wav')} volume={0.35} />
         </Sequence>
@@ -178,15 +209,14 @@ const Montage: React.FC = () => {
   );
 };
 
-const MontageCut: React.FC<{theme: ThemeKey; scene: string; mark: string; offset: number; rate: number; text: string; emoji: string}> = ({
-  theme,
-  scene,
-  mark,
-  offset,
-  rate,
-  text,
-  emoji,
-}) => {
+const MontageCut: React.FC<{
+  theme: ThemeKey;
+  scene: string;
+  timeline: ReturnType<typeof rampTimeline>;
+  ripples?: Array<[number, number, number]>;
+  text: string;
+  emoji: string;
+}> = ({theme, scene, timeline, ripples, text, emoji}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const info = themes[theme];
@@ -198,7 +228,7 @@ const MontageCut: React.FC<{theme: ThemeKey; scene: string; mark: string; offset
       </AbsoluteFill>
       <div style={{position: 'absolute', left: 300, top: 70, transform: `scale(${interpolate(enter, [0, 1], [0.85, 1])})`, opacity: enter}}>
         <Device kind={IPAD} height={820}>
-          <Clip device={IPAD} scene={scene} mark={mark} offset={offset} rate={rate} />
+          <RampedClip device={IPAD} scene={scene} segments={timeline.segments} ripples={ripples} />
         </Device>
       </div>
       <AbsoluteFill style={{justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 60}}>
@@ -213,33 +243,55 @@ const MontageCut: React.FC<{theme: ThemeKey; scene: string; mark: string; offset
 
 const Parents: React.FC = () => {
   const gateFrames = BAR;
+  const p = moments[IPAD].parent;
+  const gate = p
+    ? rampTimeline(
+        [
+          {at: p.pinSheet, before: 0.3, after: 0.9},
+          {at: p.pinDone, before: 1.2, after: 0.3},
+        ],
+        {rate: 1.2, fastRate: 14, holdTo: gateFrames},
+      )
+    : stretch(0, 2);
+  const dashFrames = 4 * BAR;
+  const dash = p
+    ? rampTimeline(
+        [
+          {at: p.settings, before: 0.2, after: 0.8},
+          {at: p.dashboard, before: 0.3, after: p.footer - p.dashboard + 1.5},
+        ],
+        {rate: 1.7, fastRate: 14, holdTo: dashFrames},
+      )
+    : stretch(0, 8);
+  const at = (t: number | undefined) => (t === undefined ? 0 : gateFrames + dash.frameOf(t));
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{background: 'linear-gradient(135deg, #1d2135, #33294f)'}} />
-      <Sequence from={0} durationInFrames={gateFrames}>
-        <ParentsDevice scene="testSceneParentDashboard" mark="parent-gate" offset={0.2} rate={1.5} />
-      </Sequence>
-      <Sequence from={gateFrames}>
-        <ParentsDevice scene="testSceneParentDashboard" mark="dashboard" offset={-0.3} rate={1.25} />
-      </Sequence>
+      <div style={{position: 'absolute', left: 70, top: 120}}>
+        <Device kind={IPAD} height={840}>
+          <Sequence from={0} durationInFrames={gateFrames}>
+            <Zoom focus={[{from: -20, to: gateFrames + 20, scale: 1.35, x: 0.5, y: 0.45}]}>
+              <RampedClip device={IPAD} scene="testSceneParentDashboard" segments={gate.segments} />
+            </Zoom>
+          </Sequence>
+          <Sequence from={gateFrames}>
+            {/* The dashboard is a sheet in the middle of the iPad screen; zoom in on it. */}
+            <Zoom focus={[{from: -20, to: dashFrames + 20, scale: 1.7, x: 0.5, y: 0.55}]}>
+              <RampedClip device={IPAD} scene="testSceneParentDashboard" segments={dash.segments} />
+            </Zoom>
+          </Sequence>
+        </Device>
+      </div>
       <div style={{position: 'absolute', left: 1290, top: 120, width: 580, display: 'flex', flexDirection: 'column', gap: 28, alignItems: 'flex-start'}}>
         <PopText text="And for grown-ups" size={68} align="left" delay={2} />
         <Caption text="PIN-protected parent zone" size={36} delay={12} emoji="🔒" />
-        <Caption text="Skills by math domain" size={36} delay={gateFrames + 20} emoji="📊" />
-        <Caption text="Streaks and recent quests" size={36} delay={gateFrames + 70} emoji="🔥" />
-        <Caption text="Where they need help next" size={36} delay={gateFrames + 120} emoji="🎯" />
+        <Caption text="Streaks and where to help" size={36} delay={at(p?.dashboard) + 10} emoji="🔥" />
+        <Caption text="Skills by math domain" size={36} delay={at(p?.skills)} emoji="📊" />
+        <Caption text="Every quest, logged" size={36} delay={at(p?.sessions)} emoji="🗓️" />
       </div>
     </AbsoluteFill>
   );
 };
-
-const ParentsDevice: React.FC<{scene: string; mark: string; offset: number; rate: number}> = (props) => (
-  <div style={{position: 'absolute', left: 70, top: 120}}>
-    <Device kind={IPAD} height={840}>
-      <Clip device={IPAD} {...props} />
-    </Device>
-  </div>
-);
 
 const Stats: React.FC = () => (
   <AbsoluteFill>

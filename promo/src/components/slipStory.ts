@@ -1,12 +1,16 @@
 import {DeviceKind, Moment, rampTimeline, sceneFootage} from './Footage';
+import {moments as anchors, SlipMoments} from '../moments';
 
-/**
- * The forgotten-carry story from the column addition scene, as a speed-ramped timeline that
- * fits `targetFrames`: ones digit, the tens written without the carry, submit, the red
- * coaching note (held so it can be read), the carry marked, the tens fixed, submit, success.
- * Frame numbers for captions and sounds come from `frameOf` on the logged moments.
- */
-export function slipStory(device: DeviceKind, targetFrames: number, fps = 30) {
+// A tap shows on screen about this long after the step log records it (on iPhone, where the
+// log and video stay in step).
+const VISUAL_LAG = 0.7;
+
+/** The slip's moments as seen in the video: anchored by hand, or from the step log. */
+function slipMoments(device: DeviceKind): SlipMoments | undefined {
+  const anchored = anchors[device]?.slip;
+  if (anchored) {
+    return anchored;
+  }
   const footage = sceneFootage(device, 'testSceneColumnAddition');
   const marks = footage?.marks ?? {};
   const start = marks['slip-start'];
@@ -15,40 +19,65 @@ export function slipStory(device: DeviceKind, targetFrames: number, fps = 30) {
   if (!footage || start === undefined || coaching === undefined || fixed === undefined) {
     return undefined;
   }
-  const tapTimes = footage.taps.map(([, , t]) => t);
-  const between = (a: number, b: number) => tapTimes.filter((t) => t > a && t < b);
-  const [ones, tens, wrongSubmit] = between(start, coaching);
-  const [carry, tensBox, fixDigit] = between(coaching, fixed);
-  const submit = tapTimes.find((t) => t > fixed);
-  if ([ones, tens, wrongSubmit, carry, tensBox, fixDigit, submit].some((t) => t === undefined)) {
+  const taps = footage.taps;
+  const between = (a: number, b: number) => taps.filter(([, , t]) => t > a && t < b);
+  const first = between(start, coaching).slice(0, 3);
+  const second = between(coaching, fixed).slice(0, 3);
+  const submit = taps.find(([, , t]) => t > fixed);
+  if (first.length < 3 || second.length < 3 || !submit) {
     return undefined;
   }
-  const moments: Moment[] = [
-    // A tap shows on screen about 0.7 s after it's logged, so windows reach past that.
-    {at: ones!, before: 0.7, after: 1.3},
-    {at: tens!, before: 0.2, after: 1.3},
-    {at: wrongSubmit!, before: 0.2, after: 1.0},
-    {at: coaching, before: 0.1, after: 2.8},
-    {at: carry!, before: 0.2, after: 1.2},
-    {at: tensBox!, before: 0.2, after: 1.0},
-    {at: fixDigit!, before: 0.2, after: 1.2},
-    // Just the tap: the app moves on to the next question soon after, so the edit holds here.
-    {at: submit!, before: 0.2, after: 1.0},
+  const seen = [...first, ...second, submit].map(([, , t]) => t + VISUAL_LAG);
+  return {
+    ones: seen[0],
+    tens: seen[1],
+    wrongSubmit: seen[2],
+    coaching,
+    carry: seen[3],
+    tensBox: seen[4],
+    fixDigit: seen[5],
+    submit: seen[6],
+    positions: [...first, ...second, submit].map(([x, y]) => [x, y] as [number, number]),
+  };
+}
+
+/**
+ * The forgotten-carry story from the column addition scene, as a speed-ramped timeline that
+ * fits `targetFrames`: ones digit, the tens written without the carry, submit, the red
+ * coaching note (held so it can be read), the carry marked, the tens fixed, submit, success.
+ * Times are when each thing shows on screen; `frameOf` places captions and sounds.
+ */
+export function slipStory(device: DeviceKind, targetFrames: number, fps = 30) {
+  const m = slipMoments(device);
+  if (!m) {
+    return undefined;
+  }
+  const list: Moment[] = [
+    {at: m.ones, before: 0.9, after: 0.8},
+    {at: m.tens, before: 0.3, after: 0.8},
+    {at: m.wrongSubmit, before: 0.3, after: 0.6},
+    {at: m.coaching, before: 0.1, after: 2.6},
+    {at: m.carry, before: 0.4, after: 0.8},
+    {at: m.tensBox, before: 0.3, after: 0.7},
+    {at: m.fixDigit, before: 0.3, after: 0.9},
+    // The success banner, then the edit holds: the app moves on to the next question soon after.
+    {at: m.submit, before: 0.2, after: 1.2},
   ];
-  // Slow enough to follow, fast enough to fit: try speeds until the story fits the slot.
-  // Leave about two seconds after the last tap for the success moment, held on the solved sum.
+  // Slow enough to follow, fast enough to fit: leave about two seconds after the last tap for
+  // the success moment, held on the solved sum.
   const successFrames = 2 * fps;
   let rate = 1;
   for (rate of [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.65, 1.8, 2]) {
-    if (rampTimeline(moments, {rate, fastRate: 6, fps}).totalFrames <= targetFrames - successFrames) {
+    if (rampTimeline(list, {rate, fastRate: 6, fps}).totalFrames <= targetFrames - successFrames) {
       break;
     }
   }
-  const timeline = rampTimeline(moments, {rate, fastRate: 6, fps, holdTo: targetFrames});
-  const taps = {ones: ones!, tens: tens!, wrongSubmit: wrongSubmit!, carry: carry!, tensBox: tensBox!, fixDigit: fixDigit!, submit: submit!};
-  // Zoom on the sum: between the carry box and the tens answer box.
-  const carryTap = footage.taps.find(([, , t]) => t === carry);
-  const boxTap = footage.taps.find(([, , t]) => t === tensBox);
-  const zoom = carryTap && boxTap ? {x: (carryTap[0] + boxTap[0]) / 2, y: (carryTap[1] + boxTap[1]) / 2} : {x: 0.5, y: 0.4};
-  return {...timeline, coaching, taps, zoom, tapTimes};
+  const timeline = rampTimeline(list, {rate, fastRate: 6, fps, holdTo: targetFrames});
+  const touched = [m.ones, m.tens, m.wrongSubmit, m.carry, m.tensBox, m.fixDigit, m.submit];
+  // A finger lands a beat before the screen changes.
+  const ripples = m.positions.map(([x, y], i) => [x, y, touched[i] - 0.25] as [number, number, number]);
+  const carryAt = m.positions[3];
+  const boxAt = m.positions[4];
+  const zoom = carryAt && boxAt ? {x: (carryAt[0] + boxAt[0]) / 2, y: (carryAt[1] + boxAt[1]) / 2} : {x: 0.5, y: 0.4};
+  return {...timeline, moments: m, ripples, zoom, touched};
 }

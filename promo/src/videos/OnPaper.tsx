@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {BAR, brand, duckedVolume, fonts} from '../brand';
 import {Backdrop, Caption, Mascot, PopText, TileWipe, Wordmark} from '../components/Brand';
-import {Clip, Device} from '../components/Footage';
+import {Device, RampedClip, rampTimeline, stretch} from '../components/Footage';
+import {moments} from '../moments';
 import {SlipScene, slipVoiceFrame} from '../components/SlipScene';
 
 // 32 seconds, square, for the LinkedIn feed: the column-by-column feature on its own.
@@ -192,24 +193,38 @@ const Paper: React.FC = () => (
   />
 );
 
-const Trade: React.FC = () => (
+const Trade: React.FC = () => {
+  const t = moments[PHONE].trade;
+  const timeline = t
+    ? rampTimeline(
+        [
+          {at: t.trade, before: 0.7, after: 1.0},
+          {at: t.ones, before: 0.3, after: 0.7},
+          {at: t.tens, before: 0.3, after: 0.7},
+          {at: t.submit, before: 0.2, after: 0.8},
+        ],
+        {rate: 1.1, fastRate: 6, holdTo: S.end - S.trade},
+      )
+    : stretch(0, 6);
+  return (
   <AbsoluteFill>
     <Backdrop from="#58c7d8" to="#3a7bd5" />
     <div style={{position: 'absolute', left: 50, top: 40}}>
       <Device kind={PHONE} height={1000}>
-        <Clip device={PHONE} scene="testSceneColumnSubtraction" mark="trade-start" offset={0.6} rate={1.1} />
+        <RampedClip device={PHONE} scene="testSceneColumnSubtraction" segments={timeline.segments} ripples={t?.taps} />
       </Device>
     </div>
     <div style={{position: 'absolute', left: 560, top: 110, width: 480, display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'flex-start'}}>
       <PopText text="Subtracting? Same idea." size={60} align="left" delay={2} maxWidth={470} />
       <Caption text="Not enough ones?" size={42} delay={16} emoji="🤔" />
-      <Caption text="Trade a ten for 10 ones" size={42} delay={40} emoji="🔁" />
+      <Caption text="Trade a ten for 10 ones" size={42} delay={t ? timeline.frameOf(t.trade) - 4 : 40} emoji="🔁" />
     </div>
     <div style={{position: 'absolute', right: 20, bottom: 0}}>
       <Mascot name="ReefCoral" size={330} delay={20} />
     </div>
   </AbsoluteFill>
-);
+  );
+};
 
 const End: React.FC = () => {
   const frame = useCurrentFrame();

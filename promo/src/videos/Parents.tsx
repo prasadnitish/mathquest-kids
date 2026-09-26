@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {BAR, brand, fonts} from '../brand';
 import {Backdrop, Caption, Mascot, PopText, StatTile, TileWipe, Wordmark} from '../components/Brand';
-import {Clip, Device} from '../components/Footage';
+import {Device, RampedClip, rampTimeline, stretch} from '../components/Footage';
+import {moments} from '../moments';
 
 // 36 seconds, square: what parents get, and why they can trust it.
 export const PARENTS_FRAMES = 18 * BAR;
@@ -74,37 +75,61 @@ const Hook: React.FC = () => (
   </AbsoluteFill>
 );
 
-const PhoneLeft: React.FC<{scene: string; mark: string; offset: number; rate: number}> = (props) => (
+const PhoneLeft: React.FC<{timeline: ReturnType<typeof rampTimeline>}> = ({timeline}) => (
   <div style={{position: 'absolute', left: 50, top: 40}}>
     <Device kind={PHONE} height={1000}>
-      <Clip device={PHONE} {...props} />
+      <RampedClip device={PHONE} scene="testSceneParentDashboard" segments={timeline.segments} />
     </Device>
   </div>
 );
 
-const Gate: React.FC = () => (
-  <AbsoluteFill>
-    <Slate />
-    <PhoneLeft scene="testSceneParentDashboard" mark="parent-gate" offset={0} rate={1.2} />
-    <div style={{position: 'absolute', left: 560, top: 140, width: 470, display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'flex-start'}}>
-      <PopText text="A grown-up zone" size={64} align="left" delay={4} maxWidth={470} />
-      <Caption text="Behind a parent PIN" size={40} delay={20} emoji="🔒" />
-      <Caption text="Kids can't change settings" size={36} delay={44} emoji="🙅" />
-    </div>
-  </AbsoluteFill>
-);
+const Gate: React.FC = () => {
+  const p = moments[PHONE].parent;
+  const timeline = p
+    ? rampTimeline(
+        [
+          {at: p.pinSheet, before: 0.3, after: 1.3},
+          {at: p.pinDone, before: 1.8, after: 0.6},
+        ],
+        {rate: 1.1, fastRate: 14, holdTo: S.dashboard - S.gate},
+      )
+    : stretch(0, 4);
+  return (
+    <AbsoluteFill>
+      <Slate />
+      <PhoneLeft timeline={timeline} />
+      <div style={{position: 'absolute', left: 560, top: 140, width: 470, display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'flex-start'}}>
+        <PopText text="A grown-up zone" size={64} align="left" delay={4} maxWidth={470} />
+        <Caption text="Behind a parent PIN" size={40} delay={20} emoji="🔒" />
+        <Caption text="Kids can't change settings" size={36} delay={p ? timeline.frameOf(p.pinDone) - 30 : 44} emoji="🙅" />
+      </div>
+    </AbsoluteFill>
+  );
+};
 
 const Dashboard: React.FC = () => {
+  const p = moments[PHONE].parent;
+  const frames = S.curriculum - S.dashboard;
+  const timeline = p
+    ? rampTimeline(
+        [
+          {at: p.settings, before: 0.2, after: 1.3},
+          {at: p.dashboard, before: 0.3, after: p.footer - p.dashboard + 2},
+        ],
+        {rate: 2, fastRate: 12, holdTo: frames},
+      )
+    : stretch(0, 14);
+  const at = (t: number | undefined, fallback: number) => (p && t !== undefined ? timeline.frameOf(t) : fallback);
   const captions: Array<[string, string, number]> = [
-    ['Day streaks', '🔥', 20],
-    ['Skills by math domain', '📊', 90],
-    ['Where they need help', '🎯', 170],
-    ['Every quest, logged', '🗓️', 250],
+    ['Day streaks', '🔥', at(p?.dashboard, 20) + 8],
+    ['Where they need help', '🎯', at(p?.dashboard, 90) + 40],
+    ['Skills by math domain', '📊', at(p?.skills, 170)],
+    ['Every quest, logged', '🗓️', at(p?.sessions, 250)],
   ];
   return (
     <AbsoluteFill>
       <Slate />
-      <PhoneLeft scene="testSceneParentDashboard" mark="dashboard" offset={-0.3} rate={0.95} />
+      <PhoneLeft timeline={timeline} />
       <div style={{position: 'absolute', left: 560, top: 100, width: 470, display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'flex-start'}}>
         <PopText text="Progress you can see" size={64} align="left" delay={4} maxWidth={470} />
         {captions.map(([text, emoji, delay]) => (

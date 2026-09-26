@@ -5,7 +5,6 @@ import {Backdrop, Caption} from './Brand';
 import {Device, DeviceKind, RampedClip, Zoom} from './Footage';
 import {slipStory} from './slipStory';
 
-const TAP_SOUND_LAG = 0.6;
 
 /**
  * The forgotten carry, told with captions: the device on the left, steps on the right.
@@ -26,16 +25,17 @@ export const SlipScene: React.FC<{
 }> = ({device, frames, deviceHeight, deviceLeft, deviceTop, captionsLeft, captionsTop, captionsWidth, captionSize, title}) => {
   const story = slipStory(device, frames);
   const at = (t: number) => (story ? story.frameOf(t) : 0);
-  const coaching = story ? at(story.coaching) : 150;
-  const success = story ? at(story.taps.submit) + 12 : 300;
+  const m = story?.moments;
+  const coaching = m ? at(m.coaching) : 150;
+  const success = m ? at(m.submit) : 300;
   return (
     <AbsoluteFill>
       <Backdrop from="#ffb86b" to="#ff6fae" />
       <div style={{position: 'absolute', left: deviceLeft, top: deviceTop}}>
         <Device kind={device} height={deviceHeight}>
           {story ? (
-            <Zoom focus={[{from: at(story.taps.wrongSubmit) - 4, to: at(story.taps.fixDigit) + 30, scale: 1.45, x: story.zoom.x, y: story.zoom.y + 0.04}]}>
-              <RampedClip device={device} scene="testSceneColumnAddition" segments={story.segments} />
+            <Zoom focus={[{from: at(story.moments.wrongSubmit) - 6, to: at(story.moments.fixDigit) + 24, scale: 1.45, x: story.zoom.x, y: story.zoom.y + 0.04}]}>
+              <RampedClip device={device} scene="testSceneColumnAddition" segments={story.segments} ripples={story.ripples} />
             </Zoom>
           ) : (
             <RampedClip device={device} scene="testSceneColumnAddition" segments={[]} />
@@ -58,15 +58,15 @@ export const SlipScene: React.FC<{
         }}
       >
         {title}
-        <Caption text="Ones first" size={captionSize} delay={story ? at(story.taps.ones) : 20} emoji="✏️" />
-        <Caption text="Then the tens" size={captionSize} delay={story ? at(story.taps.tens) : 50} emoji="➡️" />
-        <Caption text="Forgot the carried 1?" size={captionSize} delay={story ? at(story.taps.wrongSubmit) : 90} emoji="🤔" />
+        <Caption text="Ones first" size={captionSize} delay={m ? at(m.ones) - 4 : 20} emoji="✏️" />
+        <Caption text="Then the tens" size={captionSize} delay={m ? at(m.tens) - 4 : 50} emoji="➡️" />
+        <Caption text="Forgot the carried 1?" size={captionSize} delay={m ? at(m.wrongSubmit) : 90} emoji="🤔" />
         <Caption text="It shows exactly where" size={captionSize} delay={coaching} background="#ffe3e3" color="#b3261e" emoji="🔍" />
-        <Caption text="Carry the 1, fix the tens" size={captionSize} delay={story ? at(story.taps.carry) : 200} emoji="🛠️" />
+        <Caption text="Carry the 1, fix the tens" size={captionSize} delay={m ? at(m.carry) - 6 : 200} emoji="🛠️" />
         <Caption text="Solved!" size={captionSize * 1.25} delay={success} background={brand.sprout} color="white" emoji="🎉" />
       </div>
-      {story?.tapTimes
-        .map((t) => story.frameOf(t + TAP_SOUND_LAG))
+      {story?.touched
+        .map((t) => story.frameOf(t - 0.2))
         .filter((f) => f > 0 && f < frames)
         .map((f, i) => (
           <Sequence key={i} from={f} durationInFrames={8}>
@@ -86,7 +86,7 @@ export const SlipScene: React.FC<{
 /** When the app's voice line starts in a SlipScene, for ducking the music under it. */
 export function slipVoiceFrame(device: DeviceKind, frames: number) {
   const story = slipStory(device, frames);
-  return story ? story.frameOf(story.taps.submit) + 12 + 8 : undefined;
+  return story ? story.frameOf(story.moments.submit) + 8 : undefined;
 }
 
 /** A green check that pops over the device, with confetti in the K-5 tile colors. */

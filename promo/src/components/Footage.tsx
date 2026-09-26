@@ -287,7 +287,12 @@ export function rampTimeline(moments: Moment[], {rate = 1, fastRate = 5, fps = 3
 }
 
 /** Plays a scene through a ramped timeline (see rampTimeline). */
-export const RampedClip: React.FC<{device: DeviceKind; scene: string; segments: Segment[]}> = ({device, scene, segments}) => {
+export const RampedClip: React.FC<{device: DeviceKind; scene: string; segments: Segment[]; ripples?: Array<[number, number, number]>}> = ({
+  device,
+  scene,
+  segments,
+  ripples = [],
+}) => {
   if (!sceneFootage(device, scene) || segments.length === 0) {
     return <Placeholder label={`${device} · ${scene}`} />;
   }
@@ -295,7 +300,7 @@ export const RampedClip: React.FC<{device: DeviceKind; scene: string; segments: 
     <AbsoluteFill style={{background: 'black'}}>
       {segments.map((segment, i) => (
         <Sequence key={i} from={segment.from} durationInFrames={segment.frames}>
-          <SegmentClip device={device} scene={scene} start={segment.start} rate={segment.rate} />
+          <SegmentClip device={device} scene={scene} start={segment.start} rate={segment.rate} ripples={ripples} />
         </Sequence>
       ))}
     </AbsoluteFill>
@@ -331,8 +336,14 @@ export const Zoom: React.FC<{focus: Focus[]; children: React.ReactNode}> = ({foc
   );
 };
 
-/** The video from `start` seconds at `rate`, with tap ripples. */
-const SegmentClip: React.FC<{device: DeviceKind; scene: string; start: number; rate: number}> = ({device, scene, start, rate}) => {
+/** The video from `start` seconds at `rate`, with a ripple at each touch (x, y, video time). */
+const SegmentClip: React.FC<{device: DeviceKind; scene: string; start: number; rate: number; ripples: Array<[number, number, number]>}> = ({
+  device,
+  scene,
+  start,
+  rate,
+  ripples,
+}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const footage = sceneFootage(device, scene)!;
@@ -346,8 +357,8 @@ const SegmentClip: React.FC<{device: DeviceKind; scene: string; start: number; r
         muted
         style={{width: '100%', height: '100%', objectFit: 'cover'}}
       />
-      {footage.taps.map(([x, y, t], i) => {
-        const age = ((sourceTime - t - TAP_LAG) * fps) / Math.max(1, rate);
+      {ripples.map(([x, y, t], i) => {
+        const age = ((sourceTime - t) * fps) / Math.max(1, rate);
         if (age < -2 || age > 14) {
           return null;
         }
@@ -356,3 +367,8 @@ const SegmentClip: React.FC<{device: DeviceKind; scene: string; start: number; r
     </AbsoluteFill>
   );
 };
+
+/** A plain stretch of a recording: `seconds` from `start` at `rate`, held to `holdTo` frames. */
+export function stretch(start: number, seconds: number, {rate = 1, holdTo = 0, fps = 30} = {}) {
+  return rampTimeline([{at: start, before: 0, after: seconds}], {rate, fps, holdTo});
+}
