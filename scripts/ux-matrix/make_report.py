@@ -67,29 +67,65 @@ def walk(node):
             yield from walk(value)
 
 
-def image_size(path):
-    proc = run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", str(path)])
-    values = dict(re.findall(r"(pixelWidth|pixelHeight): (\d+)", proc.stdout))
-    return int(values.get("pixelWidth", 0)), int(values.get("pixelHeight", 0))
+# EXIF orientation -> clockwise turn that makes the stored pixels upright.
+EXIF_TURNS = {3: 180, 6: 90, 8: 270}
 
 
-def to_jpeg(src, dst, landscape=False):
-    # Screen captures can come back in the device's native portrait orientation; turn
-    # landscape shots that arrive taller than wide a quarter turn counterclockwise.
+def exif_orientation(data):
+    """Finds a JPEG's EXIF orientation tag: (byte offset, value, byte order), or None."""
+    if data[:2] != b"\xff\xd8":
+        return None
+    pos = 2
+    while pos + 4 <= len(data) and data[pos] == 0xFF:
+        marker = data[pos + 1]
+        if marker in (0xD9, 0xDA):
+            return None
+        length = int.from_bytes(data[pos + 2:pos + 4], "big")
+        if marker == 0xE1 and data[pos + 4:pos + 10] == b"Exif\0\0":
+            tiff = pos + 10
+            order = "little" if data[tiff:tiff + 2] == b"II" else "big"
+            ifd = tiff + int.from_bytes(data[tiff + 4:tiff + 8], order)
+            for index in range(int.from_bytes(data[ifd:ifd + 2], order)):
+                entry = ifd + 2 + 12 * index
+                if int.from_bytes(data[entry:entry + 2], order) == 0x0112:
+                    offset = entry + 8
+                    return offset, int.from_bytes(data[offset:offset + 2], order), order
+            return None
+        pos += 2 + length
+    return None
+
+
+def make_upright(path):
+    """Turns the pixels the way the EXIF tag says, then marks the tag as upright.
+
+    Landscape screen captures arrive in the device's native portrait pixels plus an EXIF
+    orientation. Baking the turn in means every viewer shows the same thing, whether or
+    not it reads EXIF.
+    """
+    tag = exif_orientation(path.read_bytes())
+    if not tag or tag[1] not in EXIF_TURNS:
+        return
+    run(["sips", "-r", str(EXIF_TURNS[tag[1]]), str(path)])
+    data = bytearray(path.read_bytes())
+    tag = exif_orientation(data)
+    if tag:
+        offset, _, order = tag
+        data[offset:offset + 2] = (1).to_bytes(2, order)
+        path.write_bytes(data)
+
+
+def to_jpeg(src, dst):
     if shutil.which("sips"):
         proc = run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "60", "-Z", "900", str(src), "--out", str(dst)])
         if proc.returncode == 0 and dst.exists():
-            width, height = image_size(dst)
-            if landscape and height > width:
-                run(["sips", "-r", "270", str(dst)])
+            make_upright(dst)
             return dst.name
     try:
-        from PIL import Image
+        from PIL import Image, ImageOps
 
         with Image.open(src) as image:
+            image = ImageOps.exif_transpose(image)
             image.thumbnail((900, 900))
-            if landscape and image.height > image.width:
-                image = image.rotate(90, expand=True)
             image.convert("RGB").save(dst, "JPEG", quality=60)
         return dst.name
     except Exception:
@@ -173,7 +209,7 @@ def collect(args):
             meta, findings = parse_findings(src.read_text(errors="replace"))
             checkpoints[key].update(meta=meta, findings=findings)
         else:
-            checkpoints[key]["image"] = to_jpeg(src, img / f"{screen}__{orientation}.jpg", landscape=orientation == "landscape")
+            checkpoints[key]["image"] = to_jpeg(src, img / f"{screen}__{orientation}.jpg")
 
     record["checkpoints"] = [checkpoints[k] for k in order]
     (out / "index.json").write_text(json.dumps(record, indent=1))
