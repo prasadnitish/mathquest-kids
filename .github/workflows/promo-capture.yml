@@ -1,0 +1,100 @@
+name: Promo capture
+
+# Films the app for the promo videos: scripts/promo/capture.sh records an iPhone and an iPad
+# simulator while PromoCaptureUITests walks through each scene, and the footage (with a step
+# and tap log per scene) is published to the promo-footage branch for editing in promo/.
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: Scenes to film, space-separated (empty for all), e.g. "testSceneThemes"
+        type: string
+        default: ""
+  push:
+    branches: ["claude/**"]
+    paths:
+      - scripts/promo/**
+      - MathQuestKidsUITests/PromoCaptureUITests.swift
+      - MathQuestKids/App/DemoProgress.swift
+      - .github/workflows/promo-capture.yml
+
+concurrency:
+  group: promo-capture-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  film:
+    name: Film (${{ matrix.device }})
+    runs-on: macos-26
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [iphone-standard, ipad-standard]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select newest Xcode 26
+        run: |
+          xcode="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      - name: Install ffmpeg
+        run: command -v ffmpeg || brew install ffmpeg
+
+      - name: Film scenes
+        env:
+          OUT_DIR: ${{ runner.temp }}/promo
+          SCENES: ${{ inputs.scenes }}
+        run: |
+          if [[ -z "$SCENES" ]]; then unset SCENES; fi
+          scripts/promo/capture.sh ${{ matrix.device }}
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: promo-${{ matrix.device }}
+          path: |
+            ${{ runner.temp }}/promo/${{ matrix.device }}
+            ${{ runner.temp }}/promo/build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish:
+    name: Publish footage
+    needs: film
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: promo-*
+          path: ${{ runner.temp }}/footage
+
+      # One force-pushed commit, so video files never pile up in history.
+      - name: Publish to promo-footage branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/footage"
+          # Artifacts arrive as promo-<device>/<device>/...; flatten to <device>/...
+          for artifact in promo-*; do
+            if [[ -d "$artifact" ]]; then
+              cp -R "$artifact"/. .
+              rm -rf "$artifact"
+            fi
+          done
+          find . -name '*.xcodebuild.log' -size +2M -delete
+          ls -R | head -80
+          git init -q -b promo-footage
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Promo footage for ${GITHUB_SHA::7} on ${GITHUB_REF_NAME}"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" promo-footage

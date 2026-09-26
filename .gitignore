@@ -45,3 +45,10 @@ temp/
 # Python
 __pycache__/
 *.pyc
+
+# Promo video project: dependencies, downloaded footage, generated audio and renders.
+promo/node_modules/
+promo/public/footage/
+promo/public/audio/*.wav
+promo/out/
+promo/scratch/

@@ -366,3 +366,44 @@ final class ProgressRepository {
         return try result.get()
     }
 }
+
+extension ProgressRepository {
+    /// Writes a finished session with its attempts at a past time. Only for DemoProgress,
+    /// which fills a profile with sample history for filming the app.
+    func seedDemoSession(
+        childID: UUID,
+        unit: UnitType,
+        startedAt: Date,
+        attempts: [(template: ItemTemplate, correct: Bool)]
+    ) throws {
+        try withContextResult {
+            let sessionID = UUID()
+            let session = CDSessionLog(context: context)
+            session.id = sessionID
+            session.childID = childID
+            session.unitRaw = unit.rawValue
+            session.startedAt = startedAt
+            session.endedAt = startedAt.addingTimeInterval(Double(attempts.count) * 40)
+            session.totalItems = Int16(attempts.count)
+            session.correctItems = Int16(attempts.filter(\.correct).count)
+            session.rewardTitle = unit.title
+
+            for (index, attempt) in attempts.enumerated() {
+                let entity = CDAttempt(context: context)
+                entity.id = UUID()
+                entity.childID = childID
+                entity.timestamp = startedAt.addingTimeInterval(Double(index) * 40 + 30)
+                entity.skillID = attempt.template.skill
+                entity.unitRaw = unit.rawValue
+                entity.itemID = attempt.template.id
+                entity.sessionID = sessionID
+                entity.response = attempt.correct ? attempt.template.answer : ""
+                entity.correct = attempt.correct
+                entity.latencyMs = 9_000
+                entity.hintsUsed = 0
+                entity.inputModeRaw = InputMode.tap.rawValue
+            }
+            try saveContextIfNeeded()
+        }
+    }
+}

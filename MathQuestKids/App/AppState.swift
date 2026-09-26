@@ -189,6 +189,10 @@ final class AppState: ObservableObject {
         }
         self.parentPINConfigured = self.parentPINStore.isConfigured
 
+        if isUITest, launchArgs.contains(DemoProgress.launchArgument) {
+            DemoProgress.seed(repository: sharedRepository, pack: pack, defaults: .standard)
+        }
+
         self.profile = sharedRepository.loadActiveProfile()
         selectedCompanionID = loadCompanion(for: selectedTheme)
 

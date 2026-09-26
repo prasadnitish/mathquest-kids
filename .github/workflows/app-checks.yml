@@ -112,7 +112,12 @@ jobs:
             > "$RUNNER_TEMP/unit-tests.log" 2>&1
           status=$?
           set -e
-          grep -E "error:|✘|✔ Suite|Test run with|\*\* TEST|Executed" "$RUNNER_TEMP/unit-tests.log" | tail -120 || true
+          grep -E "error:|✘|✔ Suite|Test run with|\*\* TEST|Executed|Testing failed|encountered an error|crashed|Fatal error" "$RUNNER_TEMP/unit-tests.log" | tail -120 || true
+          if [[ $status -ne 0 ]]; then
+            # A crash or hang prints no test failure, so show how the log ends.
+            echo "---- last 80 lines of the log ----"
+            tail -80 "$RUNNER_TEMP/unit-tests.log"
+          fi
           exit $status
 
       - uses: actions/upload-artifact@v7
