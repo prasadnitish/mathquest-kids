@@ -28,7 +28,7 @@ ORIENTATIONS = ["portrait", "landscape"]
 # the ones worth a human look.
 KINDS = {
     "unreachable": ("Unreachable", "bad", "A control could not be brought on screen, even by scrolling."),
-    "overlap": ("Overlap", "warn", "Two on-screen elements partly cover each other."),
+    "overlap": ("Overlap", "warn", "Two tap targets partly cover each other, so a tap can hit the wrong one."),
     "clipped": ("Clipped", "warn", "Cut off at a screen edge. Expected for sideways-scrolling carousels."),
     "below-fold": ("Below the fold", "note", "A primary control needs scrolling to reach."),
     "small-target": ("Small target", "note", "Tap area is under Apple's 44×44 pt minimum."),
@@ -67,16 +67,29 @@ def walk(node):
             yield from walk(value)
 
 
-def to_jpeg(src, dst):
+def image_size(path):
+    proc = run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", str(path)])
+    values = dict(re.findall(r"(pixelWidth|pixelHeight): (\d+)", proc.stdout))
+    return int(values.get("pixelWidth", 0)), int(values.get("pixelHeight", 0))
+
+
+def to_jpeg(src, dst, landscape=False):
+    # Screen captures can come back in the device's native portrait orientation; turn
+    # landscape shots that arrive taller than wide a quarter turn counterclockwise.
     if shutil.which("sips"):
         proc = run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "60", "-Z", "900", str(src), "--out", str(dst)])
         if proc.returncode == 0 and dst.exists():
+            width, height = image_size(dst)
+            if landscape and height > width:
+                run(["sips", "-r", "270", str(dst)])
             return dst.name
     try:
         from PIL import Image
 
         with Image.open(src) as image:
             image.thumbnail((900, 900))
+            if landscape and image.height > image.width:
+                image = image.rotate(90, expand=True)
             image.convert("RGB").save(dst, "JPEG", quality=60)
         return dst.name
     except Exception:
@@ -153,7 +166,7 @@ def collect(args):
             meta, findings = parse_findings(src.read_text(errors="replace"))
             checkpoints[key].update(meta=meta, findings=findings)
         else:
-            checkpoints[key]["image"] = to_jpeg(src, img / f"{screen}__{orientation}.jpg")
+            checkpoints[key]["image"] = to_jpeg(src, img / f"{screen}__{orientation}.jpg", landscape=orientation == "landscape")
 
     record["checkpoints"] = [checkpoints[k] for k in order]
     (out / "index.json").write_text(json.dumps(record, indent=1))
@@ -186,7 +199,9 @@ def load_devices(root):
 
 
 def kind_counts(device):
-    return Counter(f["kind"] for cp in device["checkpoints"] for f in cp["findings"])
+    # Distinct findings: a small Quit button on every quest screen counts once, not 60 times.
+    unique = {(f["kind"], f["text"]) for cp in device["checkpoints"] for f in cp["findings"]}
+    return Counter(kind for kind, _ in unique)
 
 
 def by_screen(device):

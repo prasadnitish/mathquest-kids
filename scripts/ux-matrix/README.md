@@ -15,13 +15,16 @@ At every stop it rotates the device, takes a screenshot, and records findings:
 | Finding | Meaning |
 |---|---|
 | Unreachable | A control can't be brought on screen, even by scrolling. Required controls (such as Submit) also fail the test. |
-| Overlap | Two on-screen elements partly cover each other. |
+| Overlap | Two tap targets partly cover each other, so a tap can hit the wrong one. |
 | Clipped | Something is cut off at a screen edge. Expected for sideways-scrolling carousels. |
 | Below the fold | A primary control (for example Submit) needs scrolling to reach. |
 | Small target | A tap area is under Apple's 44×44 pt minimum. |
 
 Only an unreachable required control, a screen that never appears, or a crash fails the run.
 Everything else is for review, because carousels and decorative layers make those checks noisy.
+
+The accessibility tree can't see content hidden behind artwork, so look at the screenshots too.
+That is how the first run caught quest-screen art covering the question.
 
 ## Devices
 

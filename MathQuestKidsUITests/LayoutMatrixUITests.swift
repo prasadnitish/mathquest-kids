@@ -514,7 +514,8 @@ final class LayoutMatrixUITests: XCTestCase {
                 scrollToTop(app)
             }
 
-            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            // The whole screen: an element screenshot of the app is mis-cropped in landscape.
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
             screenshot.name = "LX__\(screen)__\(orientation.rawValue)"
             screenshot.lifetime = .keepAlways
             add(screenshot)
@@ -529,7 +530,9 @@ final class LayoutMatrixUITests: XCTestCase {
                 findings += check(target, nodes: nodes, bounds: bounds, screen: screen, orientation: orientation, app: app, scrolls: scrolls)
             }
 
-            let sizeClass = root.map { "\(describe($0.horizontalSizeClass))×\(describe($0.verticalSizeClass))" } ?? "unknown"
+            // The application element reports "unspecified"; its window carries the real size classes.
+            let window = root?.children.first { $0.elementType == .window }
+            let sizeClass = window.map { "\(describe($0.horizontalSizeClass))×\(describe($0.verticalSizeClass))" } ?? "unknown"
             let header = [
                 "screen: \(screen)",
                 "orientation: \(orientation.rawValue)",
@@ -614,17 +617,15 @@ final class LayoutMatrixUITests: XCTestCase {
             findings.append("[small-target] \"\(control.name)\" is \(Int(control.frame.width))×\(Int(control.frame.height)) pt (minimum 44×44)")
         }
 
-        let items = controls + texts
-        for i in items.indices {
-            for j in items.indices where j > i {
-                let a = items[i]
-                let b = items[j]
-                // Full containment is nesting (a label inside its card), not a collision.
-                if a.frame.contains(b.frame) || b.frame.contains(a.frame) {
-                    continue
-                }
+        // Only controls: overlapping tap areas cause mis-taps. Text overlaps were mostly labels
+        // inside their own buttons; hidden content shows up in the screenshots instead.
+        for i in controls.indices {
+            for j in controls.indices where j > i {
+                let a = controls[i]
+                let b = controls[j]
                 let ratio = overlapRatio(a.frame, b.frame)
-                if ratio >= 0.2 {
+                // Near-total overlap is nesting (a control inside its card), not a collision.
+                if ratio >= 0.2 && ratio < 0.95 {
                     findings.append("[overlap] \"\(a.name)\" and \"\(b.name)\" overlap by \(Int(ratio * 100))%")
                 }
             }
