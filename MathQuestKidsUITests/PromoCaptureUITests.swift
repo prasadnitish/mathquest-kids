@@ -63,6 +63,7 @@ final class PromoCaptureUITests: XCTestCase {
         for _ in 0..<14 {
             guard !reachedQuestEnd(app) else { break }
             let prompt = app.staticTexts["problemPrompt"].label
+            debugItem(prompt, in: app)
             if let problem = WrittenProblem(prompt), app.buttons["Digit 1"].exists {
                 if !showedSlip && problem.carries {
                     mark("slip-start")
@@ -95,6 +96,7 @@ final class PromoCaptureUITests: XCTestCase {
         for _ in 0..<8 where !showedTrade {
             guard !reachedQuestEnd(app) else { break }
             let prompt = app.staticTexts["problemPrompt"].label
+            debugItem(prompt, in: app)
             if let problem = WrittenProblem(prompt), app.buttons["Digit 1"].exists, problem.trades {
                 mark("trade-start")
                 work(problem, in: app, forgettingTheCarry: false)
@@ -460,6 +462,13 @@ final class PromoCaptureUITests: XCTestCase {
     @MainActor
     private func modalCTA(_ app: XCUIApplication) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [Self.modalCTATitles])).firstMatch
+    }
+
+    /// Says what the scene saw, so a run that skips its moment shows why.
+    @MainActor
+    private func debugItem(_ prompt: String, in app: XCUIApplication) {
+        let parsed = WrittenProblem(prompt) != nil
+        print("PROMO-DEBUG prompt=\"\(prompt)\" parsed=\(parsed) digitPad=\(app.buttons["Digit 1"].exists)")
     }
 
     private func firstNumber(in text: String) -> Int? {

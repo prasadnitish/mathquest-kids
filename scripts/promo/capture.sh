@@ -131,8 +131,10 @@ film_scene() {
 
   write_scene_log "$started" "$test_log" "$dir/$scene.log"
   echo "   $scene: test exit $status, $(grep -c '^MARK' "$dir/$scene.log" || true) marks, $(grep -c '^TAP' "$dir/$scene.log" || true) taps"
+  # What the scene saw and any control it couldn't find, so a skipped moment explains itself.
+  grep -E "PROMO-DEBUG|PROMO-MISSING" "$test_log" | head -16 | sed 's/^/     /' || true
   if [[ $status -ne 0 ]]; then
-    grep -E "error:|failed|PROMO-MISSING" "$test_log" | head -20 || true
+    grep -E "error:|failed" "$test_log" | head -20 || true
   fi
 
   if command -v ffmpeg >/dev/null && [[ -s "$raw" ]]; then
