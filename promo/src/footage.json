@@ -243,14 +243,14 @@
   },
   "testSceneSpatial": {
    "file": "footage/ipad-standard/testSceneSpatial.mp4",
-   "duration": 77.9,
+   "duration": 104.933,
    "width": 1920,
    "height": 1334,
    "marks": {
-    "spatial-k2SpatialRotateMatch": 38.224,
-    "spatial-k2SpatialRotateMatch-end": 49.554,
-    "spatial-g1SpatialSymmetryMirror": 61.299,
-    "spatial-g1SpatialSymmetryMirror-end": 74.674
+    "spatial-k2SpatialRotateMatch": 65.857,
+    "spatial-k2SpatialRotateMatch-end": 72.207,
+    "spatial-g1SpatialSymmetryMirror": 96.547,
+    "spatial-g1SpatialSymmetryMirror-end": 102.833
    },
    "taps": []
   },
@@ -596,14 +596,14 @@
   },
   "testSceneSpatial": {
    "file": "footage/iphone-standard/testSceneSpatial.mp4",
-   "duration": 95.433,
+   "duration": 171.267,
    "width": 884,
    "height": 1920,
    "marks": {
-    "spatial-k2SpatialRotateMatch": 56.645,
-    "spatial-k2SpatialRotateMatch-end": 68.117,
-    "spatial-g1SpatialSymmetryMirror": 79.454,
-    "spatial-g1SpatialSymmetryMirror-end": 90.326
+    "spatial-k2SpatialRotateMatch": 117.104,
+    "spatial-k2SpatialRotateMatch-end": 124.011,
+    "spatial-g1SpatialSymmetryMirror": 157.5,
+    "spatial-g1SpatialSymmetryMirror-end": 168.888
    },
    "taps": []
   },

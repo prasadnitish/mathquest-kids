@@ -72,6 +72,8 @@ export const moments: Record<
     },
     // "Quest Complete" with the reward star.
     summary: 130.4,
+    // "Which choice matches the red triangle after it turns 135 degrees?"
+    spatial: 49.0,
     // On iPad the parent screens are sheets over Home: the PIN sheet, the on-screen
     // keyboard as the PIN is typed, Parent Settings, then the dashboard scrolling.
     parent: {home: 28.5, pinSheet: 34.0, pinDone: 55.0, settings: 57.5, dashboard: 78.0, skills: 87.5, sessions: 96.5, footer: 103.5},

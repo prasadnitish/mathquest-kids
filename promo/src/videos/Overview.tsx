@@ -54,7 +54,7 @@ export const Overview: React.FC = () => {
         </Sequence>
       ))}
 
-      <Audio src={staticFile('audio/music-overview.wav')} volume={duckedVolume(0.8, voiceAt)} />
+      <Audio src={staticFile('audio/music-overview.wav')} volume={duckedVolume(0.6, voiceAt)} />
     </AbsoluteFill>
   );
 };
@@ -164,7 +164,15 @@ const ColumnWork: React.FC = () => (
 const Montage: React.FC = () => {
   const ipad = moments[IPAD];
   const teen = ipad.teen;
-  const cuts: Array<{theme: ThemeKey; scene: string; timeline: ReturnType<typeof rampTimeline>; ripples?: Array<[number, number, number]>; text: string; emoji: string}> = [
+  const cuts: Array<{
+    theme: ThemeKey;
+    scene: string;
+    timeline: ReturnType<typeof rampTimeline>;
+    ripples?: Array<[number, number, number]>;
+    zoom?: {scale: number; x: number; y: number};
+    text: string;
+    emoji: string;
+  }> = [
     {
       theme: 'turboCars',
       scene: 'testSceneTeenPlaceValue',
@@ -186,6 +194,7 @@ const Montage: React.FC = () => {
       theme: 'starsSpace',
       scene: 'testSceneSpatial',
       timeline: stretch(ipad.spatial ?? 0, 2, {holdTo: BAR}),
+      zoom: {scale: 1.35, x: 0.5, y: 0.55},
       text: 'Turn, flip and fit shapes',
       emoji: '🔷',
     },
@@ -214,9 +223,10 @@ const MontageCut: React.FC<{
   scene: string;
   timeline: ReturnType<typeof rampTimeline>;
   ripples?: Array<[number, number, number]>;
+  zoom?: {scale: number; x: number; y: number};
   text: string;
   emoji: string;
-}> = ({theme, scene, timeline, ripples, text, emoji}) => {
+}> = ({theme, scene, timeline, ripples, zoom, text, emoji}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const info = themes[theme];
@@ -228,7 +238,9 @@ const MontageCut: React.FC<{
       </AbsoluteFill>
       <div style={{position: 'absolute', left: 300, top: 70, transform: `scale(${interpolate(enter, [0, 1], [0.85, 1])})`, opacity: enter}}>
         <Device kind={IPAD} height={820}>
-          <RampedClip device={IPAD} scene={scene} segments={timeline.segments} ripples={ripples} />
+          <Zoom focus={zoom ? [{from: -20, to: BAR + 20, ...zoom}] : []}>
+            <RampedClip device={IPAD} scene={scene} segments={timeline.segments} ripples={ripples} />
+          </Zoom>
         </Device>
       </div>
       <AbsoluteFill style={{justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 60}}>
@@ -254,13 +266,17 @@ const Parents: React.FC = () => {
       )
     : stretch(0, 2);
   const dashFrames = 4 * BAR;
+  // The dashboard's four views (top, skills, recent sessions, footer), with the scrolling
+  // between them sped up.
   const dash = p
     ? rampTimeline(
         [
-          {at: p.settings, before: 0.2, after: 0.8},
-          {at: p.dashboard, before: 0.3, after: p.footer - p.dashboard + 1.5},
+          {at: p.dashboard, before: 0.3, after: 2.2},
+          {at: p.skills, before: 0.3, after: 2.0},
+          {at: p.sessions, before: 0.3, after: 2.0},
+          {at: p.footer, before: 0.3, after: 1.5},
         ],
-        {rate: 1.7, fastRate: 14, holdTo: dashFrames},
+        {rate: 1.4, fastRate: 12, holdTo: dashFrames},
       )
     : stretch(0, 8);
   const at = (t: number | undefined) => (t === undefined ? 0 : gateFrames + dash.frameOf(t));

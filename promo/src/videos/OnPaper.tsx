@@ -40,7 +40,7 @@ export const OnPaper: React.FC = () => {
         <Audio src={staticFile('audio/sfx-whoosh.wav')} volume={0.5} />
       </Sequence>
     ))}
-    <Audio src={staticFile('audio/music-paper.wav')} volume={duckedVolume(0.8, voiceAt)} />
+    <Audio src={staticFile('audio/music-paper.wav')} volume={duckedVolume(0.6, voiceAt)} />
   </AbsoluteFill>
   );
 };

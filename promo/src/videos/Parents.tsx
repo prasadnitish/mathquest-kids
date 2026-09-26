@@ -52,7 +52,7 @@ export const Parents: React.FC = () => (
         <Audio src={staticFile('audio/sfx-whoosh.wav')} volume={0.5} />
       </Sequence>
     ))}
-    <Audio src={staticFile('audio/music-parents.wav')} volume={0.75} />
+    <Audio src={staticFile('audio/music-parents.wav')} volume={0.56} />
   </AbsoluteFill>
 );
 
