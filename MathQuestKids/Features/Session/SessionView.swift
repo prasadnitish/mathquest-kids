@@ -414,7 +414,7 @@ struct SessionView: View {
             // iPhone landscape: one row. Stacked, the three buttons covered most of the
             // short screen and left only a sliver for the question.
             HStack(spacing: 12) {
-                readAloudButton()
+                readAloudButton(compact: true)
                 hintButton
                     .fixedSize(horizontal: true, vertical: false)
                 submitButton(item: item)
