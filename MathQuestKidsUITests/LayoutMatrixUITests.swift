@@ -104,10 +104,10 @@ final class LayoutMatrixUITests: XCTestCase {
 
     @MainActor
     func testCoreFlowLayouts() throws {
-        defer { XCUIDevice.shared.orientation = .portrait }
+        let app = XCUIApplication()
+        defer { finish(app) }
         XCUIDevice.shared.orientation = .portrait
 
-        let app = XCUIApplication()
         app.launchArguments = ["-deterministic-session", "-ui-test"]
         app.launch()
 
@@ -228,11 +228,11 @@ final class LayoutMatrixUITests: XCTestCase {
 
     @MainActor
     func testQuestCheckLayouts() throws {
-        defer { XCUIDevice.shared.orientation = .portrait }
+        let app = XCUIApplication()
+        defer { finish(app) }
         XCUIDevice.shared.orientation = .portrait
 
         // No "-ui-test": the quest check only runs for a real first launch.
-        let app = XCUIApplication()
         app.launchArguments = ["-deterministic-diagnostic"]
         app.launch()
 
@@ -265,8 +265,8 @@ final class LayoutMatrixUITests: XCTestCase {
 
     @MainActor
     func testQuestionFormatLayouts() throws {
-        defer { XCUIDevice.shared.orientation = .portrait }
         let app = XCUIApplication()
+        defer { finish(app) }
 
         for sample in Self.formatSamples {
             XCUIDevice.shared.orientation = .portrait
@@ -289,6 +289,17 @@ final class LayoutMatrixUITests: XCTestCase {
     }
 
     // MARK: - Flow helpers
+
+    /// Leaves the simulator as the next test expects it: portrait, with the app closed.
+    /// Otherwise the next test's first launch has to force-quit this one's app, which
+    /// sometimes fails ("Failed to terminate") and aborts that whole test.
+    @MainActor
+    private func finish(_ app: XCUIApplication) {
+        XCUIDevice.shared.orientation = .portrait
+        if app.state != .notRunning {
+            app.terminate()
+        }
+    }
 
     @MainActor
     private func checkParentSettings(_ app: XCUIApplication) {
