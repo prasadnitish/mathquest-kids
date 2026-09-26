@@ -403,6 +403,15 @@ final class LayoutMatrixUITests: XCTestCase {
         if option.exists {
             reveal(option, in: app)
             option.tap()
+        } else if app.buttons["Digit 1"].exists {
+            // Long-form items are written digit by digit, from the ones to the left, and
+            // Submit waits until every column has one.
+            let digit = app.buttons["Digit 1"]
+            let submit = app.buttons["Submit Answer"]
+            for _ in 0..<4 where !(submit.exists && submit.isEnabled) {
+                reveal(digit, in: app)
+                digit.tap()
+            }
         } else {
             // Place-value items use steppers instead of options.
             for stepper in ["+1 Ten", "+1 One"] where app.buttons[stepper].exists {

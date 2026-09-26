@@ -70,10 +70,8 @@ struct AdditionStoryInteraction: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            if let problem = WrittenProblem.parse(item.prompt), problem.suitsLongForm {
-                LongFormProblemView(problem: problem, answer: item.answer, selection: selection)
-                    .padding(.vertical, 8)
-            } else if showsDots, WrittenProblem.parse(item.prompt).map({ $0.operation == .add }) ?? true {
+            // Long-form problems are worked in ColumnWorkInteraction instead.
+            if showsDots, WrittenProblem.parse(item.prompt).map({ $0.operation == .add }) ?? true {
                 // Stories don't parse as "A + B = ?", so they keep their dots.
                 dots
             }

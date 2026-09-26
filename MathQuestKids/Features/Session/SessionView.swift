@@ -295,10 +295,10 @@ struct SessionView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Pick Your Answer")
+                    Text(item.columnProblem == nil ? "Pick Your Answer" : "Work It Out")
                         .kidText(.h2)
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text(answerHelperText)
+                    Text(answerHelperText(for: item))
                         .kidText(.body)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -329,9 +329,14 @@ struct SessionView: View {
         }
     }
 
-    private var answerHelperText: String {
+    private func answerHelperText(for item: PracticeItem) -> String {
         if choicesDisabledTemporarily {
             return "Hold on. Let's look at the clue together."
+        }
+        if item.columnProblem != nil {
+            return selectedChoice.isEmpty
+                ? "Write it like on paper, one column at a time."
+                : "Tap Submit when you're ready."
         }
         if !selectedChoice.isEmpty {
             return "Nice pick. Tap Submit when you're ready."
@@ -481,7 +486,20 @@ struct SessionView: View {
         case .decimalComparison:
             DecimalComparisonInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .additionStory, .addTwoDigit, .subTwoDigit, .factFamily:
-            AdditionStoryInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
+            if let problem = item.columnProblem {
+                ColumnWorkInteraction(
+                    item: item,
+                    problem: problem,
+                    selection: $selectedChoice,
+                    theme: theme,
+                    wrongAttempts: appState.currentSession?.incorrectAttemptsForCurrentItem ?? 0,
+                    onDefer: recordDefer
+                )
+                // Fresh paper for every question.
+                .id(appState.currentSession?.index ?? 0)
+            } else {
+                AdditionStoryInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
+            }
         case .countAndMatch:
             CountAndMatchInteraction(item: item, selection: $selectedChoice, theme: theme, onDefer: recordDefer)
         case .numberBond:
@@ -554,6 +572,10 @@ struct SessionView: View {
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(Color.green.opacity(0.3), lineWidth: 1)
             )
+
+            if let problem = item.columnProblem {
+                LongFormProblemView(problem: problem, answer: item.answer, selection: item.answer)
+            }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Let's Solve It Together")
@@ -748,12 +770,38 @@ struct SessionView: View {
             Task {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 choicesDisabledTemporarily = false
-                selectedChoice = ""
+                // Column work keeps the child's digits so they can fix the column that's off.
+                if item.columnProblem == nil {
+                    selectedChoice = ""
+                }
             }
         }
     }
 
+    private func columnFeedback(for problem: WrittenProblem, isCorrect: Bool) -> String {
+        if !isCorrect {
+            // Read before this try is recorded: 0 means it's the first miss, with one more go.
+            let firstMiss = (appState.currentSession?.incorrectAttemptsForCurrentItem ?? 0) == 0
+            return firstMiss
+                ? "Good try. Fix the column in red, then submit again."
+                : "Good effort. Let's work through the columns together."
+        }
+        switch problem.operation {
+        case .add:
+            return "Great adding! You worked every column."
+        case .subtract:
+            return "Well done! You subtracted column by column."
+        case .multiply, .divide:
+            return "Great multiplying! You kept track of every carry."
+        }
+    }
+
     private func questFeedback(for item: PracticeItem, isCorrect: Bool) -> String {
+        // The two-digit format also carries subtraction and multiplication, so column
+        // problems are praised for the operation they really are.
+        if let problem = item.columnProblem {
+            return columnFeedback(for: problem, isCorrect: isCorrect)
+        }
         if isCorrect {
             switch item.format {
             case .subtractionStory:
