@@ -1,1 +1,446 @@
-{}
+{
+ "ipad-standard": {
+  "testSceneColumnAddition": {
+   "file": "footage/ipad-standard/testSceneColumnAddition.mp4",
+   "duration": 702.4,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "quest-start": 44.904
+   },
+   "taps": []
+  },
+  "testSceneColumnSubtraction": {
+   "file": "footage/ipad-standard/testSceneColumnSubtraction.mp4",
+   "duration": 500.0,
+   "width": 1334,
+   "height": 1920,
+   "marks": {},
+   "taps": []
+  },
+  "testSceneParentDashboard": {
+   "file": "footage/ipad-standard/testSceneParentDashboard.mp4",
+   "duration": 90.133,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "parent-start": 25.726,
+    "parent-gate": 30.708,
+    "parent-settings": 51.485,
+    "dashboard": 64.953,
+    "dashboard-end": 87.323
+   },
+   "taps": [
+    [
+     0.957,
+     0.0912,
+     26.498
+    ],
+    [
+     0.5,
+     0.5713,
+     31.679
+    ],
+    [
+     0.5,
+     0.4165,
+     46.347
+    ],
+    [
+     0.3797,
+     0.8098,
+     57.919
+    ]
+   ]
+  },
+  "testSceneSpatial": {
+   "file": "footage/ipad-standard/testSceneSpatial.mp4",
+   "duration": 76.033,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "spatial-k2SpatialRotateMatch": 34.226,
+    "spatial-k2SpatialRotateMatch-end": 50.571,
+    "spatial-g1SpatialSymmetryMirror": 60.168,
+    "spatial-g1SpatialSymmetryMirror-end": 73.388
+   },
+   "taps": []
+  },
+  "testSceneStickersAndTrail": {
+   "file": "footage/ipad-standard/testSceneStickersAndTrail.mp4",
+   "duration": 100.6,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "stickers": 59.549,
+    "stickers-end": 66.558,
+    "trail": 81.191,
+    "trail-end": 96.263
+   },
+   "taps": [
+    [
+     0.1231,
+     2.4098,
+     55.781
+    ],
+    [
+     0.0415,
+     0.0671,
+     67.096
+    ],
+    [
+     0.4013,
+     0.4982,
+     77.802
+    ]
+   ]
+  },
+  "testSceneTeenPlaceValue": {
+   "file": "footage/ipad-standard/testSceneTeenPlaceValue.mp4",
+   "duration": 122.9,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "teen-start": 81.013,
+    "teen-end": 88.196
+   },
+   "taps": [
+    [
+     0.3059,
+     0.8933,
+     83.95
+    ],
+    [
+     0.7653,
+     0.8933,
+     86.131
+    ],
+    [
+     0.3059,
+     0.8933,
+     107.1
+    ],
+    [
+     0.7653,
+     0.8933,
+     108.873
+    ]
+   ]
+  },
+  "testSceneThemes": {
+   "file": "footage/ipad-standard/testSceneThemes.mp4",
+   "duration": 234.9,
+   "width": 1334,
+   "height": 1920,
+   "marks": {
+    "theme-candyland": 73.557,
+    "theme-candyland-end": 89.714,
+    "theme-axolotl": 101.865,
+    "theme-axolotl-end": 116.848,
+    "theme-rainbowUnicorn": 129.891,
+    "theme-rainbowUnicorn-end": 148.159,
+    "theme-starsSpace": 161.161,
+    "theme-starsSpace-end": 178.086,
+    "theme-superhero": 190.61,
+    "theme-superhero-end": 205.421,
+    "theme-turboCars": 216.46,
+    "theme-turboCars-end": 231.007
+   },
+   "taps": []
+  }
+ },
+ "iphone-standard": {
+  "testSceneColumnAddition": {
+   "file": "footage/iphone-standard/testSceneColumnAddition.mp4",
+   "duration": 230.067,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "quest-start": 58.878,
+    "column-start": 86.895,
+    "column-quick": 105.895,
+    "slip-start": 115.1,
+    "slip-coaching": 125.241,
+    "slip-fixed": 140.246,
+    "slip-end": 142.768,
+    "summary": 217.985,
+    "summary-end": 220.997
+   },
+   "taps": [
+    [
+     0.3657,
+     0.9146,
+     98.113
+    ],
+    [
+     0.5,
+     0.513,
+     100.42099999999999
+    ],
+    [
+     0.5,
+     0.8842,
+     102.572
+    ],
+    [
+     0.2313,
+     0.5748,
+     107.92099999999999
+    ],
+    [
+     0.7687,
+     0.513,
+     109.856
+    ],
+    [
+     0.5,
+     0.8842,
+     111.841
+    ],
+    [
+     0.5,
+     0.513,
+     118.259
+    ],
+    [
+     0.3657,
+     0.5748,
+     120.449
+    ],
+    [
+     0.5,
+     0.8842,
+     123.216
+    ],
+    [
+     0.5647,
+     0.23,
+     130.03400000000002
+    ],
+    [
+     0.5647,
+     0.4314,
+     135.209
+    ],
+    [
+     0.5,
+     0.6484,
+     138.23100000000002
+    ],
+    [
+     0.5,
+     0.8842,
+     141.805
+    ],
+    [
+     0.5,
+     0.513,
+     152.193
+    ],
+    [
+     0.5647,
+     0.1564,
+     155.553
+    ],
+    [
+     0.6343,
+     0.5748,
+     157.776
+    ],
+    [
+     0.5,
+     0.8842,
+     161.80700000000002
+    ],
+    [
+     0.5,
+     0.513,
+     171.502
+    ],
+    [
+     0.5647,
+     0.1564,
+     174.792
+    ],
+    [
+     0.6343,
+     0.5748,
+     176.83200000000002
+    ],
+    [
+     0.5,
+     0.8842,
+     178.607
+    ],
+    [
+     0.3657,
+     0.513,
+     195.074
+    ],
+    [
+     0.5647,
+     0.1564,
+     199.918
+    ],
+    [
+     0.7687,
+     0.513,
+     202.104
+    ],
+    [
+     0.5,
+     0.8842,
+     204.519
+    ]
+   ]
+  },
+  "testSceneColumnSubtraction": {
+   "file": "footage/iphone-standard/testSceneColumnSubtraction.mp4",
+   "duration": 436.133,
+   "width": 884,
+   "height": 1920,
+   "marks": {},
+   "taps": []
+  },
+  "testSceneParentDashboard": {
+   "file": "footage/iphone-standard/testSceneParentDashboard.mp4",
+   "duration": 112.9,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "parent-start": 32.03,
+    "parent-gate": 39.731,
+    "parent-settings": 71.545,
+    "dashboard": 84.431,
+    "dashboard-end": 109.947
+   },
+   "taps": [
+    [
+     0.8744,
+     0.1199,
+     33.276
+    ],
+    [
+     0.5,
+     0.6034,
+     41.568
+    ],
+    [
+     0.5004,
+     0.513,
+     63.53
+    ],
+    [
+     0.3682,
+     0.7704,
+     77.96
+    ]
+   ]
+  },
+  "testSceneSpatial": {
+   "file": "footage/iphone-standard/testSceneSpatial.mp4",
+   "duration": 96.467,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "spatial-k2SpatialRotateMatch": 54.246,
+    "spatial-k2SpatialRotateMatch-end": 69.909,
+    "spatial-g1SpatialSymmetryMirror": 81.774,
+    "spatial-g1SpatialSymmetryMirror-end": 94.801
+   },
+   "taps": []
+  },
+  "testSceneStickersAndTrail": {
+   "file": "footage/iphone-standard/testSceneStickersAndTrail.mp4",
+   "duration": 110.133,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "stickers": 66.579,
+    "stickers-end": 74.592,
+    "trail": 87.736,
+    "trail-end": 105.527
+   },
+   "taps": [
+    [
+     0.3611,
+     2.6834,
+     62.757
+    ],
+    [
+     0.1223,
+     0.0973,
+     75.146
+    ],
+    [
+     0.4357,
+     0.7037,
+     84.368
+    ]
+   ]
+  },
+  "testSceneTeenPlaceValue": {
+   "file": "footage/iphone-standard/testSceneTeenPlaceValue.mp4",
+   "duration": 143.2,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "teen-start": 99.133,
+    "teen-end": 111.279
+   },
+   "taps": [
+    [
+     0.3947,
+     0.7742,
+     101.922
+    ],
+    [
+     0.7753,
+     0.8082,
+     103.67
+    ],
+    [
+     0.5,
+     0.8842,
+     107.482
+    ],
+    [
+     0.3947,
+     0.9161,
+     131.542
+    ],
+    [
+     0.7753,
+     0.6053,
+     134.744
+    ],
+    [
+     0.5,
+     0.8842,
+     137.443
+    ]
+   ]
+  },
+  "testSceneThemes": {
+   "file": "footage/iphone-standard/testSceneThemes.mp4",
+   "duration": 200.267,
+   "width": 884,
+   "height": 1920,
+   "marks": {
+    "theme-candyland": 64.339,
+    "theme-candyland-end": 78.789,
+    "theme-axolotl": 89.389,
+    "theme-axolotl-end": 104.702,
+    "theme-rainbowUnicorn": 115.74,
+    "theme-rainbowUnicorn-end": 131.283,
+    "theme-starsSpace": 140.652,
+    "theme-starsSpace-end": 154.876,
+    "theme-superhero": 163.73,
+    "theme-superhero-end": 177.452,
+    "theme-turboCars": 185.508,
+    "theme-turboCars-end": 198.92
+   },
+   "taps": []
+  }
+ }
+}

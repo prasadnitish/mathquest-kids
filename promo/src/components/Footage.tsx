@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, OffthreadVideo, interpolate, staticFile, useCurrentFrame, useVideoConfig, Easing} from 'remotion';
+import {AbsoluteFill, OffthreadVideo, Sequence, interpolate, staticFile, useCurrentFrame, useVideoConfig, Easing} from 'remotion';
 import footageIndex from '../footage.json';
 import {fonts} from '../brand';
 
@@ -228,3 +228,130 @@ export function clipTiming(device: DeviceKind, scene: string, mark: string, offs
     (footage?.taps ?? []).filter(([, , t]) => t >= fromSource && t <= toSource);
   return {found: start !== undefined, start: start ?? 0, frameOf, tapFrames, tapsBetween, marks: footage?.marks ?? {}};
 }
+
+/** A moment to show at normal speed: from `before` seconds before `at` to `after` seconds after. */
+export type Moment = {at: number; before?: number; after?: number};
+
+type Segment = {from: number; frames: number; start: number; rate: number};
+
+/**
+ * A speed-ramped timeline through a recording: each moment plays at `rate`, and the waits
+ * between them (the test pausing for the app to settle) run at `fastRate`. The screen is
+ * still during those waits, so the speed-up doesn't show; it just keeps the edit moving.
+ */
+export function rampTimeline(moments: Moment[], {rate = 1, fastRate = 5, fps = 30, holdTo = 0} = {}) {
+  const windows = moments
+    .map((m) => ({start: m.at - (m.before ?? 0.4), end: m.at + (m.after ?? 0.9)}))
+    .sort((a, b) => a.start - b.start);
+  const merged: Array<{start: number; end: number}> = [];
+  for (const w of windows) {
+    const last = merged[merged.length - 1];
+    if (last && w.start <= last.end + 0.25) {
+      last.end = Math.max(last.end, w.end);
+    } else {
+      merged.push({...w});
+    }
+  }
+  const segments: Segment[] = [];
+  let frame = 0;
+  const push = (start: number, end: number, r: number) => {
+    const frames = Math.max(1, Math.round(((end - start) / r) * fps));
+    segments.push({from: frame, frames, start, rate: r});
+    frame += frames;
+  };
+  merged.forEach((w, i) => {
+    push(w.start, w.end, rate);
+    const next = merged[i + 1];
+    if (next && next.start > w.end) {
+      push(w.end, next.start, fastRate);
+    }
+  });
+  // Hold the last moment (a crawl, since a video can't play at rate 0) out to `holdTo` frames.
+  const last = merged[merged.length - 1];
+  if (last && holdTo > frame) {
+    const crawl = 0.02;
+    segments.push({from: frame, frames: holdTo - frame, start: last.end, rate: crawl});
+    frame = holdTo;
+  }
+  const frameOf = (sourceTime: number) => {
+    for (const s of segments) {
+      const end = s.start + (s.frames / fps) * s.rate;
+      if (sourceTime >= s.start && sourceTime <= end) {
+        return s.from + Math.round(((sourceTime - s.start) / s.rate) * fps);
+      }
+    }
+    return sourceTime < (segments[0]?.start ?? 0) ? 0 : frame;
+  };
+  return {segments, totalFrames: frame, frameOf};
+}
+
+/** Plays a scene through a ramped timeline (see rampTimeline). */
+export const RampedClip: React.FC<{device: DeviceKind; scene: string; segments: Segment[]}> = ({device, scene, segments}) => {
+  if (!sceneFootage(device, scene) || segments.length === 0) {
+    return <Placeholder label={`${device} · ${scene}`} />;
+  }
+  return (
+    <AbsoluteFill style={{background: 'black'}}>
+      {segments.map((segment, i) => (
+        <Sequence key={i} from={segment.from} durationInFrames={segment.frames}>
+          <SegmentClip device={device} scene={scene} start={segment.start} rate={segment.rate} />
+        </Sequence>
+      ))}
+    </AbsoluteFill>
+  );
+};
+
+/** A zoom onto part of the screen for whatever it wraps (see Focus). */
+export const Zoom: React.FC<{focus: Focus[]; children: React.ReactNode}> = ({focus, children}) => {
+  const frame = useCurrentFrame();
+  let scale = 1;
+  let cx = 0.5;
+  let cy = 0.5;
+  for (const f of focus) {
+    const ramp = 10;
+    const inT = interpolate(frame, [f.from, f.from + ramp], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
+    const outT = interpolate(frame, [f.to - ramp, f.to], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
+    const t = Math.min(inT, outT);
+    if (t > 0) {
+      scale = 1 + (f.scale - 1) * t;
+      cx = 0.5 + (f.x - 0.5) * t;
+      cy = 0.5 + (f.y - 0.5) * t;
+    }
+  }
+  const half = 0.5 / scale;
+  cx = Math.min(1 - half, Math.max(half, cx));
+  cy = Math.min(1 - half, Math.max(half, cy));
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{transformOrigin: '0 0', transform: `translate(${(0.5 - cx * scale) * 100}%, ${(0.5 - cy * scale) * 100}%) scale(${scale})`}}>
+        {children}
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+/** The video from `start` seconds at `rate`, with tap ripples. */
+const SegmentClip: React.FC<{device: DeviceKind; scene: string; start: number; rate: number}> = ({device, scene, start, rate}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const footage = sceneFootage(device, scene)!;
+  const sourceTime = start + (frame / fps) * rate;
+  return (
+    <AbsoluteFill style={{background: 'black'}}>
+      <OffthreadVideo
+        src={staticFile(footage.file)}
+        trimBefore={Math.round(start * fps)}
+        playbackRate={rate}
+        muted
+        style={{width: '100%', height: '100%', objectFit: 'cover'}}
+      />
+      {footage.taps.map(([x, y, t], i) => {
+        const age = ((sourceTime - t - TAP_LAG) * fps) / Math.max(1, rate);
+        if (age < -2 || age > 14) {
+          return null;
+        }
+        return <Ripple key={i} x={x} y={y} age={age} />;
+      })}
+    </AbsoluteFill>
+  );
+};

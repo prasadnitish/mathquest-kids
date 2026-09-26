@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {BAR, brand, duckedVolume, fonts, themeOrder, themes, ThemeKey} from '../brand';
 import {Backdrop, Caption, Mascot, PopText, StatTile, TileRow, TileWipe, Wordmark} from '../components/Brand';
-import {Clip, Device, clipTiming} from '../components/Footage';
+import {Clip, Device} from '../components/Footage';
+import {SlipScene, slipVoiceFrame} from '../components/SlipScene';
 
 // 46 seconds: 23 bars of the 120 BPM track. Sections start on bar lines.
 export const OVERVIEW_FRAMES = 23 * BAR;
@@ -19,9 +20,8 @@ const S = {
 const IPAD = 'ipad-standard' as const;
 
 export const Overview: React.FC = () => {
-  const column = columnTiming(IPAD, COLUMN_FRAMES);
-  const fixed = column.frameOf(column.marks['slip-fixed']);
-  const voiceAt = fixed === undefined ? undefined : S.column + fixed + 16;
+  const voice = slipVoiceFrame(IPAD, COLUMN_FRAMES);
+  const voiceAt = voice === undefined ? undefined : S.column + voice;
   return (
     <AbsoluteFill style={{background: brand.purple}}>
       <Sequence from={S.intro} durationInFrames={S.themes - S.intro}>
@@ -145,65 +145,20 @@ const ThemeCut: React.FC<{theme: ThemeKey}> = ({theme}) => {
 // The forgotten carry: written without it, flagged in red with a note, fixed, solved.
 const COLUMN_FRAMES = 6 * BAR;
 
-const ColumnWork: React.FC = () => {
-  const timing = columnTiming(IPAD, COLUMN_FRAMES);
-  const {frameOf, marks} = timing;
-  const coaching = frameOf(marks['slip-coaching']) ?? 150;
-  const wrong = Math.max(20, coaching - 36);
-  const fixed = frameOf(marks['slip-fixed']) ?? 270;
-  const zoomTaps = timing.tapsBetween(marks['slip-coaching'] ?? 0, (marks['slip-fixed'] ?? 0) - 0.9).slice(0, 2);
-  const zoomX = zoomTaps.length ? zoomTaps.reduce((sum, [x]) => sum + x, 0) / zoomTaps.length : 0.5;
-  const zoomY = zoomTaps.length ? zoomTaps.reduce((sum, [, y]) => sum + y, 0) / zoomTaps.length : 0.4;
-  return (
-    <AbsoluteFill>
-      <Backdrop from="#ffb86b" to="#ff6fae" />
-      <div style={{position: 'absolute', left: 70, top: 120}}>
-        <Device kind={IPAD} height={840}>
-          <Clip
-            device={IPAD}
-            scene="testSceneColumnAddition"
-            mark="slip-start"
-            offset={timing.offset}
-            rate={timing.rate}
-            focus={[{from: wrong - 6, to: fixed + 24, scale: 1.55, x: zoomX, y: zoomY + 0.06}]}
-          />
-        </Device>
-      </div>
-      <div style={{position: 'absolute', left: 1330, top: 110, width: 540, display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'flex-start'}}>
-        <PopText text="Write it like on paper" size={70} align="left" delay={4} maxWidth={540} />
-        <Caption text="Ones first, then tens" size={40} delay={26} emoji="✏️" />
-        <Caption text="Forgot to carry the 1?" size={40} delay={wrong} emoji="🤔" />
-        <Caption text="It shows exactly where" size={40} delay={coaching} emoji="🔍" background="#ffe3e3" color="#b3261e" />
-        <Caption text="Fixed it!" size={48} delay={fixed + 6} emoji="🎉" background={brand.sprout} color="white" />
-      </div>
-      {timing.tapFrames(0, COLUMN_FRAMES).map((f, i) => (
-        <Sequence key={i} from={f} durationInFrames={8}>
-          <Audio src={staticFile('audio/sfx-tap.wav')} volume={0.35} />
-        </Sequence>
-      ))}
-      <Sequence from={fixed + 8} durationInFrames={60}>
-        <Audio src={staticFile('audio/sfx-ding.wav')} volume={0.5} />
-      </Sequence>
-      <Sequence from={fixed + 16} durationInFrames={90}>
-        <Audio src={staticFile('app/voice/voice-kept-trying.mp3')} volume={1} />
-      </Sequence>
-    </AbsoluteFill>
-  );
-};
-
-/** Fits the carry scene (a little before the slip to just after the fix) into `frames`. */
-export function columnTiming(device: typeof IPAD | 'iphone-standard', frames: number) {
-  const probe = clipTiming(device, 'testSceneColumnAddition', 'slip-start');
-  const start = probe.marks['slip-start'];
-  const fixed = probe.marks['slip-fixed'];
-  const offset = -0.2;
-  let rate = 1;
-  if (start !== undefined && fixed !== undefined) {
-    const needed = fixed + 2.4 - (start + offset);
-    rate = Math.min(1.6, Math.max(0.9, needed / (frames / 30)));
-  }
-  return {...clipTiming(device, 'testSceneColumnAddition', 'slip-start', offset, rate), offset, rate};
-}
+const ColumnWork: React.FC = () => (
+  <SlipScene
+    device={IPAD}
+    frames={COLUMN_FRAMES}
+    deviceHeight={840}
+    deviceLeft={70}
+    deviceTop={120}
+    captionsLeft={1330}
+    captionsTop={110}
+    captionsWidth={540}
+    captionSize={40}
+    title={<PopText text="Write it like on paper" size={70} align="left" delay={4} maxWidth={540} />}
+  />
+);
 
 const Montage: React.FC = () => {
   const cuts: Array<{theme: ThemeKey; scene: string; mark: string; offset: number; rate: number; text: string; emoji: string}> = [

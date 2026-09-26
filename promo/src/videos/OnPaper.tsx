@@ -3,7 +3,7 @@ import {AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurre
 import {BAR, brand, duckedVolume, fonts} from '../brand';
 import {Backdrop, Caption, Mascot, PopText, TileWipe, Wordmark} from '../components/Brand';
 import {Clip, Device} from '../components/Footage';
-import {columnTiming} from './Overview';
+import {SlipScene, slipVoiceFrame} from '../components/SlipScene';
 
 // 32 seconds, square, for the LinkedIn feed: the column-by-column feature on its own.
 export const ON_PAPER_FRAMES = 16 * BAR;
@@ -11,9 +11,8 @@ const S = {hook: 0, abcd: BAR, reveal: 2 * BAR, paper: 3 * BAR, trade: 10 * BAR,
 const PHONE = 'iphone-standard' as const;
 
 export const OnPaper: React.FC = () => {
-  const column = columnTiming(PHONE, PAPER_FRAMES);
-  const fixed = column.frameOf(column.marks['slip-fixed']);
-  const voiceAt = fixed === undefined ? undefined : S.paper + fixed + 16;
+  const voice = slipVoiceFrame(PHONE, PAPER_FRAMES);
+  const voiceAt = voice === undefined ? undefined : S.paper + voice;
   return (
   <AbsoluteFill style={{background: brand.cream}}>
     <Sequence from={S.hook} durationInFrames={S.abcd - S.hook}>
@@ -179,52 +178,19 @@ const Reveal: React.FC = () => (
 
 const PAPER_FRAMES = S.trade - S.paper;
 
-const Paper: React.FC = () => {
-  const timing = columnTiming(PHONE, PAPER_FRAMES);
-  const {frameOf, marks} = timing;
-  const coaching = frameOf(marks['slip-coaching']) ?? 170;
-  const wrong = Math.max(24, coaching - 36);
-  const fixed = frameOf(marks['slip-fixed']) ?? 300;
-  const zoomTaps = timing.tapsBetween(marks['slip-coaching'] ?? 0, (marks['slip-fixed'] ?? 0) - 0.9).slice(0, 2);
-  const zoomX = zoomTaps.length ? zoomTaps.reduce((sum, [x]) => sum + x, 0) / zoomTaps.length : 0.5;
-  const zoomY = zoomTaps.length ? zoomTaps.reduce((sum, [, y]) => sum + y, 0) / zoomTaps.length : 0.4;
-  return (
-    <AbsoluteFill>
-      <Backdrop from="#ffb86b" to="#ff6fae" />
-      <div style={{position: 'absolute', left: 50, top: 40}}>
-        <Device kind={PHONE} height={1000}>
-          <Clip
-            device={PHONE}
-            scene="testSceneColumnAddition"
-            mark="slip-start"
-            offset={timing.offset}
-            rate={timing.rate}
-            focus={[{from: wrong - 6, to: fixed + 24, scale: 1.45, x: zoomX, y: zoomY + 0.05}]}
-          />
-        </Device>
-      </div>
-      <div style={{position: 'absolute', left: 560, top: 70, width: 480, display: 'flex', flexDirection: 'column', gap: 26, alignItems: 'flex-start'}}>
-        <Caption text="Ones first" size={42} delay={8} emoji="✏️" />
-        <Caption text="Then the tens" size={42} delay={Math.max(30, wrong - 30)} emoji="➡️" />
-        <Caption text="Forgot the carried 1?" size={42} delay={wrong} emoji="🤔" />
-        <Caption text="The tens turn red, with a hint" size={40} delay={coaching} background="#ffe3e3" color="#b3261e" emoji="🔍" />
-        <Caption text="Carry the 1, fix the tens" size={42} delay={coaching + 40} emoji="🛠️" />
-        <Caption text="Solved!" size={54} delay={fixed + 6} background={brand.sprout} color="white" emoji="🎉" />
-      </div>
-      {timing.tapFrames(0, PAPER_FRAMES).map((f, i) => (
-        <Sequence key={i} from={f} durationInFrames={8}>
-          <Audio src={staticFile('audio/sfx-tap.wav')} volume={0.35} />
-        </Sequence>
-      ))}
-      <Sequence from={fixed + 8} durationInFrames={60}>
-        <Audio src={staticFile('audio/sfx-ding.wav')} volume={0.5} />
-      </Sequence>
-      <Sequence from={fixed + 16} durationInFrames={90}>
-        <Audio src={staticFile('app/voice/voice-kept-trying.mp3')} volume={1} />
-      </Sequence>
-    </AbsoluteFill>
-  );
-};
+const Paper: React.FC = () => (
+  <SlipScene
+    device={PHONE}
+    frames={PAPER_FRAMES}
+    deviceHeight={1000}
+    deviceLeft={50}
+    deviceTop={40}
+    captionsLeft={560}
+    captionsTop={70}
+    captionsWidth={480}
+    captionSize={42}
+  />
+);
 
 const Trade: React.FC = () => (
   <AbsoluteFill>

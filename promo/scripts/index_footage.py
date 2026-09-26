@@ -31,14 +31,17 @@ def main():
         scene = os.path.splitext(os.path.basename(video))[0]
         width, height, duration = probe(video)
         marks, taps = {}, []
+        # Footage filmed before capture.sh synced its logs carries a measured correction.
+        offset_file = os.path.splitext(video)[0] + ".offset"
+        shift = float(open(offset_file).read()) if os.path.exists(offset_file) else 0.0
         log = os.path.splitext(video)[0] + ".log"
         if os.path.exists(log):
             for line in open(log):
                 parts = line.split()
                 if parts[:1] == ["MARK"] and len(parts) == 3:
-                    marks.setdefault(parts[1], float(parts[2]))
+                    marks.setdefault(parts[1], float(parts[2]) + shift)
                 elif parts[:1] == ["TAP"] and len(parts) == 4:
-                    taps.append([float(parts[1]), float(parts[2]), float(parts[3])])
+                    taps.append([float(parts[1]), float(parts[2]), float(parts[3]) + shift])
         index.setdefault(device, {})[scene] = {
             "file": os.path.relpath(video, os.path.join(PROMO, "public")),
             "duration": round(duration, 3),
