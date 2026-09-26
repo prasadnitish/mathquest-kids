@@ -221,19 +221,22 @@ struct SpatialShapePicture: View {
     let size: CGFloat
 
     var body: some View {
-        let inner = size * 0.78
+        let inner: CGFloat = size * 0.78
         let marker = SpatialShape.markerPoint(for: shape)
+        let dot: CGFloat = inner * 0.14
+        let dotOffset = CGSize(width: inner * marker.x - dot / 2, height: inner * marker.y - dot / 2)
+        let flip: CGFloat = mirrored ? -1 : 1
         SpatialShape(kind: shape)
             .fill(color)
             .overlay(SpatialShape(kind: shape).stroke(Color.black.opacity(0.18), lineWidth: 1.5))
             .overlay(alignment: .topLeading) {
                 Circle()
                     .fill(Color.white)
-                    .frame(width: inner * 0.14, height: inner * 0.14)
-                    .offset(x: inner * marker.x - inner * 0.07, y: inner * marker.y - inner * 0.07)
+                    .frame(width: dot, height: dot)
+                    .offset(dotOffset)
             }
             .frame(width: inner, height: inner)
-            .scaleEffect(x: mirrored ? -1 : 1, y: 1)
+            .scaleEffect(x: flip, y: 1)
             .rotationEffect(.degrees(Double(rotation)))
             .frame(width: size, height: size)
             .accessibilityHidden(true)
@@ -298,7 +301,7 @@ struct MirrorPicture: View {
     }
 
     private var givenHalf: some View {
-        art(object).mask(alignment: vertical ? .leading : .top) { halfMask }
+        art(object).mask(alignment: givenSide) { halfMask }
     }
 
     @ViewBuilder
@@ -310,32 +313,51 @@ struct MirrorPicture: View {
             reflected(art(Self.otherObject(than: object)))
         case .unflipped:
             art(object)
-                .mask(alignment: vertical ? .leading : .top) { halfMask }
-                .offset(x: vertical ? size / 2 : 0, y: vertical ? 0 : size / 2)
+                .mask(alignment: givenSide) { halfMask }
+                .offset(unflippedShift)
         case .turned:
             art(object)
                 .rotationEffect(.degrees(90))
-                .mask(alignment: vertical ? .trailing : .bottom) { halfMask }
+                .mask(alignment: otherSide) { halfMask }
         }
     }
 
     /// The given half flipped across the mirror line.
     private func reflected(_ view: some View) -> some View {
-        view
-            .mask(alignment: vertical ? .leading : .top) { halfMask }
-            .scaleEffect(x: vertical ? -1 : 1, y: vertical ? 1 : -1)
+        let flipX: CGFloat = vertical ? -1 : 1
+        let flipY: CGFloat = vertical ? 1 : -1
+        return view
+            .mask(alignment: givenSide) { halfMask }
+            .scaleEffect(x: flipX, y: flipY)
+    }
+
+    /// The side the given half is on: left of a vertical mirror line, above a horizontal one.
+    private var givenSide: Alignment { vertical ? .leading : .top }
+    private var otherSide: Alignment { vertical ? .trailing : .bottom }
+
+    /// Moves the given half, unflipped, onto the other side of the mirror line.
+    private var unflippedShift: CGSize {
+        vertical ? CGSize(width: size / 2, height: 0) : CGSize(width: 0, height: size / 2)
     }
 
     private var halfMask: some View {
-        Rectangle().frame(width: vertical ? size / 2 : size, height: vertical ? size : size / 2)
+        let half: CGFloat = size / 2
+        let width: CGFloat = vertical ? half : size
+        let height: CGFloat = vertical ? size : half
+        return Rectangle().frame(width: width, height: height)
     }
 
     private var missingHalf: some View {
-        RoundedRectangle(cornerRadius: 8)
+        // Typed locals: the same math inline was too slow for the type checker.
+        let half: CGFloat = size / 2
+        let width: CGFloat = (vertical ? half : size) - 8
+        let height: CGFloat = (vertical ? size : half) - 8
+        let shift: CGSize = vertical ? CGSize(width: size / 4, height: 0) : CGSize(width: 0, height: size / 4)
+        return RoundedRectangle(cornerRadius: 8)
             .stroke(AppTheme.textSecondary.opacity(0.45), style: StrokeStyle(lineWidth: 2, dash: [5, 4]))
-            .frame(width: vertical ? size / 2 - 8 : size - 8, height: vertical ? size - 8 : size / 2 - 8)
+            .frame(width: width, height: height)
             .overlay(Text("?").kidText(.h2).foregroundStyle(AppTheme.textSecondary))
-            .offset(x: vertical ? size / 4 : 0, y: vertical ? 0 : size / 4)
+            .offset(shift)
     }
 
     private var mirrorLine: some View {
