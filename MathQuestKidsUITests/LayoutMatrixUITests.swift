@@ -556,7 +556,7 @@ final class LayoutMatrixUITests: XCTestCase {
             }
 
             // The whole screen: an element screenshot of the app is mis-cropped in landscape.
-            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            let screenshot = XCTAttachment(screenshot: screenCapture(matching: orientation))
             screenshot.name = "LX__\(screen)__\(orientation.rawValue)"
             screenshot.lifetime = .keepAlways
             add(screenshot)
@@ -629,6 +629,7 @@ final class LayoutMatrixUITests: XCTestCase {
     }
 
     private func auditLayout(_ nodes: [Node], bounds: CGRect) -> [String] {
+        let dockFrames = dock(nodes, bounds: bounds).map(\.frame)
         var controls: [(name: String, frame: CGRect)] = []
         var texts: [(name: String, frame: CGRect)] = []
         for node in nodes {
@@ -664,6 +665,10 @@ final class LayoutMatrixUITests: XCTestCase {
             for j in controls.indices where j > i {
                 let a = controls[i]
                 let b = controls[j]
+                // Answers pass under the pinned quest bar as they scroll; that's not a collision.
+                if dockFrames.contains(a.frame) != dockFrames.contains(b.frame) {
+                    continue
+                }
                 let ratio = overlapRatio(a.frame, b.frame)
                 // Near-total overlap is nesting (a control inside its card), not a collision.
                 if ratio >= 0.2 && ratio < 0.95 {
@@ -695,16 +700,20 @@ final class LayoutMatrixUITests: XCTestCase {
     /// The part of the screen where scrolling content is visible: everything above the quest's
     /// pinned bottom bar (Read Aloud, Hint, Submit) when it's showing, otherwise the whole screen.
     private func contentArea(_ nodes: [Node], bounds: CGRect) -> CGRect {
-        let dockLabels: Set<String> = ["Read Aloud", "Hint", "Submit Answer"]
-        let dock = nodes.filter {
-            $0.type == .button && dockLabels.contains($0.label) && $0.frame.minY > bounds.midY
-        }
-        guard dock.contains(where: { $0.label == "Submit Answer" }),
-              let top = dock.map(\.frame.minY).min() else {
+        guard let top = dock(nodes, bounds: bounds).map(\.frame.minY).min() else {
             return bounds
         }
         // The bar has 12 pt of padding above its buttons.
         return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width, height: max(0, top - 12 - bounds.minY))
+    }
+
+    /// The quest's pinned bottom bar buttons, when the bar is showing.
+    private func dock(_ nodes: [Node], bounds: CGRect) -> [Node] {
+        let labels: Set<String> = ["Read Aloud", "Hint", "Submit Answer"]
+        let dock = nodes.filter {
+            $0.type == .button && labels.contains($0.label) && $0.frame.minY > bounds.midY
+        }
+        return dock.contains(where: { $0.label == "Submit Answer" }) ? dock : []
     }
 
     @MainActor
@@ -732,50 +741,71 @@ final class LayoutMatrixUITests: XCTestCase {
         }
         var lastFrame = CGRect.null
         var blindSteps = 0
-        for _ in 0..<10 {
+        var stalls = 0
+        var trail: [String] = []
+        for _ in 0..<12 {
             let offset: CGFloat
             if element.exists, !element.frame.isEmpty {
                 let frame = element.frame
-                // Stop when a drag no longer moves it: the content can't scroll further.
+                trail.append("\(Int(frame.minY))")
                 if frame == lastFrame {
-                    break
+                    // A drag that doesn't move it either hit the end of the content or started
+                    // on something that kept the touch. Try once more from the middle.
+                    stalls += 1
+                    if stalls > 1 {
+                        break
+                    }
+                } else {
+                    stalls = 0
                 }
                 lastFrame = frame
                 // Aim for its center a third of the way down the visible area.
                 offset = frame.midY - (area.minY + area.height / 3)
             } else {
                 // Not loaded yet (lazy content): move down to load more, a few times at most.
+                trail.append("-")
                 blindSteps += 1
                 if blindSteps > 4 {
                     break
                 }
                 offset = area.height * 0.6
             }
-            let step = max(-area.height * 0.6, min(area.height * 0.6, offset))
-            drag(app, by: -step, startingIn: area)
+            // Up to 60% of the area per drag. Start near the edge the content moves away
+            // from, so the whole drag stays inside the area, or from the middle on a retry.
+            let fraction: CGFloat = max(-0.6, min(0.6, offset / max(area.height, 1)))
+            // Already where it's aimed but still not fully in view (too big, or cut off at a
+            // side): scrolling can't help, and a drag this short would just be a tap.
+            if abs(fraction) < 0.03 {
+                break
+            }
+            let start: CGFloat = stalls > 0 ? 0.5 + fraction / 2 : (fraction > 0 ? 0.8 : 0.2)
+            drag(app, in: area, from: start, to: start - fraction)
             scrolledSinceTop = true
             if isFullyVisible(element, in: area) {
                 return true
             }
         }
+        print("LXDIAG reveal gave up on \(element.description): minY after each drag \(trail.joined(separator: " ")), area \(area), app \(app.frame), state \(app.state.rawValue)")
         return false
     }
 
-    /// Drags the content by `dy` points, starting in the middle of `area` (away from pinned
-    /// bars) and holding at the end so the scroll view doesn't fling.
+    /// Drags between two points on the vertical center line of `area`, given as fractions of
+    /// its height. Slow drags hold at the end so the content stops exactly; fast ones fling.
     @MainActor
-    private func drag(_ app: XCUIApplication, by dy: CGFloat, startingIn area: CGRect) {
+    private func drag(_ app: XCUIApplication, in area: CGRect, from: CGFloat, to: CGFloat, fast: Bool = false) {
         let bounds = app.frame
-        guard bounds.height > 0, bounds.width > 0 else { return }
-        let start = app.coordinate(withNormalizedOffset: CGVector(
-            dx: (area.midX - bounds.minX) / bounds.width,
-            dy: (area.midY - bounds.minY) / bounds.height
-        ))
-        start.press(
-            forDuration: 0.1,
-            thenDragTo: start.withOffset(CGVector(dx: 0, dy: dy)),
-            withVelocity: .slow,
-            thenHoldForDuration: 0.2
+        guard bounds.height > 0, bounds.width > 0, area.height > 0 else { return }
+        func point(_ fraction: CGFloat) -> XCUICoordinate {
+            app.coordinate(withNormalizedOffset: CGVector(
+                dx: (area.midX - bounds.minX) / bounds.width,
+                dy: (area.minY + area.height * fraction - bounds.minY) / bounds.height
+            ))
+        }
+        point(from).press(
+            forDuration: fast ? 0.05 : 0.1,
+            thenDragTo: point(to),
+            withVelocity: fast ? .fast : .slow,
+            thenHoldForDuration: fast ? 0 : 0.2
         )
     }
 
@@ -791,13 +821,33 @@ final class LayoutMatrixUITests: XCTestCase {
         }
     }
 
+    /// Flicks back to the top, starting well inside the content. app.swipeDown() pulled down
+    /// Notification Center on the iPhone SE in landscape, which then covered the app.
     @MainActor
     private func scrollToTop(_ app: XCUIApplication) {
         guard scrolledSinceTop else { return }
+        let area = contentArea(app)
         for _ in 0..<4 {
-            app.swipeDown()
+            drag(app, in: area, from: 0.3, to: 0.9, fast: true)
         }
+        settle(0.6)
         scrolledSinceTop = false
+    }
+
+    /// Captures the screen once it has caught up with a rotation. Right after one, a capture
+    /// can still come back in the old orientation (once, an all-black portrait frame).
+    @MainActor
+    private func screenCapture(matching orientation: Orientation) -> XCUIScreenshot {
+        var capture = XCUIScreen.main.screenshot()
+        for _ in 0..<3 {
+            let size = capture.image.size
+            if (size.width > size.height) == (orientation == .landscape) {
+                break
+            }
+            settle(0.5)
+            capture = XCUIScreen.main.screenshot()
+        }
+        return capture
     }
 
     /// Lets rotation and state-change animations finish before measuring.

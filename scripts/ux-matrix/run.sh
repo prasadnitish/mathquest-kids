@@ -131,6 +131,8 @@ while IFS=$'\t' read -r slug udid model <&3; do
     set -e
 
     grep -E "Test Case .*(passed|failed)" "$log" | tail -3 || true
+    # The test prints LXDIAG lines when it can't scroll something into view.
+    grep -F "LXDIAG" "$log" | head -40 || true
     if [[ $status -ne 0 ]]; then
       overall=1
       show_failure_details "$log"
