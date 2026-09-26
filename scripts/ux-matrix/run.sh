@@ -18,7 +18,8 @@ PROJECT="$ROOT/MathQuestKids.xcodeproj"
 SCHEME="MathQuestKids"
 ONLY_TESTING="${ONLY_TESTING:-MathQuestKidsUITests/LayoutMatrixUITests}"
 # Release: launches fast enough for XCUITest's launch timeout on slow CI machines,
-# and matches what testers get from TestFlight.
+# and matches what testers get from TestFlight. The build only includes the UI tests
+# (and keeps testability on) because the unit tests need `@testable import`.
 CONFIGURATION="${CONFIGURATION:-Release}"
 HERE="$ROOT/scripts/ux-matrix"
 
@@ -39,7 +40,9 @@ xcodebuild build-for-testing \
   -configuration "$CONFIGURATION" \
   -destination "generic/platform=iOS Simulator" \
   -derivedDataPath "$DERIVED_DATA" \
+  -only-testing:"$ONLY_TESTING" \
   CODE_SIGNING_ALLOWED=NO \
+  ENABLE_TESTABILITY=YES \
   > "$OUT_DIR/build.log" 2>&1
 status=$?
 set -e
