@@ -4,12 +4,14 @@ import SwiftUI
 
 struct CTAButtonStyle: ButtonStyle {
     let theme: VisualTheme
+    /// Narrower side padding and no corner decoration, for sharing a row on a phone.
+    var compact = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .kidText(.h2)
             .foregroundStyle(theme.ctaText)
-            .padding(.horizontal, 36)
+            .padding(.horizontal, compact ? 18 : 36)
             .padding(.vertical, 16)
             .frame(minHeight: DesignTokens.Layout.minTapTarget)
             .background {
@@ -26,10 +28,12 @@ struct CTAButtonStyle: ButtonStyle {
                             )
                     }
                     .overlay(alignment: .trailing) {
-                        Image(systemName: theme.decorativeSymbols.first ?? "sparkles")
-                            .font(.system(size: 14, weight: .black))
-                            .foregroundStyle(theme.ctaText.opacity(0.16))
-                            .padding(.trailing, 18)
+                        if !compact {
+                            Image(systemName: theme.decorativeSymbols.first ?? "sparkles")
+                                .font(.system(size: 14, weight: .black))
+                                .foregroundStyle(theme.ctaText.opacity(0.16))
+                                .padding(.trailing, 18)
+                        }
                     }
                     .overlay {
                         Capsule()

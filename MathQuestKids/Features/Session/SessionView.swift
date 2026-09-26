@@ -371,20 +371,23 @@ struct SessionView: View {
             showingHint = true
         } label: {
             Label("Hint", systemImage: "lightbulb.fill")
+                .lineLimit(1)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(SecondaryButtonStyle())
         .accessibilityLabel("Hint")
     }
 
-    private var readAloudButton: some View {
+    private func readAloudButton(compact: Bool = false) -> some View {
         Button {
             appState.replayPrompt()
         } label: {
             Label("Read Aloud", systemImage: "speaker.wave.2.fill")
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
+        .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme, compact: compact))
         .accessibilityLabel("Read Aloud")
     }
 
@@ -393,6 +396,8 @@ struct SessionView: View {
             submit(item: item)
         } label: {
             Label("Submit", systemImage: "checkmark.circle.fill")
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(CTAButtonStyle(theme: appState.selectedTheme))
@@ -402,26 +407,26 @@ struct SessionView: View {
 
     @ViewBuilder
     private func dockButtons(item: PracticeItem) -> some View {
+        // On iPhones Hint takes only the width it needs, leaving the rest to Read Aloud
+        // and Submit, whose labels otherwise wrapped onto two lines.
+        let isPhone = sizeClass == .compact || verticalSizeClass == .compact
         if verticalSizeClass == .compact {
             // iPhone landscape: one row. Stacked, the three buttons covered most of the
             // short screen and left only a sliver for the question.
             HStack(spacing: 12) {
-                readAloudButton
+                readAloudButton()
                 hintButton
+                    .fixedSize(horizontal: true, vertical: false)
                 submitButton(item: item)
             }
         } else {
+            // Two rows. Three stacked rows took about 40% of an iPhone SE's screen and
+            // hid the question until the child scrolled.
             VStack(spacing: 12) {
-                if sizeClass == .regular {
-                    HStack(spacing: 12) {
-                        readAloudButton
-                        hintButton
-                    }
-                } else {
-                    VStack(spacing: 12) {
-                        readAloudButton
-                        hintButton
-                    }
+                HStack(spacing: 12) {
+                    readAloudButton(compact: isPhone)
+                    hintButton
+                        .fixedSize(horizontal: isPhone, vertical: false)
                 }
 
                 submitButton(item: item)
