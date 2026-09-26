@@ -15,7 +15,7 @@ At every stop it rotates the device, takes a screenshot, and records findings:
 | Finding | Meaning |
 |---|---|
 | Unreachable | A control can't be brought on screen, even by scrolling. Required controls (such as Submit) also fail the test. |
-| Overlap | Two tap targets partly cover each other, so a tap can hit the wrong one. |
+| Overlap | Two tap targets partly cover each other, so a tap can hit the wrong one. Answers scrolled under the quest's pinned button bar don't count. |
 | Clipped | Something is cut off at a screen edge. Expected for sideways-scrolling carousels. |
 | Below the fold | A primary control (for example Submit) needs scrolling to reach. |
 | Small target | A tap area is under Apple's 44×44 pt minimum. |
@@ -41,12 +41,22 @@ every slice keeps its screenshots.
 
 In CI, `.github/workflows/app-checks.yml` runs on pushes and pull requests that touch the
 app, weekly, and on demand (Actions → App checks → Run workflow). Each device runs in
-parallel. Results appear in three places:
+parallel, which takes a little over two hours for all six.
+
+For a quicker check, name devices and tests in the manual run's inputs, or add a line like
+this to a pushed commit's message:
+
+```
+UX-Matrix: iphone-small iphone-standard testCoreFlowLayouts
+```
+
+Results appear in three places:
 
 - the run's summary page: a findings table per device and a list of screens to look at
 - the `ux-matrix-report` artifact: `index.html` with every screenshot side by side
 - the `ux-matrix-report` branch: the same report, replaced on each run of `main`, `claude/*`
-  branches, the weekly schedule, and manual runs
+  branches, the weekly schedule, and manual runs (narrowed runs included, so check which
+  devices its summary lists)
 
 Locally, with Xcode 26:
 

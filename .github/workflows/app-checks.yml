@@ -5,6 +5,14 @@ name: App checks
 on:
   workflow_dispatch:
     inputs:
+      devices:
+        description: Devices to check, space-separated (empty for all six), e.g. "iphone-small ipad-mini"
+        type: string
+        default: ""
+      tests:
+        description: Layout tests to run, space-separated (empty for all), e.g. "testCoreFlowLayouts"
+        type: string
+        default: ""
       publish:
         description: Publish the screenshot report to the ux-matrix-report branch
         type: boolean
@@ -40,6 +48,43 @@ permissions:
   contents: read
 
 jobs:
+  # Picks the devices and layout tests. Everything by default; a manual run's inputs, or a
+  # "UX-Matrix:" line in a pushed commit's message, can narrow it for a quicker check, e.g.
+  #   UX-Matrix: iphone-small testCoreFlowLayouts
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    outputs:
+      devices: ${{ steps.plan.outputs.devices }}
+      tests: ${{ steps.plan.outputs.tests }}
+      partial: ${{ steps.plan.outputs.partial }}
+    steps:
+      - id: plan
+        env:
+          DEVICES: ${{ inputs.devices }}
+          TESTS: ${{ inputs.tests }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        shell: python3 {0}
+        run: |
+          import json, os, re, sys
+
+          every_device = ["iphone-small", "iphone-standard", "iphone-large", "ipad-mini", "ipad-standard", "ipad-large"]
+          words = f"{os.environ['DEVICES']} {os.environ['TESTS']}".split()
+          line = re.search(r"^UX-Matrix:(.*)$", os.environ["COMMIT_MESSAGE"], re.MULTILINE)
+          if line:
+              words += line.group(1).split()
+          unknown = [w for w in words if w not in every_device and not w.startswith("test")]
+          if unknown:
+              sys.exit(f"Not a device or test: {' '.join(unknown)}. Devices: {' '.join(every_device)}")
+          devices = [d for d in every_device if d in words] or every_device
+          tests = list(dict.fromkeys(w for w in words if w.startswith("test")))
+          partial = devices != every_device or bool(tests)
+          print(f"Devices: {' '.join(devices)}\nTests: {' '.join(tests) or 'all'}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"devices={json.dumps(devices)}\n")
+              out.write(f"tests={' '.join(tests)}\n")
+              out.write(f"partial={str(partial).lower()}\n")
+
   unit-tests:
     name: Unit tests
     runs-on: macos-26
@@ -79,13 +124,14 @@ jobs:
 
   layout:
     name: Layout (${{ matrix.device }})
+    needs: plan
     runs-on: macos-26
     # Per-test limits in run.sh stop a stuck test well before this, so results still upload.
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        device: [iphone-small, iphone-standard, iphone-large, ipad-mini, ipad-standard, ipad-large]
+        device: ${{ fromJSON(needs.plan.outputs.devices) }}
     steps:
       - uses: actions/checkout@v7
 
@@ -98,6 +144,8 @@ jobs:
       - name: Run layout matrix
         env:
           OUT_DIR: ${{ runner.temp }}/ux
+          # Empty runs every layout test.
+          TESTS: ${{ needs.plan.outputs.tests }}
         run: scripts/ux-matrix/run.sh ${{ matrix.device }}
 
       - uses: actions/upload-artifact@v7
@@ -113,8 +161,8 @@ jobs:
 
   report:
     name: UX report
-    needs: layout
-    if: always()
+    needs: [plan, layout]
+    if: always() && needs.plan.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -140,16 +188,20 @@ jobs:
           path: ${{ runner.temp }}/report
           retention-days: 30
 
-      # A single force-pushed commit, so screenshots never pile up in history.
+      # A single force-pushed commit, so screenshots never pile up in history. A narrowed run
+      # replaces it too, so the branch always shows the latest run; its summary lists the devices.
       - name: Publish to ux-matrix-report branch
         if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         env:
           GH_TOKEN: ${{ github.token }}
+          PARTIAL: ${{ needs.plan.outputs.partial }}
         run: |
           cd "$RUNNER_TEMP/report"
           git init -q -b ux-matrix-report
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -q -m "UX matrix report for ${GITHUB_SHA::7} on ${GITHUB_REF_NAME}"
+          scope="all devices"
+          if [[ "$PARTIAL" == "true" ]]; then scope="partial run"; fi
+          git commit -q -m "UX matrix report for ${GITHUB_SHA::7} on ${GITHUB_REF_NAME} (${scope})"
           git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ux-matrix-report
