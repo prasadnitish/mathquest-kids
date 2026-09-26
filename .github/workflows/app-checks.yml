@@ -80,7 +80,8 @@ jobs:
   layout:
     name: Layout (${{ matrix.device }})
     runs-on: macos-26
-    timeout-minutes: 90
+    # Per-test limits in run.sh stop a stuck test well before this, so results still upload.
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:

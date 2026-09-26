@@ -11,6 +11,9 @@ import XCTest
 /// elements) is recorded as a finding for review, because horizontal carousels and
 /// decorative layers make those checks too noisy to fail on.
 ///
+/// Each check reads one accessibility snapshot per orientation. Querying elements one by
+/// one costs a round trip to the app each time, which made a full device pass take hours.
+///
 /// Run across a device matrix with `scripts/ux-matrix/run.sh`.
 final class LayoutMatrixUITests: XCTestCase {
     private enum Orientation: String, CaseIterable {
@@ -22,9 +25,20 @@ final class LayoutMatrixUITests: XCTestCase {
         }
     }
 
+    /// One element from an accessibility snapshot.
+    private struct Node {
+        let type: XCUIElement.ElementType
+        let label: String
+        let identifier: String
+        let frame: CGRect
+    }
+
     private struct Target {
+        /// Live query, used only when the control has to be scrolled into view.
         let element: XCUIElement
         let name: String
+        /// Finds the control in a snapshot.
+        let matches: (Node) -> Bool
         /// Primary controls that should be visible without scrolling; reported if they aren't.
         var aboveFold = false
         /// Fail the test if the control can't be brought on screen at all.
@@ -72,6 +86,7 @@ final class LayoutMatrixUITests: XCTestCase {
         static let maxItemsPerQuest = 15
     }
 
+    private static let missionTitles = ["Start Quest", "Find My Starting Quest"]
     private static let modalCTATitles = ["Awesome!", "Launch On!", "So Sweet!", "Keep Going", "See My Route"]
 
     private static let controlTypes: Set<XCUIElement.ElementType> = [
@@ -102,11 +117,11 @@ final class LayoutMatrixUITests: XCTestCase {
             return
         }
         checkpoint("01-ProfileSetup", app, targets: [
-            Target(element: nameField, name: "Child name", aboveFold: true),
-            Target(element: app.buttons["Start Adventure"], name: "Start Adventure", aboveFold: true),
+            field("Child name", app, aboveFold: true),
+            button("Start Adventure", app, aboveFold: true),
         ])
 
-        let mission = missionButton(app)
+        let mission = app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [Self.missionTitles])).firstMatch
         type("Mia\n", into: nameField)
         if !mission.waitForExistence(timeout: 3) {
             let start = app.buttons["Start Adventure"]
@@ -119,10 +134,10 @@ final class LayoutMatrixUITests: XCTestCase {
             return
         }
         checkpoint("02-Home", app, targets: [
-            Target(element: mission, name: "Mission button", aboveFold: true),
-            Target(element: app.buttons["Settings"], name: "Settings", aboveFold: true),
-            Target(element: app.buttons["Explore Quest Trail"], name: "Explore Quest Trail"),
-            Target(element: app.buttons["Open Sticker Book"], name: "Open Sticker Book"),
+            buttonAmong(Self.missionTitles, app, name: "Mission button", aboveFold: true),
+            button("Settings", app, aboveFold: true),
+            button("Explore Quest Trail", app),
+            button("Open Sticker Book", app),
         ])
 
         let trail = app.buttons["Explore Quest Trail"]
@@ -131,7 +146,7 @@ final class LayoutMatrixUITests: XCTestCase {
             let back = app.buttons["Go back to home"]
             if back.waitForExistence(timeout: 5) {
                 checkpoint("03-QuestMap", app, targets: [
-                    Target(element: back, name: "Back", aboveFold: true),
+                    button("Go back to home", app, name: "Back", aboveFold: true),
                 ])
                 reveal(back, in: app)
                 back.tap()
@@ -146,7 +161,7 @@ final class LayoutMatrixUITests: XCTestCase {
             let close = app.buttons["Close sticker book"]
             if close.waitForExistence(timeout: 5) {
                 checkpoint("04-StickerBook", app, targets: [
-                    Target(element: close, name: "Done", aboveFold: true),
+                    button("Close sticker book", app, name: "Done", aboveFold: true),
                 ])
                 reveal(close, in: app)
                 close.tap()
@@ -171,8 +186,7 @@ final class LayoutMatrixUITests: XCTestCase {
         }
         mission.tap()
 
-        let prompt = app.staticTexts["problemPrompt"]
-        guard prompt.waitForExistence(timeout: 8) else {
+        guard app.staticTexts["problemPrompt"].waitForExistence(timeout: 8) else {
             XCTFail("Starting the mission did not open a quest")
             return
         }
@@ -188,6 +202,8 @@ final class LayoutMatrixUITests: XCTestCase {
         checkpoint("08-SessionFeedback", app, targets: [])
 
         guard finishSession(app) else {
+            // Record where it stopped, so the report shows what the loop couldn't get past.
+            checkpoint("08b-SessionStuck", app, targets: [])
             XCTFail("Could not reach the quest summary")
             return
         }
@@ -197,7 +213,7 @@ final class LayoutMatrixUITests: XCTestCase {
         while modalIndex < 3, modalCTA.waitForExistence(timeout: 3) {
             modalIndex += 1
             checkpoint("09-Celebration\(modalIndex)", app, targets: [
-                Target(element: modalCTA, name: modalCTA.label, aboveFold: true),
+                buttonAmong(Self.modalCTATitles, app, name: "Celebration button", aboveFold: true),
             ])
             reveal(modalCTA, in: app)
             modalCTA.tap()
@@ -205,8 +221,8 @@ final class LayoutMatrixUITests: XCTestCase {
         }
 
         checkpoint("10-Summary", app, targets: [
-            Target(element: app.buttons["Back to Home"], name: "Back to Home"),
-            Target(element: app.buttons["Start next recommended quest"], name: "Start Next Quest", required: false),
+            button("Back to Home", app),
+            button("Start next recommended quest", app, name: "Start Next Quest", required: false),
         ])
     }
 
@@ -239,11 +255,11 @@ final class LayoutMatrixUITests: XCTestCase {
         }
 
         checkpoint("05b-QuestCheck", app, targets: [
-            Target(element: prompt, name: "Quest check prompt", aboveFold: true),
-            Target(element: app.buttons["Read Aloud"], name: "Read Aloud", aboveFold: true),
-            Target(element: firstOption(app), name: "First answer"),
-            Target(element: app.buttons["I don't know yet"], name: "I don't know yet"),
-            Target(element: app.buttons["Maybe later"], name: "Maybe later", required: false),
+            text("Diagnostic problem prompt", app, name: "Quest check prompt", aboveFold: true),
+            button("Read Aloud", app, aboveFold: true),
+            buttonPrefixed("Option ", app, name: "First answer"),
+            button("I don't know yet", app),
+            button("Maybe later", app, required: false),
         ])
     }
 
@@ -297,8 +313,8 @@ final class LayoutMatrixUITests: XCTestCase {
             return
         }
         checkpoint("05-ParentGate", app, targets: [
-            Target(element: pinField, name: "Parent PIN", aboveFold: true),
-            Target(element: app.buttons["Unlock Settings"], name: "Unlock Settings", aboveFold: true),
+            field("Parent PIN", app, secure: true, aboveFold: true),
+            button("Unlock Settings", app, aboveFold: true),
         ], scrolls: false)
 
         type("2468", into: pinField)
@@ -309,7 +325,7 @@ final class LayoutMatrixUITests: XCTestCase {
             return
         }
         checkpoint("06-ParentSettings", app, targets: [
-            Target(element: app.buttons["Done"], name: "Done", aboveFold: true),
+            button("Done", app, aboveFold: true),
         ], scrolls: false)
     }
 
@@ -327,30 +343,20 @@ final class LayoutMatrixUITests: XCTestCase {
     }
 
     @MainActor
-    private func missionButton(_ app: XCUIApplication) -> XCUIElement {
-        app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [["Start Quest", "Find My Starting Quest"]])).firstMatch
-    }
-
-    @MainActor
-    private func firstOption(_ app: XCUIApplication) -> XCUIElement {
-        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Option ")).firstMatch
-    }
-
-    @MainActor
     private func sessionTargets(_ app: XCUIApplication) -> [Target] {
         [
-            Target(element: app.staticTexts["problemPrompt"], name: "Question prompt", aboveFold: true),
-            Target(element: app.buttons["Read Aloud"], name: "Read Aloud", aboveFold: true),
-            Target(element: app.buttons["Submit Answer"], name: "Submit Answer", aboveFold: true),
-            Target(element: app.buttons["Hint"], name: "Hint", required: false),
-            Target(element: firstOption(app), name: "First answer", required: false),
+            text("problemPrompt", app, name: "Question prompt", aboveFold: true),
+            button("Read Aloud", app, aboveFold: true),
+            button("Submit Answer", app, aboveFold: true),
+            button("Hint", app, required: false),
+            buttonPrefixed("Option ", app, name: "First answer", required: false),
         ]
     }
 
     /// Picks an answer so Submit is enabled; correctness doesn't matter for layout checks.
     @MainActor
     private func answerCurrentItem(_ app: XCUIApplication) {
-        let option = firstOption(app)
+        let option = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Option ")).firstMatch
         if option.exists {
             reveal(option, in: app)
             option.tap()
@@ -362,10 +368,22 @@ final class LayoutMatrixUITests: XCTestCase {
         }
     }
 
-    /// Answers until the item changes. Wrong answers retry once, then show a correction to acknowledge.
+    /// Where the quest is ("3 of 7"), read from the progress bar's combined label. It changes on
+    /// every new item, even when consecutive items share a prompt ("How many dots?").
     @MainActor
-    @discardableResult
-    private func submitUntilItemChanges(_ app: XCUIApplication, isDone: () -> Bool) -> Bool {
+    private func itemPosition(_ app: XCUIApplication) -> String {
+        let progress = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label MATCHES %@", ".*[0-9]+ of [0-9]+.*"))
+            .firstMatch
+        guard progress.exists, let range = progress.label.range(of: #"\d+ of \d+"#, options: .regularExpression) else {
+            return ""
+        }
+        return String(progress.label[range])
+    }
+
+    /// Answers until `isDone`. Wrong answers retry once, then show a correction to acknowledge.
+    @MainActor
+    private func submitUntil(_ app: XCUIApplication, _ isDone: () -> Bool) -> Bool {
         for _ in 0..<8 {
             let acknowledge = app.buttons["Acknowledge correction and continue"]
             if acknowledge.exists {
@@ -391,29 +409,88 @@ final class LayoutMatrixUITests: XCTestCase {
     private func advancePastReviewItem(_ app: XCUIApplication) -> Bool {
         let reviewMarker = app.staticTexts["This is a review item"]
         guard reviewMarker.exists else { return true }
-        let prompt = app.staticTexts["problemPrompt"]
-        let reviewPrompt = prompt.label
-        return submitUntilItemChanges(app) {
-            !reviewMarker.exists || (prompt.exists && prompt.label != reviewPrompt)
+        let start = itemPosition(app)
+        return submitUntil(app) {
+            !reviewMarker.exists || itemPosition(app) != start
         }
     }
 
     @MainActor
     private func finishSession(_ app: XCUIApplication) -> Bool {
         let backToHome = app.buttons["Back to Home"]
-        let prompt = app.staticTexts["problemPrompt"]
         var items = 0
         while !backToHome.exists && items < FeatureLimits.maxItemsPerQuest {
             items += 1
-            let current = prompt.exists ? prompt.label : ""
-            let advanced = submitUntilItemChanges(app) {
-                backToHome.exists || (prompt.exists && prompt.label != current)
+            let start = itemPosition(app)
+            let advanced = submitUntil(app) {
+                backToHome.exists || itemPosition(app) != start
             }
             if !advanced {
                 break
             }
         }
         return backToHome.waitForExistence(timeout: 5)
+    }
+
+    // MARK: - Targets
+
+    @MainActor
+    private func button(
+        _ label: String,
+        _ app: XCUIApplication,
+        name: String? = nil,
+        aboveFold: Bool = false,
+        required: Bool = true
+    ) -> Target {
+        Target(
+            element: app.buttons[label],
+            name: name ?? label,
+            matches: { $0.type == .button && ($0.label == label || $0.identifier == label) },
+            aboveFold: aboveFold,
+            required: required
+        )
+    }
+
+    @MainActor
+    private func buttonAmong(_ labels: [String], _ app: XCUIApplication, name: String, aboveFold: Bool = false) -> Target {
+        Target(
+            element: app.buttons.matching(NSPredicate(format: "label IN %@", argumentArray: [labels])).firstMatch,
+            name: name,
+            matches: { $0.type == .button && labels.contains($0.label) },
+            aboveFold: aboveFold
+        )
+    }
+
+    @MainActor
+    private func buttonPrefixed(_ prefix: String, _ app: XCUIApplication, name: String, required: Bool = true) -> Target {
+        Target(
+            element: app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", prefix)).firstMatch,
+            name: name,
+            matches: { $0.type == .button && $0.label.hasPrefix(prefix) },
+            required: required
+        )
+    }
+
+    /// A static text found by accessibility identifier or label.
+    @MainActor
+    private func text(_ key: String, _ app: XCUIApplication, name: String, aboveFold: Bool = false) -> Target {
+        Target(
+            element: app.staticTexts[key],
+            name: name,
+            matches: { $0.type == .staticText && ($0.identifier == key || $0.label == key) },
+            aboveFold: aboveFold
+        )
+    }
+
+    @MainActor
+    private func field(_ label: String, _ app: XCUIApplication, secure: Bool = false, aboveFold: Bool = false) -> Target {
+        let kind: XCUIElement.ElementType = secure ? .secureTextField : .textField
+        return Target(
+            element: secure ? app.secureTextFields[label] : app.textFields[label],
+            name: label,
+            matches: { $0.type == kind && ($0.label == label || $0.identifier == label) },
+            aboveFold: aboveFold
+        )
     }
 
     // MARK: - Checkpoint
@@ -442,18 +519,23 @@ final class LayoutMatrixUITests: XCTestCase {
             screenshot.lifetime = .keepAlways
             add(screenshot)
 
-            var findings = notes + auditLayout(app)
+            let root = try? app.snapshot()
+            let nodes = root.map { flatten($0) } ?? []
+            let bounds = root?.frame ?? app.frame
+
+            var findings = notes
+            findings += root == nil ? ["[audit] Could not read the accessibility tree"] : auditLayout(nodes, bounds: bounds)
             for target in targets {
-                findings += check(target, screen: screen, orientation: orientation, app: app, scrolls: scrolls)
+                findings += check(target, nodes: nodes, bounds: bounds, screen: screen, orientation: orientation, app: app, scrolls: scrolls)
             }
 
-            let size = app.frame.size
+            let sizeClass = root.map { "\(describe($0.horizontalSizeClass))×\(describe($0.verticalSizeClass))" } ?? "unknown"
             let header = [
                 "screen: \(screen)",
                 "orientation: \(orientation.rawValue)",
                 "device: \(ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] ?? "unknown")",
-                "size-class: \(describe(app.horizontalSizeClass))×\(describe(app.verticalSizeClass))",
-                "screen-size: \(Int(size.width))×\(Int(size.height)) pt",
+                "size-class: \(sizeClass)",
+                "screen-size: \(Int(bounds.width))×\(Int(bounds.height)) pt",
                 "---",
             ]
             let report = XCTAttachment(string: (header + capped(findings)).joined(separator: "\n"))
@@ -472,73 +554,53 @@ final class LayoutMatrixUITests: XCTestCase {
     @MainActor
     private func check(
         _ target: Target,
+        nodes: [Node],
+        bounds: CGRect,
         screen: String,
         orientation: Orientation,
         app: XCUIApplication,
         scrolls: Bool
     ) -> [String] {
-        let element = target.element
-        var findings: [String] = []
+        let visible = bounds.insetBy(dx: -1, dy: -1)
+        if let node = nodes.first(where: { target.matches($0) && !$0.frame.isEmpty && visible.contains($0.frame) }) {
+            return smallTarget(type: node.type, label: node.label, frame: node.frame)
+        }
 
         // Optional controls only apply to some screens; don't scroll around looking for them.
-        if !target.required && !element.exists {
+        if !target.required && !nodes.contains(where: target.matches) {
             return []
         }
 
-        if !isFullyOnScreen(element, in: app) {
-            if scrolls, reveal(element, in: app) {
-                if target.aboveFold {
-                    findings.append("[below-fold] \"\(target.name)\" is only reachable by scrolling")
-                }
-            } else {
-                if target.required {
-                    XCTFail("\(screen) [\(orientation.rawValue)]: \"\(target.name)\" can't be brought on screen")
-                }
-                return ["[unreachable] \"\(target.name)\" can't be brought on screen"]
-            }
+        // Slow path: below the fold or not loaded yet, so scroll to it with live queries.
+        if scrolls, reveal(target.element, in: app) {
+            var findings = target.aboveFold ? ["[below-fold] \"\(target.name)\" is only reachable by scrolling"] : []
+            findings += smallTarget(type: target.element.elementType, label: target.element.label, frame: target.element.frame)
+            return findings
         }
 
-        if element.elementType != .staticText {
-            let frame = element.frame
-            if frame.width < 44 || frame.height < 44 {
-                findings.append("[small-target] \"\(shortName(element.label))\" is \(Int(frame.width))×\(Int(frame.height)) pt (minimum 44×44)")
-            }
+        if target.required {
+            XCTFail("\(screen) [\(orientation.rawValue)]: \"\(target.name)\" can't be brought on screen")
         }
-        return findings
+        return ["[unreachable] \"\(target.name)\" can't be brought on screen"]
     }
 
-    /// Reads the whole accessibility tree once and checks what is on screen.
-    @MainActor
-    private func auditLayout(_ app: XCUIApplication) -> [String] {
-        guard let root = try? app.snapshot() else {
-            return ["[audit] Could not read the accessibility tree"]
-        }
-        let bounds = root.frame
+    private func auditLayout(_ nodes: [Node], bounds: CGRect) -> [String] {
         var controls: [(name: String, frame: CGRect)] = []
         var texts: [(name: String, frame: CGRect)] = []
-
-        func visit(_ node: XCUIElementSnapshot) {
-            if node.elementType == .keyboard {
-                return
-            }
+        for node in nodes {
             let frame = node.frame
             // Only judge elements fully on screen vertically; the rest are scrolled away.
             let onScreenVertically = frame.minY >= bounds.minY - 1 && frame.maxY <= bounds.maxY + 1
             // Skip elements scrolled entirely off the side (e.g. later carousel items).
             let touchesScreenHorizontally = frame.maxX > bounds.minX && frame.minX < bounds.maxX
-            if !frame.isEmpty, onScreenVertically, touchesScreenHorizontally {
-                let name = shortName(node.label.isEmpty ? node.identifier : node.label)
-                if Self.controlTypes.contains(node.elementType) {
-                    controls.append((name, frame))
-                } else if node.elementType == .staticText {
-                    texts.append((name, frame))
-                }
-            }
-            for child in node.children {
-                visit(child)
+            guard !frame.isEmpty, onScreenVertically, touchesScreenHorizontally else { continue }
+            let name = shortName(node.label.isEmpty ? node.identifier : node.label)
+            if Self.controlTypes.contains(node.type) {
+                controls.append((name, frame))
+            } else if node.type == .staticText {
+                texts.append((name, frame))
             }
         }
-        visit(root)
 
         var findings: [String] = []
         for item in controls + texts {
@@ -571,6 +633,22 @@ final class LayoutMatrixUITests: XCTestCase {
     }
 
     // MARK: - Small helpers
+
+    @MainActor
+    private func flatten(_ root: XCUIElementSnapshot) -> [Node] {
+        var nodes: [Node] = []
+        func visit(_ element: XCUIElementSnapshot) {
+            if element.elementType == .keyboard {
+                return
+            }
+            nodes.append(Node(type: element.elementType, label: element.label, identifier: element.identifier, frame: element.frame))
+            for child in element.children {
+                visit(child)
+            }
+        }
+        visit(root)
+        return nodes
+    }
 
     @MainActor
     private func isFullyOnScreen(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
@@ -627,6 +705,11 @@ final class LayoutMatrixUITests: XCTestCase {
             settle(0.25)
         }
         return condition()
+    }
+
+    private func smallTarget(type: XCUIElement.ElementType, label: String, frame: CGRect) -> [String] {
+        guard type != .staticText, frame.width < 44 || frame.height < 44 else { return [] }
+        return ["[small-target] \"\(shortName(label))\" is \(Int(frame.width))×\(Int(frame.height)) pt (minimum 44×44)"]
     }
 
     private func overlapRatio(_ a: CGRect, _ b: CGRect) -> CGFloat {

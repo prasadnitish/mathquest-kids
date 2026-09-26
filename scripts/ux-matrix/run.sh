@@ -91,6 +91,9 @@ while IFS=$'\t' read -r slug udid model <&3; do
     -derivedDataPath "$DERIVED_DATA" \
     -only-testing:"$ONLY_TESTING" \
     -parallel-testing-enabled NO \
+    -test-timeouts-enabled YES \
+    -default-test-execution-time-allowance 2400 \
+    -maximum-test-execution-time-allowance 2700 \
     -resultBundlePath "$result" \
     > "$OUT_DIR/results/$slug.log" 2>&1
   status=$?
