@@ -1,0 +1,170 @@
+Command line invocation:
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project /Users/runner/work/mathquest-kids/mathquest-kids/MathQuestKids.xcodeproj -scheme MathQuestKids -configuration Release -destination id=77755FE6-B298-4F5F-8244-3838E46482D9 -derivedDataPath /Users/runner/work/_temp/promo/DerivedData "-only-testing:MathQuestKidsUITests/PromoCaptureUITests/testSceneSpatial" -parallel-testing-enabled NO
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, arch:arm64, id:77755FE6-B298-4F5F-8244-3838E46482D9, OS:26.5, name:UX iPad (A16) }
+{ platform:iOS Simulator, arch:x86_64, id:77755FE6-B298-4F5F-8244-3838E46482D9, OS:26.5, name:UX iPad (A16) }
+2026-09-26 18:59:30.321181+0000 MathQuestKidsUITests-Runner[74357:414155] [Default] Running tests...
+2026-09-26 18:59:30.658971+0000 MathQuestKidsUITests-Runner[74357:414155] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Landscape Right
+Test Suite 'Selected tests' started at 2026-09-26 18:59:32.254.
+Test Suite 'MathQuestKidsUITests.xctest' started at 2026-09-26 18:59:32.254.
+Test Suite 'PromoCaptureUITests' started at 2026-09-26 18:59:32.254.
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneSpatial]' started.
+    t =     0.00s Start Test at 2026-09-26 18:59:32.256
+    t =     0.06s Set Up
+    t =     0.06s Setting device orientation to Landscape Left
+    t =     0.09s     Wait for com.apple.DocumentManager.DockFolderViewService to idle
+    t =     0.09s     Wait for com.apple.springboard to idle
+    t =     0.12s Open com.nitishprasad.sproutmath
+    t =     0.12s     Launch com.nitishprasad.sproutmath
+2026-09-26 18:59:33.268 xcodebuild[74080:413283] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-26 18:59:33.268 xcodebuild[74080:413283] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[74357]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x1096d0310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109764398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     9.71s         Setting up automation session
+    t =    11.21s         Wait for com.nitishprasad.sproutmath to idle
+    t =    14.00s Waiting 20.0s for "problemPrompt" StaticText to exist
+    t =    15.05s     Checking `Expect predicate `existsNoRetry == 1` for object "problemPrompt" StaticText`
+    t =    15.05s         Checking existence of `"problemPrompt" StaticText`
+PROMO-MARK spatial-k2SpatialRotateMatch 1790449188.759
+    t =    19.02s Checking existence of `Button (First Match)`
+    t =    19.34s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    19.51s Checking existence of `Button (First Match)`
+    t =    19.84s Find the Button (First Match)
+    t =    20.16s Checking existence of `"Submit Answer" Button`
+    t =    20.36s Find the "Submit Answer" Button
+    t =    20.57s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    20.89s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -87.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    20.89s     Wait for com.nitishprasad.sproutmath to idle
+    t =    20.93s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    21.07s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    21.71s         Wait for com.apple.springboard to idle
+    t =    21.80s     Synthesize event
+    t =    21.83s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.06s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.24s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.54s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.69s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    23.45s     Wait for com.nitishprasad.sproutmath to idle
+    t =    23.90s Checking existence of `"Option 1: <" Button`
+    t =    24.20s Find the "Option 1: <" Button
+    t =    24.40s Checking existence of `"Submit Answer" Button`
+    t =    24.52s Find the "Submit Answer" Button
+    t =    24.71s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    24.81s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -87.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    24.81s     Wait for com.nitishprasad.sproutmath to idle
+    t =    24.82s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    24.95s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    25.09s         Wait for com.apple.springboard to idle
+    t =    25.16s     Synthesize event
+    t =    25.17s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.25s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.39s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.46s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.58s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    26.37s     Wait for com.nitishprasad.sproutmath to idle
+    t =    26.83s Checking existence of `"Option 1: <" Button`
+    t =    27.09s Find the "Option 1: <" Button
+    t =    27.39s Checking existence of `"Submit Answer" Button`
+    t =    27.52s Find the "Submit Answer" Button
+    t =    27.69s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    27.79s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -87.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    27.80s     Wait for com.nitishprasad.sproutmath to idle
+    t =    27.82s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    27.94s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    28.11s         Wait for com.apple.springboard to idle
+    t =    28.18s     Synthesize event
+    t =    28.23s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    28.29s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    28.44s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    28.57s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    28.67s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    29.44s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK spatial-k2SpatialRotateMatch-end 1790449205.104
+    t =    32.85s Terminate com.nitishprasad.sproutmath:74974
+    t =    33.87s Setting device orientation to Landscape Left
+    t =    33.87s     Wait for com.apple.DocumentManager.DockFolderViewService to idle
+    t =    33.87s     Wait for com.apple.springboard to idle
+    t =    34.14s Open com.nitishprasad.sproutmath
+    t =    34.14s     Launch com.nitishprasad.sproutmath
+2026-09-26 19:00:06.415 xcodebuild[74080:413283] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-26 19:00:06.415 xcodebuild[74080:413283] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    35.09s         Setting up automation session
+    t =    37.29s         Wait for com.nitishprasad.sproutmath to idle
+    t =    39.95s Waiting 20.0s for "problemPrompt" StaticText to exist
+    t =    41.00s     Checking `Expect predicate `existsNoRetry == 1` for object "problemPrompt" StaticText`
+    t =    41.00s         Checking existence of `"problemPrompt" StaticText`
+PROMO-MARK spatial-g1SpatialSymmetryMirror 1790449214.701
+    t =    44.95s Checking existence of `Button (First Match)`
+    t =    45.15s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    45.19s Checking existence of `Button (First Match)`
+    t =    45.28s Find the Button (First Match)
+    t =    45.38s Checking existence of `"Submit Answer" Button`
+    t =    45.44s Find the "Submit Answer" Button
+    t =    45.54s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    45.61s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -72.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    45.61s     Wait for com.nitishprasad.sproutmath to idle
+    t =    45.62s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    45.72s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    45.84s         Wait for com.apple.springboard to idle
+    t =    45.90s     Synthesize event
+    t =    45.91s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    45.97s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.02s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.11s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.19s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.97s     Wait for com.nitishprasad.sproutmath to idle
+    t =    47.44s Checking existence of `"Option 1: <" Button`
+    t =    47.68s Find the "Option 1: <" Button
+    t =    47.96s Checking existence of `"Submit Answer" Button`
+    t =    48.10s Find the "Submit Answer" Button
+    t =    48.20s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.27s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -72.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    48.27s     Wait for com.nitishprasad.sproutmath to idle
+    t =    48.28s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.35s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    48.45s         Wait for com.apple.springboard to idle
+    t =    48.52s     Synthesize event
+    t =    48.54s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.64s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.73s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.79s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.87s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    49.66s     Wait for com.nitishprasad.sproutmath to idle
+    t =    50.09s Checking existence of `"Option 1: <" Button`
+    t =    50.23s Find the "Option 1: <" Button
+    t =    50.40s Checking existence of `"Submit Answer" Button`
+    t =    50.54s Find the "Submit Answer" Button
+    t =    50.68s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    50.79s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -72.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    50.79s     Wait for com.nitishprasad.sproutmath to idle
+    t =    50.82s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    50.93s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    51.05s         Wait for com.apple.springboard to idle
+    t =    51.14s     Synthesize event
+    t =    51.15s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    51.25s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    51.34s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    51.39s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    51.49s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    52.24s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK spatial-g1SpatialSymmetryMirror-end 1790449227.921
+    t =    55.67s Terminate com.nitishprasad.sproutmath:76035
+    t =    56.68s Tear Down
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneSpatial]' passed (57.128 seconds).
+Test Suite 'PromoCaptureUITests' passed at 2026-09-26 19:00:29.384.
+	 Executed 1 test, with 0 failures (0 unexpected) in 57.128 (57.129) seconds
+Test Suite 'MathQuestKidsUITests.xctest' passed at 2026-09-26 19:00:29.388.
+	 Executed 1 test, with 0 failures (0 unexpected) in 57.128 (57.134) seconds
+Test Suite 'Selected tests' passed at 2026-09-26 19:00:29.389.
+	 Executed 1 test, with 0 failures (0 unexpected) in 57.128 (57.135) seconds
+2026-09-26 19:00:29.954 xcodebuild[74080:413283] [MT] IDETestOperationsObserverDebug: 65.365 elapsed -- Testing started completed.
+2026-09-26 19:00:29.954 xcodebuild[74080:413283] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-26 19:00:29.954 xcodebuild[74080:413283] [MT] IDETestOperationsObserverDebug: 65.365 sec, +65.365 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/_temp/promo/DerivedData/Logs/Test/Test-MathQuestKids-2026.09.26_18-59-20-+0000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

@@ -1,0 +1,206 @@
+Command line invocation:
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project /Users/runner/work/mathquest-kids/mathquest-kids/MathQuestKids.xcodeproj -scheme MathQuestKids -configuration Release -destination id=77755FE6-B298-4F5F-8244-3838E46482D9 -derivedDataPath /Users/runner/work/_temp/promo/DerivedData "-only-testing:MathQuestKidsUITests/PromoCaptureUITests/testSceneStickersAndTrail" -parallel-testing-enabled NO
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, arch:arm64, id:77755FE6-B298-4F5F-8244-3838E46482D9, OS:26.5, name:UX iPad (A16) }
+{ platform:iOS Simulator, arch:x86_64, id:77755FE6-B298-4F5F-8244-3838E46482D9, OS:26.5, name:UX iPad (A16) }
+2026-09-26 19:02:28.717093+0000 MathQuestKidsUITests-Runner[81995:432317] [Default] Running tests...
+2026-09-26 19:02:28.781748+0000 MathQuestKidsUITests-Runner[81995:432317] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Landscape Right
+Test Suite 'Selected tests' started at 2026-09-26 19:02:29.961.
+Test Suite 'MathQuestKidsUITests.xctest' started at 2026-09-26 19:02:29.962.
+Test Suite 'PromoCaptureUITests' started at 2026-09-26 19:02:29.962.
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneStickersAndTrail]' started.
+    t =     0.00s Start Test at 2026-09-26 19:02:29.972
+    t =     0.04s Set Up
+    t =     0.05s Setting device orientation to Landscape Left
+    t =     0.06s     Wait for com.apple.DocumentManager.DockFolderViewService to idle
+    t =     0.07s     Wait for com.apple.springboard to idle
+    t =     0.10s Open com.nitishprasad.sproutmath
+    t =     0.10s     Launch com.nitishprasad.sproutmath
+2026-09-26 19:02:31.296 xcodebuild[81201:430342] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-26 19:02:31.310 xcodebuild[81201:430342] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[81995]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10a3bc310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x10a848398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =    11.69s         Setting up automation session
+    t =    13.29s         Wait for com.nitishprasad.sproutmath to idle
+    t =    16.56s Waiting 20.0s for Button (First Match) to exist
+    t =    17.61s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    17.62s         Checking existence of `Button (First Match)`
+    t =    18.97s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    19.16s Checking existence of `"Open Sticker Book" Button`
+    t =    19.40s Find the "Open Sticker Book" Button
+    t =    19.58s Checking existence of `"Submit Answer" Button`
+    t =    19.86s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    20.03s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -369.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    20.04s     Wait for com.nitishprasad.sproutmath to idle
+    t =    20.04s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    20.23s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    20.50s         Wait for com.apple.springboard to idle
+    t =    20.58s     Synthesize event
+    t =    20.59s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    20.81s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    21.04s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    21.26s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    21.48s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.80s     Wait for com.nitishprasad.sproutmath to idle
+    t =    25.19s Checking existence of `"Open Sticker Book" Button`
+    t =    25.54s Find the "Open Sticker Book" Button
+    t =    25.84s Checking existence of `"Submit Answer" Button`
+    t =    26.12s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    26.29s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -369.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    26.29s     Wait for com.nitishprasad.sproutmath to idle
+    t =    26.29s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    26.55s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    26.87s         Wait for com.apple.springboard to idle
+    t =    26.91s     Synthesize event
+    t =    26.92s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    27.23s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    27.52s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    27.97s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    28.27s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    29.65s     Wait for com.nitishprasad.sproutmath to idle
+    t =    31.85s Checking existence of `"Open Sticker Book" Button`
+    t =    32.52s Find the "Open Sticker Book" Button
+    t =    32.98s Checking existence of `"Submit Answer" Button`
+    t =    33.35s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    33.57s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -369.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    33.57s     Wait for com.nitishprasad.sproutmath to idle
+    t =    33.57s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    33.83s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    34.15s         Wait for com.apple.springboard to idle
+    t =    34.22s     Synthesize event
+    t =    34.23s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    34.46s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    34.66s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    34.90s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    35.11s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    36.43s     Wait for com.nitishprasad.sproutmath to idle
+    t =    38.66s Checking existence of `"Open Sticker Book" Button`
+    t =    38.98s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    39.18s Find the "Open Sticker Book" Button
+PROMO-TAP 0.1231 2.4098 1790449389.659
+    t =    39.71s Tap "Open Sticker Book" Button
+    t =    39.71s     Wait for com.nitishprasad.sproutmath to idle
+    t =    39.72s     Find the "Open Sticker Book" Button
+    t =    40.05s     Check for interrupting elements affecting "Open Sticker Book" Button
+    t =    40.28s         Wait for com.apple.springboard to idle
+    t =    40.35s     Synthesize event
+    t =    40.39s         Scroll element to visible
+    t =    40.40s         Find the "Open Sticker Book" Button
+    t =    40.80s         Computed hit point {101, 145.25} after scrolling to visible
+    t =    41.13s     Wait for com.nitishprasad.sproutmath to idle
+    t =    41.26s Waiting 8.0s for "Close sticker book" Button to exist
+    t =    42.31s     Checking `Expect predicate `existsNoRetry == 1` for object "Close sticker book" Button`
+    t =    42.31s         Checking existence of `"Close sticker book" Button`
+PROMO-MARK stickers 1790449393.427
+    t =    45.96s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.12s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.17s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -287.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    46.17s     Wait for com.nitishprasad.sproutmath to idle
+    t =    46.18s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.29s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    46.41s         Wait for com.apple.springboard to idle
+    t =    46.49s     Synthesize event
+    t =    46.50s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.64s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.77s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.86s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.94s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    48.03s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK stickers-end 1790449400.436
+    t =    50.47s Checking existence of `"Close sticker book" Button`
+    t =    50.77s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    50.82s Find the "Close sticker book" Button
+PROMO-TAP 0.0415 0.0671 1790449400.974
+    t =    51.03s Tap "Close sticker book" Button
+    t =    51.03s     Wait for com.nitishprasad.sproutmath to idle
+    t =    51.04s     Find the "Close sticker book" Button
+    t =    51.34s     Check for interrupting elements affecting "Close sticker book" Button
+    t =    51.76s         Wait for com.apple.springboard to idle
+    t =    51.79s     Synthesize event
+    t =    52.21s     Wait for com.nitishprasad.sproutmath to idle
+    t =    52.51s Waiting 8.0s for Button (First Match) to exist
+    t =    53.55s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    53.55s         Checking existence of `Button (First Match)`
+    t =    53.79s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    54.00s Checking existence of `"Explore Quest Trail" Button`
+    t =    54.36s Find the "Explore Quest Trail" Button
+    t =    54.68s Checking existence of `"Submit Answer" Button`
+    t =    55.02s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    55.24s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -70.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    55.24s     Wait for com.nitishprasad.sproutmath to idle
+    t =    55.25s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    55.42s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    55.67s         Wait for com.apple.springboard to idle
+    t =    55.76s     Synthesize event
+    t =    55.77s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    56.16s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    56.44s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    56.60s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    56.73s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    57.58s     Wait for com.nitishprasad.sproutmath to idle
+    t =    59.99s Checking existence of `"Explore Quest Trail" Button`
+    t =    60.29s Find the "Explore Quest Trail" Button
+    t =    60.57s Checking existence of `"Submit Answer" Button`
+    t =    60.90s Checking existence of `"Explore Quest Trail" Button`
+    t =    61.22s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    61.42s Find the "Explore Quest Trail" Button
+PROMO-TAP 0.4013 0.4982 1790449411.680
+    t =    61.75s Tap "Explore Quest Trail" Button
+    t =    61.75s     Wait for com.nitishprasad.sproutmath to idle
+    t =    61.75s     Find the "Explore Quest Trail" Button
+    t =    62.06s     Check for interrupting elements affecting "Explore Quest Trail" Button
+    t =    62.31s         Wait for com.apple.springboard to idle
+    t =    62.37s     Synthesize event
+    t =    62.79s     Wait for com.nitishprasad.sproutmath to idle
+    t =    62.91s Waiting 8.0s for "Go back to home" Button to exist
+    t =    63.91s     Checking `Expect predicate `existsNoRetry == 1` for object "Go back to home" Button`
+    t =    63.91s         Checking existence of `"Go back to home" Button`
+PROMO-MARK trail 1790449415.069
+    t =    67.60s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    67.78s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    67.98s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -287.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    67.98s     Wait for com.nitishprasad.sproutmath to idle
+    t =    67.99s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    68.12s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    68.28s         Wait for com.apple.springboard to idle
+    t =    68.35s     Synthesize event
+    t =    68.37s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    68.54s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    68.66s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    68.77s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    68.89s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    70.05s     Wait for com.nitishprasad.sproutmath to idle
+    t =    73.82s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    73.95s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.10s Press Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.01, 0.72] -> (0.0, -287.0) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    74.10s     Wait for com.nitishprasad.sproutmath to idle
+    t =    74.11s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.24s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    74.42s         Wait for com.apple.springboard to idle
+    t =    74.48s     Synthesize event
+    t =    74.49s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.69s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.88s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    75.03s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    75.20s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    76.40s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK trail-end 1790449430.141
+    t =    80.18s Tear Down
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneStickersAndTrail]' passed (81.119 seconds).
+Test Suite 'PromoCaptureUITests' passed at 2026-09-26 19:03:51.095.
+	 Executed 1 test, with 0 failures (0 unexpected) in 81.119 (81.133) seconds
+Test Suite 'MathQuestKidsUITests.xctest' passed at 2026-09-26 19:03:51.097.
+	 Executed 1 test, with 0 failures (0 unexpected) in 81.119 (81.135) seconds
+Test Suite 'Selected tests' passed at 2026-09-26 19:03:51.102.
+	 Executed 1 test, with 0 failures (0 unexpected) in 81.119 (81.141) seconds
+2026-09-26 19:03:52.578 xcodebuild[81201:430342] [MT] IDETestOperationsObserverDebug: 88.205 elapsed -- Testing started completed.
+2026-09-26 19:03:52.578 xcodebuild[81201:430342] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-26 19:03:52.578 xcodebuild[81201:430342] [MT] IDETestOperationsObserverDebug: 88.205 sec, +88.205 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/_temp/promo/DerivedData/Logs/Test/Test-MathQuestKids-2026.09.26_19-02-20-+0000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

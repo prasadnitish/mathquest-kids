@@ -1,0 +1,169 @@
+Command line invocation:
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project /Users/runner/work/mathquest-kids/mathquest-kids/MathQuestKids.xcodeproj -scheme MathQuestKids -configuration Release -destination id=6E2DF8DD-DC3E-4642-BA3F-847DB74C967D -derivedDataPath /Users/runner/work/_temp/promo/DerivedData "-only-testing:MathQuestKidsUITests/PromoCaptureUITests/testSceneParentDashboard" -parallel-testing-enabled NO
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, arch:arm64, id:6E2DF8DD-DC3E-4642-BA3F-847DB74C967D, OS:26.5, name:UX iPhone 17 }
+{ platform:iOS Simulator, arch:x86_64, id:6E2DF8DD-DC3E-4642-BA3F-847DB74C967D, OS:26.5, name:UX iPhone 17 }
+2026-09-26 18:36:02.587995+0000 MathQuestKidsUITests-Runner[1602:253319] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-09-26 18:36:03.843.
+Test Suite 'MathQuestKidsUITests.xctest' started at 2026-09-26 18:36:03.844.
+Test Suite 'PromoCaptureUITests' started at 2026-09-26 18:36:03.844.
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneParentDashboard]' started.
+    t =     0.00s Start Test at 2026-09-26 18:36:03.845
+    t =     0.04s Set Up
+    t =     0.04s Setting device orientation to Portrait
+    t =     0.09s     Wait for com.apple.springboard to idle
+    t =     0.11s Open com.nitishprasad.sproutmath
+    t =     0.11s     Launch com.nitishprasad.sproutmath
+2026-09-26 18:36:04.593 xcodebuild[1179:252025] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-26 18:36:04.593 xcodebuild[1179:252025] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[1602]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10b198310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x106f44398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     8.34s         Setting up automation session
+    t =     9.89s         Wait for com.nitishprasad.sproutmath to idle
+    t =    13.42s Waiting 20.0s for Button (First Match) to exist
+    t =    14.46s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    14.46s         Checking existence of `Button (First Match)`
+PROMO-MARK parent-start 1790447779.726
+    t =    15.88s Checking existence of `"Settings" Button`
+    t =    16.48s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    16.73s Find the "Settings" Button
+PROMO-TAP 0.8744 0.1199 1790447780.972
+    t =    17.18s Tap "gearshape.fill" Button
+    t =    17.18s     Wait for com.nitishprasad.sproutmath to idle
+    t =    17.19s     Find the "gearshape.fill" Button
+    t =    18.30s     Check for interrupting elements affecting "gearshape.fill" Button
+    t =    18.86s     Synthesize event
+    t =    19.52s     Wait for com.nitishprasad.sproutmath to idle
+    t =    20.21s Waiting 8.0s for "Parent PIN" SecureTextField to exist
+    t =    21.26s     Checking `Expect predicate `existsNoRetry == 1` for object "Parent PIN" SecureTextField`
+    t =    21.26s         Checking existence of `"Parent PIN" SecureTextField`
+PROMO-MARK parent-gate 1790447787.427
+    t =    23.58s Checking existence of `"Parent PIN" SecureTextField`
+    t =    24.24s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    24.60s Find the "Parent PIN" SecureTextField
+PROMO-TAP 0.5000 0.6034 1790447789.264
+    t =    25.42s Tap "4-digit PIN" SecureTextField
+    t =    25.42s     Wait for com.nitishprasad.sproutmath to idle
+    t =    25.49s     Find the "4-digit PIN" SecureTextField
+    t =    26.31s     Check for interrupting elements affecting "4-digit PIN" SecureTextField
+    t =    27.42s     Synthesize event
+    t =    28.03s     Wait for com.nitishprasad.sproutmath to idle
+    t =    30.88s Type '<redacted>' into "4-digit PIN" SecureTextField
+    t =    30.88s     Wait for com.nitishprasad.sproutmath to idle
+    t =    31.44s     Find the "4-digit PIN" SecureTextField
+    t =    32.93s     Check for interrupting elements affecting "4-digit PIN" SecureTextField
+    t =    35.26s     Synthesize event
+    t =    35.69s     Wait for com.nitishprasad.sproutmath to idle
+    t =    36.26s Type '<redacted>' into "4-digit PIN" SecureTextField
+    t =    36.26s     Wait for com.nitishprasad.sproutmath to idle
+    t =    36.39s     Find the "4-digit PIN" SecureTextField
+    t =    37.72s     Check for interrupting elements affecting "4-digit PIN" SecureTextField
+    t =    38.85s     Synthesize event
+    t =    39.30s     Wait for com.nitishprasad.sproutmath to idle
+    t =    39.67s Type '<redacted>' into "4-digit PIN" SecureTextField
+    t =    39.67s     Wait for com.nitishprasad.sproutmath to idle
+    t =    39.68s     Find the "4-digit PIN" SecureTextField
+    t =    43.56s     Check for interrupting elements affecting "4-digit PIN" SecureTextField
+    t =    43.96s     Synthesize event
+    t =    44.31s     Wait for com.nitishprasad.sproutmath to idle
+    t =    44.66s Type '<redacted>' into "4-digit PIN" SecureTextField
+    t =    44.66s     Wait for com.nitishprasad.sproutmath to idle
+    t =    44.67s     Find the "4-digit PIN" SecureTextField
+    t =    45.10s     Check for interrupting elements affecting "4-digit PIN" SecureTextField
+    t =    45.43s     Synthesize event
+    t =    45.76s     Wait for com.nitishprasad.sproutmath to idle
+    t =    46.12s Checking existence of `"Unlock Settings" Button`
+    t =    46.61s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    46.91s Find the "Unlock Settings" Button
+PROMO-TAP 0.5004 0.5130 1790447811.226
+    t =    47.43s Tap "Unlock Settings" Button
+    t =    47.43s     Wait for com.nitishprasad.sproutmath to idle
+    t =    47.44s     Find the "Unlock Settings" Button
+    t =    47.91s     Check for interrupting elements affecting "Unlock Settings" Button
+    t =    48.89s     Synthesize event
+    t =    49.30s     Wait for com.nitishprasad.sproutmath to idle
+    t =    50.90s Waiting 8.0s for "Parent Settings" StaticText to exist
+    t =    51.97s     Checking `Expect predicate `existsNoRetry == 1` for object "Parent Settings" StaticText`
+    t =    51.97s         Checking existence of `"Parent Settings" StaticText`
+PROMO-MARK parent-settings 1790447819.241
+    t =    55.40s Checking existence of `"View child progress report" Button`
+    t =    55.88s Find the "View child progress report" Button
+    t =    56.76s Checking existence of `"View child progress report" Button`
+    t =    57.19s Find the "View child progress report" Button
+    t =    57.83s Checking existence of `"View child progress report" Button`
+    t =    58.48s Find the "View child progress report" Button
+    t =    59.02s Checking existence of `"View child progress report" Button`
+    t =    59.35s Find the "View child progress report" Button
+    t =    60.89s Checking existence of `"View child progress report" Button`
+    t =    61.29s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    61.49s Find the "View child progress report" Button
+PROMO-TAP 0.3682 0.7704 1790447825.656
+    t =    61.85s Tap "View child progress report" Button
+    t =    61.85s     Wait for com.nitishprasad.sproutmath to idle
+    t =    61.86s     Find the "View child progress report" Button
+    t =    62.24s     Check for interrupting elements affecting "View child progress report" Button
+    t =    62.58s     Synthesize event
+    t =    62.95s     Wait for com.nitishprasad.sproutmath to idle
+    t =    65.30s Waiting 8.0s for "PARENT VIEW" StaticText to exist
+    t =    66.38s     Checking `Expect predicate `existsNoRetry == 1` for object "PARENT VIEW" StaticText`
+    t =    66.38s         Checking existence of `"PARENT VIEW" StaticText`
+PROMO-MARK dashboard 1790447832.127
+    t =    71.29s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    71.99s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    72.45s Press Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] -> (0.0, -262.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    72.45s     Wait for com.nitishprasad.sproutmath to idle
+    t =    72.49s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    73.02s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    73.57s     Synthesize event
+    t =    73.58s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    73.88s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.20s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.50s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.86s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    76.14s     Wait for com.nitishprasad.sproutmath to idle
+    t =    80.13s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    80.56s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    80.97s Press Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] -> (0.0, -262.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    80.97s     Wait for com.nitishprasad.sproutmath to idle
+    t =    81.05s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    81.34s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    81.76s     Synthesize event
+    t =    81.78s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    82.19s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    82.57s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    82.90s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    83.34s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    84.64s     Wait for com.nitishprasad.sproutmath to idle
+    t =    87.28s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    87.70s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    88.04s Press Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.03, 0.72] -> (0.0, -262.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    88.04s     Wait for com.nitishprasad.sproutmath to idle
+    t =    88.05s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    88.30s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    88.65s     Synthesize event
+    t =    88.66s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    88.95s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    89.24s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    89.47s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    89.86s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    91.12s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK dashboard-end 1790447857.643
+    t =    93.80s Tear Down
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneParentDashboard]' passed (94.635 seconds).
+Test Suite 'PromoCaptureUITests' passed at 2026-09-26 18:37:38.482.
+	 Executed 1 test, with 0 failures (0 unexpected) in 94.635 (94.638) seconds
+Test Suite 'MathQuestKidsUITests.xctest' passed at 2026-09-26 18:37:38.488.
+	 Executed 1 test, with 0 failures (0 unexpected) in 94.635 (94.644) seconds
+Test Suite 'Selected tests' passed at 2026-09-26 18:37:38.493.
+	 Executed 1 test, with 0 failures (0 unexpected) in 94.635 (94.650) seconds
+2026-09-26 18:37:40.399 xcodebuild[1179:252025] [MT] IDETestOperationsObserverDebug: 101.743 elapsed -- Testing started completed.
+2026-09-26 18:37:40.399 xcodebuild[1179:252025] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-26 18:37:40.399 xcodebuild[1179:252025] [MT] IDETestOperationsObserverDebug: 101.743 sec, +101.743 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/_temp/promo/DerivedData/Logs/Test/Test-MathQuestKids-2026.09.26_18-35-54-+0000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started
