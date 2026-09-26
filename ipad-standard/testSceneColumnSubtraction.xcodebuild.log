@@ -1,0 +1,332 @@
+Command line invocation:
+    /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project /Users/runner/work/mathquest-kids/mathquest-kids/MathQuestKids.xcodeproj -scheme MathQuestKids -configuration Release -destination id=0D8BE7F1-2379-4DAF-AAA8-8F0FC9C87A50 -derivedDataPath /Users/runner/work/_temp/promo/DerivedData "-only-testing:MathQuestKidsUITests/PromoCaptureUITests/testSceneColumnSubtraction" -parallel-testing-enabled NO
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, arch:arm64, id:0D8BE7F1-2379-4DAF-AAA8-8F0FC9C87A50, OS:26.5, name:UX iPad (A16) }
+{ platform:iOS Simulator, arch:x86_64, id:0D8BE7F1-2379-4DAF-AAA8-8F0FC9C87A50, OS:26.5, name:UX iPad (A16) }
+2026-09-26 19:44:34.824038+0000 MathQuestKidsUITests-Runner[61933:161967] [Default] Running tests...
+2026-09-26 19:44:34.977391+0000 MathQuestKidsUITests-Runner[61933:161967] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Landscape Right
+Test Suite 'Selected tests' started at 2026-09-26 19:44:36.693.
+Test Suite 'MathQuestKidsUITests.xctest' started at 2026-09-26 19:44:36.694.
+Test Suite 'PromoCaptureUITests' started at 2026-09-26 19:44:36.694.
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneColumnSubtraction]' started.
+    t =     0.00s Start Test at 2026-09-26 19:44:36.695
+    t =     0.09s Set Up
+    t =     0.09s Setting device orientation to Landscape Left
+    t =     0.14s     Wait for com.apple.DocumentManager.DockFolderViewService to idle
+    t =     0.26s     Wait for com.apple.springboard to idle
+    t =     0.30s Open com.nitishprasad.sproutmath
+    t =     0.30s     Launch com.nitishprasad.sproutmath
+2026-09-26 19:44:38.890 xcodebuild[61276:160238] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-26 19:44:38.891 xcodebuild[61276:160238] [MT] IDELaunchParametersSnapshot: no debugger version
+objc[61933]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x108664310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x1085c8398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =    11.73s         Setting up automation session
+    t =    13.86s         Wait for com.nitishprasad.sproutmath to idle
+    t =    16.99s Waiting 20.0s for "problemPrompt" StaticText to exist
+    t =    18.05s     Checking `Expect predicate `existsNoRetry == 1` for object "problemPrompt" StaticText`
+    t =    18.05s         Checking existence of `"problemPrompt" StaticText`
+    t =    20.23s Checking existence of `Button (First Match)`
+    t =    21.38s Checking existence of `"Back to Home" Button`
+    t =    21.59s Find the "problemPrompt" StaticText
+    t =    21.84s Checking existence of `"Digit 1" Button`
+PROMO-DEBUG prompt="Compare 97 and 18" parsed=false digitPad=false
+    t =    22.05s Find the "problemPrompt" StaticText
+    t =    22.20s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    22.41s Checking existence of `Button (First Match)`
+    t =    22.75s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    22.90s Checking existence of `Button (First Match)`
+    t =    23.21s Find the Button (First Match)
+    t =    23.59s Checking existence of `"Submit Answer" Button`
+    t =    23.72s Find the "Submit Answer" Button
+    t =    24.01s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    24.27s Press Target Application 'com.nitishprasad.sproutmath'[0.50, 0.72] for 0.1 seconds, then drag to Target Application 'com.nitishprasad.sproutmath'[0.50, 0.72] -> (0.0, -72.2) with velocity of 700.00 pixels per second, and then hold for 0.2 seconds 
+    t =    24.27s     Wait for com.nitishprasad.sproutmath to idle
+    t =    24.38s     Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    24.76s     Check for interrupting elements affecting "Sprout Math" Application
+    t =    24.94s         Wait for com.apple.springboard to idle
+    t =    25.01s     Synthesize event
+    t =    25.06s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.22s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.38s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.53s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    25.72s         Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    26.52s     Wait for com.nitishprasad.sproutmath to idle
+    t =    28.85s Checking existence of `"Option 1: <" Button`
+    t =    29.07s Find the "Option 1: <" Button
+    t =    29.21s Checking existence of `"Submit Answer" Button`
+    t =    29.38s Find the "Submit Answer" Button
+    t =    29.64s Tap "Option 1: <" Button
+    t =    29.64s     Wait for com.nitishprasad.sproutmath to idle
+    t =    29.69s     Find the "Option 1: <" Button
+    t =    29.89s     Check for interrupting elements affecting "Option 1: <" Button
+    t =    30.00s         Wait for com.apple.springboard to idle
+    t =    30.04s     Synthesize event
+    t =    30.57s     Wait for com.nitishprasad.sproutmath to idle
+    t =    30.57s Checking existence of `"Submit Answer" Button`
+    t =    30.63s Find the "Submit Answer" Button
+    t =    30.71s Tap "Submit Answer" Button
+    t =    30.71s     Wait for com.nitishprasad.sproutmath to idle
+    t =    30.76s     Find the "Submit Answer" Button
+    t =    30.89s     Check for interrupting elements affecting "Submit Answer" Button
+    t =    31.02s         Wait for com.apple.springboard to idle
+    t =    31.06s     Synthesize event
+    t =    31.40s     Wait for com.nitishprasad.sproutmath to idle
+    t =    33.01s Checking existence of `Button (First Match)`
+    t =    33.43s Checking existence of `"Back to Home" Button`
+    t =    33.62s Checking existence of `"problemPrompt" StaticText`
+    t =    34.21s Find the "problemPrompt" StaticText
+    t =    34.55s Checking existence of `"You Did It" StaticText`
+    t =    35.30s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    35.74s Checking existence of `Button (First Match)`
+    t =    36.53s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    36.71s Checking existence of `Button (First Match)`
+    t =    37.40s Find the Button (First Match)
+    t =    37.77s Checking existence of `"Submit Answer" Button`
+    t =    37.91s Find the "Submit Answer" Button
+    t =    38.08s Tap "Option 1: <" Button
+    t =    38.08s     Wait for com.nitishprasad.sproutmath to idle
+    t =    38.13s     Find the "Option 1: <" Button
+    t =    38.51s     Check for interrupting elements affecting "Option 1: <" Button
+    t =    38.87s         Wait for com.apple.springboard to idle
+    t =    38.94s     Synthesize event
+    t =    39.35s     Wait for com.nitishprasad.sproutmath to idle
+    t =    39.35s Checking existence of `"Submit Answer" Button`
+    t =    39.46s Find the "Submit Answer" Button
+    t =    39.72s Tap "Submit Answer" Button
+    t =    39.72s     Wait for com.nitishprasad.sproutmath to idle
+    t =    39.80s     Find the "Submit Answer" Button
+    t =    40.14s     Check for interrupting elements affecting "Submit Answer" Button
+    t =    40.39s         Wait for com.apple.springboard to idle
+    t =    40.43s     Synthesize event
+    t =    40.84s     Wait for com.nitishprasad.sproutmath to idle
+    t =    42.45s Checking existence of `Button (First Match)`
+    t =    42.91s Checking existence of `"Back to Home" Button`
+    t =    43.11s Checking existence of `"problemPrompt" StaticText`
+    t =    43.32s Find the "problemPrompt" StaticText
+    t =    43.45s Checking existence of `"You Did It" StaticText`
+    t =    43.52s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    43.60s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    43.64s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    43.71s Find the "Acknowledge correction and continue" Button
+    t =    43.93s Checking existence of `"Submit Answer" Button`
+    t =    44.23s Tap "Acknowledge correction and continue" Button
+    t =    44.23s     Wait for com.nitishprasad.sproutmath to idle
+    t =    44.25s     Find the "Acknowledge correction and continue" Button
+    t =    44.41s     Check for interrupting elements affecting "Acknowledge correction and continue" Button
+    t =    44.63s         Wait for com.apple.springboard to idle
+    t =    44.68s     Synthesize event
+    t =    45.06s     Wait for com.nitishprasad.sproutmath to idle
+    t =    45.10s Checking existence of `Button (First Match)`
+    t =    46.50s Checking existence of `"Back to Home" Button`
+    t =    46.72s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    46.82s Checking existence of `"problemPrompt" StaticText`
+    t =    47.02s Find the "problemPrompt" StaticText
+    t =    47.25s Checking existence of `Button (First Match)`
+    t =    48.01s Checking existence of `"Back to Home" Button`
+    t =    48.27s Find the "problemPrompt" StaticText
+    t =    48.47s Checking existence of `"Digit 1" Button`
+PROMO-DEBUG prompt="45 - 21 = ?" parsed=true digitPad=true
+    t =    48.64s Checking existence of `"Digit 1" Button`
+    t =    49.37s Checking existence of `"Digit 1" Button`
+    t =    49.74s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    49.89s Checking existence of `"Trade 1 ten for 10 ones" Button`
+    t =    50.10s Checking existence of `"ones answer box" Button`
+    t =    50.43s Checking existence of `"Digit 0" Button`
+    t =    50.72s Find the "Trade 1 ten for 10 ones" Button
+    t =    50.91s Find the "ones answer box" Button
+    t =    51.02s Find the "Digit 0" Button
+    t =    51.20s Checking existence of `"Submit Answer" Button`
+    t =    51.38s Find the "Submit Answer" Button
+    t =    51.90s Checking existence of `"Digit 4" Button`
+    t =    51.99s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    52.07s Find the "Digit 4" Button
+PROMO-TAP 0.6542 0.5268 1790451928.869
+    t =    52.22s Tap "Digit 4" Button
+    t =    52.22s     Wait for com.nitishprasad.sproutmath to idle
+    t =    52.23s     Find the "Digit 4" Button
+    t =    52.33s     Check for interrupting elements affecting "Digit 4" Button
+    t =    52.47s         Wait for com.apple.springboard to idle
+    t =    52.53s     Synthesize event
+    t =    52.89s     Wait for com.nitishprasad.sproutmath to idle
+    t =    53.35s Checking existence of `"Digit 2" Button`
+    t =    53.44s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    53.51s Find the "Digit 2" Button
+PROMO-TAP 0.5288 0.5085 1790451930.317
+    t =    53.66s Tap "Digit 2" Button
+    t =    53.66s     Wait for com.nitishprasad.sproutmath to idle
+    t =    53.67s     Find the "Digit 2" Button
+    t =    53.82s     Check for interrupting elements affecting "Digit 2" Button
+    t =    54.06s         Wait for com.apple.springboard to idle
+    t =    54.11s     Synthesize event
+    t =    54.42s     Wait for com.nitishprasad.sproutmath to idle
+    t =    54.88s Checking existence of `"Submit Answer" Button`
+    t =    55.03s Find the "Submit Answer" Button
+    t =    55.14s Checking existence of `"Submit Answer" Button`
+    t =    55.24s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    55.31s Find the "Submit Answer" Button
+PROMO-TAP 0.5000 0.8936 1790451932.148
+    t =    55.48s Tap "Submit Answer" Button
+    t =    55.48s     Wait for com.nitishprasad.sproutmath to idle
+    t =    55.51s     Find the "Submit Answer" Button
+    t =    55.84s     Check for interrupting elements affecting "Submit Answer" Button
+    t =    56.11s         Wait for com.apple.springboard to idle
+    t =    56.18s     Synthesize event
+    t =    56.51s     Wait for com.nitishprasad.sproutmath to idle
+    t =    56.52s Checking existence of `Button (First Match)`
+    t =    57.12s Checking existence of `"Back to Home" Button`
+    t =    57.21s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    57.29s Checking existence of `"problemPrompt" StaticText`
+    t =    57.44s Find the "problemPrompt" StaticText
+    t =    57.88s Checking existence of `Button (First Match)`
+    t =    58.49s Checking existence of `"Back to Home" Button`
+    t =    58.59s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    58.77s Checking existence of `"problemPrompt" StaticText`
+    t =    58.92s Find the "problemPrompt" StaticText
+    t =    59.05s Checking existence of `Button (First Match)`
+    t =    59.48s Checking existence of `"Back to Home" Button`
+    t =    59.59s Find the "problemPrompt" StaticText
+    t =    59.72s Checking existence of `"Digit 1" Button`
+PROMO-DEBUG prompt="67 - 34 = ?" parsed=true digitPad=true
+    t =    59.82s Checking existence of `"Digit 1" Button`
+    t =    59.95s Checking existence of `"Digit 1" Button`
+    t =    60.10s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    60.16s Checking existence of `"Trade 1 ten for 10 ones" Button`
+    t =    60.24s Checking existence of `"ones answer box" Button`
+    t =    60.36s Checking existence of `"Digit 0" Button`
+    t =    60.42s Find the "Trade 1 ten for 10 ones" Button
+    t =    60.54s Find the "ones answer box" Button
+    t =    60.67s Find the "Digit 0" Button
+    t =    60.84s Checking existence of `"Submit Answer" Button`
+    t =    60.99s Find the "Submit Answer" Button
+    t =    61.51s Checking existence of `"Digit 3" Button`
+    t =    61.63s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    61.75s Find the "Digit 3" Button
+PROMO-TAP 0.5915 0.5268 1790451938.541
+    t =    61.86s Tap "Digit 3" Button
+    t =    61.87s     Wait for com.nitishprasad.sproutmath to idle
+    t =    61.89s     Find the "Digit 3" Button
+    t =    62.01s     Check for interrupting elements affecting "Digit 3" Button
+    t =    62.16s         Wait for com.apple.springboard to idle
+    t =    62.33s     Synthesize event
+    t =    62.71s     Wait for com.nitishprasad.sproutmath to idle
+    t =    63.18s Checking existence of `"Digit 3" Button`
+    t =    63.30s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    63.45s Find the "Digit 3" Button
+PROMO-TAP 0.5915 0.5085 1790451940.215
+    t =    63.53s Tap "Digit 3" Button
+    t =    63.53s     Wait for com.nitishprasad.sproutmath to idle
+    t =    63.53s     Find the "Digit 3" Button
+    t =    63.70s     Check for interrupting elements affecting "Digit 3" Button
+    t =    63.90s         Wait for com.apple.springboard to idle
+    t =    63.97s     Synthesize event
+    t =    64.39s     Wait for com.nitishprasad.sproutmath to idle
+    t =    64.87s Checking existence of `"Submit Answer" Button`
+    t =    65.02s Find the "Submit Answer" Button
+    t =    65.21s Checking existence of `"Submit Answer" Button`
+    t =    65.36s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    65.51s Find the "Submit Answer" Button
+PROMO-TAP 0.5000 0.8936 1790451942.299
+    t =    65.61s Tap "Submit Answer" Button
+    t =    65.61s     Wait for com.nitishprasad.sproutmath to idle
+    t =    65.61s     Find the "Submit Answer" Button
+    t =    65.73s     Check for interrupting elements affecting "Submit Answer" Button
+    t =    65.88s         Wait for com.apple.springboard to idle
+    t =    65.95s     Synthesize event
+    t =    66.40s     Wait for com.nitishprasad.sproutmath to idle
+    t =    66.45s Checking existence of `Button (First Match)`
+    t =    66.87s Checking existence of `"Back to Home" Button`
+    t =    66.97s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    67.12s Checking existence of `"problemPrompt" StaticText`
+    t =    67.23s Find the "problemPrompt" StaticText
+    t =    67.70s Checking existence of `Button (First Match)`
+    t =    68.10s Checking existence of `"Back to Home" Button`
+    t =    68.17s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    68.36s Checking existence of `"problemPrompt" StaticText`
+    t =    68.54s Find the "problemPrompt" StaticText
+    t =    68.72s Checking existence of `Button (First Match)`
+    t =    69.04s Checking existence of `"Back to Home" Button`
+    t =    69.16s Find the "problemPrompt" StaticText
+    t =    69.36s Checking existence of `"Digit 1" Button`
+PROMO-DEBUG prompt="72 - 45 = ?" parsed=true digitPad=true
+    t =    69.74s Checking existence of `"Digit 1" Button`
+PROMO-MARK trade-start 1790451946.498
+    t =    69.80s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    69.87s Checking existence of `"Trade 1 ten for 10 ones" Button`
+    t =    70.03s Checking existence of `"ones answer box" Button`
+    t =    70.14s Checking existence of `"Digit 0" Button`
+    t =    70.24s Find the "Trade 1 ten for 10 ones" Button
+    t =    70.41s Find the "ones answer box" Button
+    t =    70.56s Find the "Digit 0" Button
+    t =    70.72s Checking existence of `"Submit Answer" Button`
+    t =    70.79s Find the "Submit Answer" Button
+    t =    72.08s Checking existence of `"Trade 1 ten for 10 ones" Button`
+    t =    72.21s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    72.29s Find the "Trade 1 ten for 10 ones" Button
+PROMO-TAP 0.3373 0.5116 1790451949.128
+    t =    72.46s Tap "Trade 1 ten for 10 ones" Button
+    t =    72.46s     Wait for com.nitishprasad.sproutmath to idle
+    t =    72.46s     Find the "Trade 1 ten for 10 ones" Button
+    t =    72.60s     Check for interrupting elements affecting "Trade 1 ten for 10 ones" Button
+    t =    72.74s         Wait for com.apple.springboard to idle
+    t =    72.79s     Synthesize event
+    t =    73.14s     Wait for com.nitishprasad.sproutmath to idle
+    t =    74.44s Checking existence of `"Digit 7" Button`
+    t =    74.72s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    74.88s Find the "Digit 7" Button
+PROMO-TAP 0.5288 0.6171 1790451951.652
+    t =    74.97s Tap "Digit 7" Button
+    t =    74.97s     Wait for com.nitishprasad.sproutmath to idle
+    t =    75.01s     Find the "Digit 7" Button
+    t =    75.21s     Check for interrupting elements affecting "Digit 7" Button
+    t =    75.40s         Wait for com.apple.springboard to idle
+    t =    75.47s     Synthesize event
+    t =    75.89s     Wait for com.nitishprasad.sproutmath to idle
+    t =    76.70s Checking existence of `"Digit 2" Button`
+    t =    76.88s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    77.01s Find the "Digit 2" Button
+PROMO-TAP 0.5288 0.5085 1790451953.966
+    t =    77.31s Tap "Digit 2" Button
+    t =    77.31s     Wait for com.nitishprasad.sproutmath to idle
+    t =    77.35s     Find the "Digit 2" Button
+    t =    77.57s     Check for interrupting elements affecting "Digit 2" Button
+    t =    77.75s         Wait for com.apple.springboard to idle
+    t =    77.79s     Synthesize event
+    t =    78.15s     Wait for com.nitishprasad.sproutmath to idle
+    t =    78.97s Checking existence of `"Submit Answer" Button`
+    t =    79.08s Find the "Submit Answer" Button
+    t =    79.28s Checking existence of `"Submit Answer" Button`
+    t =    79.42s Find the Target Application 'com.nitishprasad.sproutmath'
+    t =    79.49s Find the "Submit Answer" Button
+PROMO-TAP 0.5000 0.8936 1790451956.468
+    t =    79.92s Tap "Submit Answer" Button
+    t =    79.92s     Wait for com.nitishprasad.sproutmath to idle
+    t =    79.93s     Find the "Submit Answer" Button
+    t =    80.17s     Check for interrupting elements affecting "Submit Answer" Button
+    t =    80.39s         Wait for com.apple.springboard to idle
+    t =    80.44s     Synthesize event
+    t =    80.79s     Wait for com.nitishprasad.sproutmath to idle
+PROMO-MARK trade-end 1790451957.496
+    t =    83.31s Checking existence of `Button (First Match)`
+    t =    83.72s Checking existence of `"Back to Home" Button`
+    t =    83.84s Checking existence of `"Acknowledge correction and continue" Button`
+    t =    83.95s Checking existence of `"problemPrompt" StaticText`
+    t =    84.07s Find the "problemPrompt" StaticText
+    t =    84.18s Tear Down
+Test Case '-[MathQuestKidsUITests.PromoCaptureUITests testSceneColumnSubtraction]' passed (84.693 seconds).
+Test Suite 'PromoCaptureUITests' passed at 2026-09-26 19:46:01.389.
+	 Executed 1 test, with 0 failures (0 unexpected) in 84.693 (84.695) seconds
+Test Suite 'MathQuestKidsUITests.xctest' passed at 2026-09-26 19:46:01.390.
+	 Executed 1 test, with 0 failures (0 unexpected) in 84.693 (84.696) seconds
+Test Suite 'Selected tests' passed at 2026-09-26 19:46:01.390.
+	 Executed 1 test, with 0 failures (0 unexpected) in 84.693 (84.697) seconds
+2026-09-26 19:46:02.626 xcodebuild[61276:160238] [MT] IDETestOperationsObserverDebug: 94.857 elapsed -- Testing started completed.
+2026-09-26 19:46:02.627 xcodebuild[61276:160238] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-26 19:46:02.627 xcodebuild[61276:160238] [MT] IDETestOperationsObserverDebug: 94.857 sec, +94.857 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/_temp/promo/DerivedData/Logs/Test/Test-MathQuestKids-2026.09.26_19-44-19-+0000.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started
