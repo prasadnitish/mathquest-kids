@@ -743,7 +743,9 @@ final class LayoutMatrixUITests: XCTestCase {
         var blindSteps = 0
         var stalls = 0
         var trail: [String] = []
-        for _ in 0..<12 {
+        // Enough for the Home screen on an iPhone SE in landscape: about 3,000 pt of content
+        // at about 200 pt per drag. Stalling ends the loop early when it can't get closer.
+        for _ in 0..<30 {
             let offset: CGFloat
             if element.exists, !element.frame.isEmpty {
                 let frame = element.frame

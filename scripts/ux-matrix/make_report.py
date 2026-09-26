@@ -28,7 +28,7 @@ ORIENTATIONS = ["portrait", "landscape"]
 # the ones worth a human look.
 KINDS = {
     "unreachable": ("Unreachable", "bad", "A control could not be brought on screen, even by scrolling."),
-    "overlap": ("Overlap", "warn", "Two tap targets partly cover each other, so a tap can hit the wrong one."),
+    "overlap": ("Overlap", "warn", "Two tap targets partly cover each other, so a tap can hit the wrong one. Answers scrolled under the quest's pinned button bar don't count."),
     "clipped": ("Clipped", "warn", "Cut off at a screen edge. Expected for sideways-scrolling carousels."),
     "below-fold": ("Below the fold", "note", "A primary control needs scrolling to reach."),
     "small-target": ("Small target", "note", "Tap area is under Apple's 44×44 pt minimum."),
