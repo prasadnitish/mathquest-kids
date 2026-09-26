@@ -16,8 +16,9 @@ type SceneFootage = {
 
 const index = footageIndex as unknown as Record<string, Record<string, SceneFootage>>;
 
-// A tap is logged just before XCUITest sends it; the touch lands a moment later.
-const TAP_LAG = 0.15;
+// A tap is logged just before XCUITest sends it; the touch lands about this much later
+// (measured on the footage: the screen changes 0.7 s after the log line).
+export const TAP_LAG = 0.55;
 
 export function sceneFootage(device: DeviceKind, scene: string): SceneFootage | undefined {
   return index[device]?.[scene];

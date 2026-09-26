@@ -5,7 +5,7 @@ import {Backdrop, Caption} from './Brand';
 import {Device, DeviceKind, RampedClip, Zoom} from './Footage';
 import {slipStory} from './slipStory';
 
-const TAP_SOUND_LAG = 0.2;
+const TAP_SOUND_LAG = 0.6;
 
 /**
  * The forgotten carry, told with captions: the device on the left, steps on the right.

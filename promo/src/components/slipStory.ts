@@ -24,15 +24,16 @@ export function slipStory(device: DeviceKind, targetFrames: number, fps = 30) {
     return undefined;
   }
   const moments: Moment[] = [
-    {at: ones!, before: 0.9, after: 0.9},
-    {at: tens!, before: 0.3, after: 0.9},
-    {at: wrongSubmit!, before: 0.3, after: 0.5},
-    {at: coaching, before: 0.2, after: 2.8},
-    {at: carry!, before: 0.4, after: 0.9},
-    {at: tensBox!, before: 0.3, after: 0.7},
-    {at: fixDigit!, before: 0.3, after: 0.9},
+    // A tap shows on screen about 0.7 s after it's logged, so windows reach past that.
+    {at: ones!, before: 0.7, after: 1.3},
+    {at: tens!, before: 0.2, after: 1.3},
+    {at: wrongSubmit!, before: 0.2, after: 1.0},
+    {at: coaching, before: 0.1, after: 2.8},
+    {at: carry!, before: 0.2, after: 1.2},
+    {at: tensBox!, before: 0.2, after: 1.0},
+    {at: fixDigit!, before: 0.2, after: 1.2},
     // Just the tap: the app moves on to the next question soon after, so the edit holds here.
-    {at: submit!, before: 0.3, after: 0.7},
+    {at: submit!, before: 0.2, after: 1.0},
   ];
   // Slow enough to follow, fast enough to fit: try speeds until the story fits the slot.
   // Leave about two seconds after the last tap for the success moment, held on the solved sum.

@@ -159,6 +159,12 @@ final class PromoCaptureUITests: XCTestCase {
                 app.terminate()
                 continue
             }
+            // Quests can open with warm-up review items from other units; answer them first.
+            for _ in 0..<3 where app.staticTexts["This is a review item"].exists {
+                let prompt = app.staticTexts["problemPrompt"].label
+                answerAnything(app)
+                waitForNextItem(app, after: prompt)
+            }
             pause(1.2)
             mark("spatial-\(unit)")
             pause(2.5)

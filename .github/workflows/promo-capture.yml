@@ -83,19 +83,26 @@ jobs:
           pattern: promo-*
           path: ${{ runner.temp }}/footage
 
-      # One force-pushed commit, so video files never pile up in history.
+      # One force-pushed commit, so video files never pile up in history. Scenes filmed in
+      # this run replace their old footage; the other scenes' footage is kept.
       - name: Publish to promo-footage branch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          repo="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          mkdir -p "$RUNNER_TEMP/published"
+          if git clone -q --depth 1 --branch promo-footage "$repo" "$RUNNER_TEMP/existing" 2>/dev/null; then
+            rm -rf "$RUNNER_TEMP/existing/.git"
+            cp -R "$RUNNER_TEMP/existing"/. "$RUNNER_TEMP/published"/
+          fi
           cd "$RUNNER_TEMP/footage"
           # Artifacts arrive as promo-<device>/<device>/...; flatten to <device>/...
           for artifact in promo-*; do
             if [[ -d "$artifact" ]]; then
-              cp -R "$artifact"/. .
-              rm -rf "$artifact"
+              cp -R "$artifact"/. "$RUNNER_TEMP/published"/
             fi
           done
+          cd "$RUNNER_TEMP/published"
           find . -name '*.xcodebuild.log' -size +2M -delete
           ls -R | head -80
           git init -q -b promo-footage
