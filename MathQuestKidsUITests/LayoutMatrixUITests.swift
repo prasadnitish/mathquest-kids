@@ -97,8 +97,10 @@ final class LayoutMatrixUITests: XCTestCase {
     ]
 
     private var scrolledSinceTop = false
+    private var testStart = Date()
 
     override func setUpWithError() throws {
+        testStart = Date()
         // Keep going after a failed check so one broken screen doesn't hide the rest of the matrix.
         continueAfterFailure = true
     }
@@ -546,6 +548,9 @@ final class LayoutMatrixUITests: XCTestCase {
         notes: [String] = []
     ) {
         for orientation in Orientation.allCases {
+            // run.sh shows the last few of these when a test fails, so a slow or stuck step
+            // (such as a run that hits the time limit) can be located.
+            print("LXSTEP \(Int(Date().timeIntervalSince(testStart)))s \(screen) \(orientation.rawValue)")
             rotate(app, to: orientation)
             guard app.state == .runningForeground else {
                 XCTFail("\(screen) [\(orientation.rawValue)]: the app is no longer running")

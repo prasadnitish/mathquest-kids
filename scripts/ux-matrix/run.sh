@@ -63,6 +63,8 @@ show_failure_details() {
   local log="$1"
   echo "---- failure details ----"
   grep -E "error:|Crash|crashed|Timed out|Failed to|failed \(" "$log" | head -60 || true
+  echo "Last screens reached (seconds into the test):"
+  grep -F "LXSTEP" "$log" | tail -6 || true
   local crash
   crash="$(ls -t "$HOME"/Library/Logs/DiagnosticReports/*Sprout* 2>/dev/null | head -1 || true)"
   if [[ -n "$crash" ]]; then
