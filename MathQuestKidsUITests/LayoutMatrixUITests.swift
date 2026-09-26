@@ -43,6 +43,9 @@ final class LayoutMatrixUITests: XCTestCase {
         var aboveFold = false
         /// Fail the test if the control can't be brought on screen at all.
         var required = true
+        /// Lives in the quest's pinned bottom bar, so it's judged against the whole screen
+        /// rather than the scrolling area above the bar.
+        var pinned = false
     }
 
     /// One quest per question format, so every interaction layout is checked on every device.
@@ -193,9 +196,9 @@ final class LayoutMatrixUITests: XCTestCase {
         checkpoint("07-Session", app, targets: sessionTargets(app))
 
         answerCurrentItem(app)
+        // Submit sits in the pinned bottom bar, so it never needs scrolling.
         let submit = app.buttons["Submit Answer"]
         if submit.exists, submit.isEnabled {
-            reveal(submit, in: app)
             submit.tap()
         }
         settle()
@@ -366,6 +369,11 @@ final class LayoutMatrixUITests: XCTestCase {
     /// a single tap can land before the field is ready, and typeText then fails outright.
     @MainActor
     private func type(_ text: String, into field: XCUIElement) {
+        // Just after a rotation a field can briefly report a sideways frame and refuse taps.
+        _ = waitUntil(timeout: 3) {
+            let frame = field.frame
+            return frame.width > frame.height
+        }
         for _ in 0..<3 {
             field.tap()
             if waitUntil(timeout: 2, { (field.value(forKey: "hasKeyboardFocus") as? Bool) == true }) {
@@ -379,9 +387,9 @@ final class LayoutMatrixUITests: XCTestCase {
     private func sessionTargets(_ app: XCUIApplication) -> [Target] {
         [
             text("problemPrompt", app, name: "Question prompt", aboveFold: true),
-            button("Read Aloud", app, aboveFold: true),
-            button("Submit Answer", app, aboveFold: true),
-            button("Hint", app, required: false),
+            button("Read Aloud", app, aboveFold: true, pinned: true),
+            button("Submit Answer", app, aboveFold: true, pinned: true),
+            button("Hint", app, required: false, pinned: true),
             buttonPrefixed("Option ", app, name: "First answer", required: false),
         ]
     }
@@ -426,7 +434,6 @@ final class LayoutMatrixUITests: XCTestCase {
                 answerCurrentItem(app)
                 let submit = app.buttons["Submit Answer"]
                 if submit.exists, submit.isEnabled {
-                    reveal(submit, in: app)
                     submit.tap()
                 }
             }
@@ -473,14 +480,16 @@ final class LayoutMatrixUITests: XCTestCase {
         _ app: XCUIApplication,
         name: String? = nil,
         aboveFold: Bool = false,
-        required: Bool = true
+        required: Bool = true,
+        pinned: Bool = false
     ) -> Target {
         Target(
             element: app.buttons[label],
             name: name ?? label,
             matches: { $0.type == .button && ($0.label == label || $0.identifier == label) },
             aboveFold: aboveFold,
-            required: required
+            required: required,
+            pinned: pinned
         )
     }
 
@@ -537,8 +546,7 @@ final class LayoutMatrixUITests: XCTestCase {
         notes: [String] = []
     ) {
         for orientation in Orientation.allCases {
-            XCUIDevice.shared.orientation = orientation.deviceOrientation
-            settle()
+            rotate(app, to: orientation)
             guard app.state == .runningForeground else {
                 XCTFail("\(screen) [\(orientation.rawValue)]: the app is no longer running")
                 return
@@ -556,11 +564,12 @@ final class LayoutMatrixUITests: XCTestCase {
             let root = try? app.snapshot()
             let nodes = root.map { flatten($0) } ?? []
             let bounds = root?.frame ?? app.frame
+            let content = contentArea(nodes, bounds: bounds)
 
             var findings = notes
             findings += root == nil ? ["[audit] Could not read the accessibility tree"] : auditLayout(nodes, bounds: bounds)
             for target in targets {
-                findings += check(target, nodes: nodes, bounds: bounds, screen: screen, orientation: orientation, app: app, scrolls: scrolls)
+                findings += check(target, nodes: nodes, area: target.pinned ? bounds : content, screen: screen, orientation: orientation, app: app, scrolls: scrolls)
             }
 
             // The application element reports "unspecified"; its window carries the real size classes.
@@ -580,8 +589,7 @@ final class LayoutMatrixUITests: XCTestCase {
             add(report)
         }
 
-        XCUIDevice.shared.orientation = .portrait
-        settle()
+        rotate(app, to: .portrait)
         if scrolls {
             scrollToTop(app)
         }
@@ -591,13 +599,13 @@ final class LayoutMatrixUITests: XCTestCase {
     private func check(
         _ target: Target,
         nodes: [Node],
-        bounds: CGRect,
+        area: CGRect,
         screen: String,
         orientation: Orientation,
         app: XCUIApplication,
         scrolls: Bool
     ) -> [String] {
-        let visible = bounds.insetBy(dx: -1, dy: -1)
+        let visible = area.insetBy(dx: -1, dy: -1)
         if let node = nodes.first(where: { target.matches($0) && !$0.frame.isEmpty && visible.contains($0.frame) }) {
             return smallTarget(type: node.type, label: node.label, frame: node.frame)
         }
@@ -608,7 +616,7 @@ final class LayoutMatrixUITests: XCTestCase {
         }
 
         // Slow path: below the fold or not loaded yet, so scroll to it with live queries.
-        if scrolls, reveal(target.element, in: app) {
+        if scrolls, reveal(target.element, in: app, within: area) {
             var findings = target.aboveFold ? ["[below-fold] \"\(target.name)\" is only reachable by scrolling"] : []
             findings += smallTarget(type: target.element.elementType, label: target.element.label, frame: target.element.frame)
             return findings
@@ -684,34 +692,103 @@ final class LayoutMatrixUITests: XCTestCase {
         return nodes
     }
 
-    @MainActor
-    private func isFullyOnScreen(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
-        guard element.exists else { return false }
-        let frame = element.frame
-        guard !frame.isEmpty else { return false }
-        return app.frame.insetBy(dx: -1, dy: -1).contains(frame) && element.isHittable
+    /// The part of the screen where scrolling content is visible: everything above the quest's
+    /// pinned bottom bar (Read Aloud, Hint, Submit) when it's showing, otherwise the whole screen.
+    private func contentArea(_ nodes: [Node], bounds: CGRect) -> CGRect {
+        let dockLabels: Set<String> = ["Read Aloud", "Hint", "Submit Answer"]
+        let dock = nodes.filter {
+            $0.type == .button && dockLabels.contains($0.label) && $0.frame.minY > bounds.midY
+        }
+        guard dock.contains(where: { $0.label == "Submit Answer" }),
+              let top = dock.map(\.frame.minY).min() else {
+            return bounds
+        }
+        // The bar has 12 pt of padding above its buttons.
+        return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width, height: max(0, top - 12 - bounds.minY))
     }
 
     @MainActor
+    private func contentArea(_ app: XCUIApplication) -> CGRect {
+        guard let root = try? app.snapshot() else { return app.frame }
+        return contentArea(flatten(root), bounds: root.frame)
+    }
+
+    @MainActor
+    private func isFullyVisible(_ element: XCUIElement, in area: CGRect) -> Bool {
+        guard element.exists else { return false }
+        let frame = element.frame
+        return !frame.isEmpty && area.insetBy(dx: -1, dy: -1).contains(frame)
+    }
+
+    /// Scrolls until `element` is fully inside `area` (default: the visible content area).
+    /// Uses slow drags without momentum aimed at the element's position; flick swipes
+    /// overshot on short landscape screens, so the element never settled in view.
+    @MainActor
     @discardableResult
-    private func reveal(_ element: XCUIElement, in app: XCUIApplication, maxSwipes: Int = 6) -> Bool {
-        if isFullyOnScreen(element, in: app) {
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication, within area: CGRect? = nil) -> Bool {
+        let area = area ?? contentArea(app)
+        if isFullyVisible(element, in: area) {
             return true
         }
-        for _ in 0..<maxSwipes {
-            app.swipeUp()
-            scrolledSinceTop = true
-            if isFullyOnScreen(element, in: app) {
-                return true
+        var lastFrame = CGRect.null
+        var blindSteps = 0
+        for _ in 0..<10 {
+            let offset: CGFloat
+            if element.exists, !element.frame.isEmpty {
+                let frame = element.frame
+                // Stop when a drag no longer moves it: the content can't scroll further.
+                if frame == lastFrame {
+                    break
+                }
+                lastFrame = frame
+                // Aim for its center a third of the way down the visible area.
+                offset = frame.midY - (area.minY + area.height / 3)
+            } else {
+                // Not loaded yet (lazy content): move down to load more, a few times at most.
+                blindSteps += 1
+                if blindSteps > 4 {
+                    break
+                }
+                offset = area.height * 0.6
             }
-        }
-        for _ in 0..<(maxSwipes + 2) {
-            app.swipeDown()
-            if isFullyOnScreen(element, in: app) {
+            let step = max(-area.height * 0.6, min(area.height * 0.6, offset))
+            drag(app, by: -step, startingIn: area)
+            scrolledSinceTop = true
+            if isFullyVisible(element, in: area) {
                 return true
             }
         }
         return false
+    }
+
+    /// Drags the content by `dy` points, starting in the middle of `area` (away from pinned
+    /// bars) and holding at the end so the scroll view doesn't fling.
+    @MainActor
+    private func drag(_ app: XCUIApplication, by dy: CGFloat, startingIn area: CGRect) {
+        let bounds = app.frame
+        guard bounds.height > 0, bounds.width > 0 else { return }
+        let start = app.coordinate(withNormalizedOffset: CGVector(
+            dx: (area.midX - bounds.minX) / bounds.width,
+            dy: (area.midY - bounds.minY) / bounds.height
+        ))
+        start.press(
+            forDuration: 0.1,
+            thenDragTo: start.withOffset(CGVector(dx: 0, dy: dy)),
+            withVelocity: .slow,
+            thenHoldForDuration: 0.2
+        )
+    }
+
+    /// Rotates and waits until the app's frame actually matches, since frames read mid-rotation
+    /// come back sideways and every check against them fails.
+    @MainActor
+    private func rotate(_ app: XCUIApplication, to orientation: Orientation) {
+        XCUIDevice.shared.orientation = orientation.deviceOrientation
+        settle()
+        _ = waitUntil(timeout: 5) {
+            let frame = app.frame
+            return orientation == .landscape ? frame.width > frame.height : frame.height > frame.width
+        }
     }
 
     @MainActor

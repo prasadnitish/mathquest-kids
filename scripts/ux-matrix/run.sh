@@ -87,32 +87,49 @@ prepare_simulator() {
   xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1 || true
 }
 
+run_test() {
+  local udid="$1" test="$2" result="$3" log="$4"
+  rm -rf "$result"
+  xcodebuild test-without-building \
+    -project "$PROJECT" \
+    -scheme "$SCHEME" \
+    -configuration "$CONFIGURATION" \
+    -destination "id=$udid" \
+    -derivedDataPath "$DERIVED_DATA" \
+    -only-testing:"$TEST_CLASS/$test" \
+    -parallel-testing-enabled NO \
+    -test-timeouts-enabled YES \
+    -default-test-execution-time-allowance 2400 \
+    -maximum-test-execution-time-allowance 2700 \
+    -resultBundlePath "$result" \
+    > "$log" 2>&1
+}
+
+# XCUITest occasionally fails to start or stop the app on busy CI simulators. Those errors
+# (and only those) get one retry on a fresh simulator; layout failures are never retried.
+LAUNCH_ERRORS="Failed to terminate|Failed to launch|Timed out while launching|Failed to get background assertion"
+
 overall=0
 while IFS=$'\t' read -r slug udid model <&3; do
   echo "==> $model ($slug)"
   results=()
   for test in $TESTS; do
-    prepare_simulator "$udid"
-
     result="$OUT_DIR/results/$slug-$test.xcresult"
     log="$OUT_DIR/results/$slug-$test.log"
-    rm -rf "$result"
+
+    prepare_simulator "$udid"
     set +e
-    xcodebuild test-without-building \
-      -project "$PROJECT" \
-      -scheme "$SCHEME" \
-      -configuration "$CONFIGURATION" \
-      -destination "id=$udid" \
-      -derivedDataPath "$DERIVED_DATA" \
-      -only-testing:"$TEST_CLASS/$test" \
-      -parallel-testing-enabled NO \
-      -test-timeouts-enabled YES \
-      -default-test-execution-time-allowance 2400 \
-      -maximum-test-execution-time-allowance 2700 \
-      -resultBundlePath "$result" \
-      > "$log" 2>&1
+    run_test "$udid" "$test" "$result" "$log"
     status=$?
+    if [[ $status -ne 0 ]] && grep -qE "$LAUNCH_ERRORS" "$log"; then
+      echo "   $test: XCUITest couldn't start or stop the app; retrying once on a fresh simulator"
+      mv "$log" "${log%.log}.attempt1.log"
+      prepare_simulator "$udid"
+      run_test "$udid" "$test" "$result" "$log"
+      status=$?
+    fi
     set -e
+
     grep -E "Test Case .*(passed|failed)" "$log" | tail -3 || true
     if [[ $status -ne 0 ]]; then
       overall=1
