@@ -107,8 +107,7 @@ final class LayoutMatrixUITests: XCTestCase {
         ])
 
         let mission = missionButton(app)
-        nameField.tap()
-        nameField.typeText("Mia\n")
+        type("Mia\n", into: nameField)
         if !mission.waitForExistence(timeout: 3) {
             let start = app.buttons["Start Adventure"]
             if reveal(start, in: app) {
@@ -225,8 +224,7 @@ final class LayoutMatrixUITests: XCTestCase {
         guard nameField.waitForExistence(timeout: 10) else {
             throw XCTSkip("A profile already exists on this simulator; erase it to check the first-launch quest check.")
         }
-        nameField.tap()
-        nameField.typeText("Mia\n")
+        type("Mia\n", into: nameField)
 
         let prompt = app.staticTexts["Diagnostic problem prompt"]
         if !prompt.waitForExistence(timeout: 3) {
@@ -288,10 +286,8 @@ final class LayoutMatrixUITests: XCTestCase {
                 XCTFail("PIN setup did not appear")
                 return
             }
-            createField.tap()
-            createField.typeText("2468")
-            confirmField.tap()
-            confirmField.typeText("2468")
+            type("2468", into: createField)
+            type("2468", into: confirmField)
             app.buttons["Save PIN"].tap()
         }
 
@@ -305,8 +301,7 @@ final class LayoutMatrixUITests: XCTestCase {
             Target(element: app.buttons["Unlock Settings"], name: "Unlock Settings", aboveFold: true),
         ], scrolls: false)
 
-        pinField.tap()
-        pinField.typeText("2468")
+        type("2468", into: pinField)
         app.buttons["Unlock Settings"].tap()
 
         guard app.staticTexts["Parent Settings"].waitForExistence(timeout: 5) else {
@@ -316,6 +311,19 @@ final class LayoutMatrixUITests: XCTestCase {
         checkpoint("06-ParentSettings", app, targets: [
             Target(element: app.buttons["Done"], name: "Done", aboveFold: true),
         ], scrolls: false)
+    }
+
+    /// Taps a field until it actually has keyboard focus, then types. On slower simulators
+    /// a single tap can land before the field is ready, and typeText then fails outright.
+    @MainActor
+    private func type(_ text: String, into field: XCUIElement) {
+        for _ in 0..<3 {
+            field.tap()
+            if waitUntil(timeout: 2, { (field.value(forKey: "hasKeyboardFocus") as? Bool) == true }) {
+                break
+            }
+        }
+        field.typeText(text)
     }
 
     @MainActor

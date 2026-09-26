@@ -31,7 +31,7 @@ if [[ ! -s "$OUT_DIR/devices.tsv" ]]; then
   exit 1
 fi
 
-echo "==> Building for testing ($(xcodebuild -version | head -1))"
+echo "==> Building for testing ($(xcodebuild -version | sed -n 1p))"
 set +e
 xcodebuild build-for-testing \
   -project "$PROJECT" \
