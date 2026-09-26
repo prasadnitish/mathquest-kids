@@ -18,6 +18,7 @@ struct SessionView: View {
     @State private var choicesDisabledTemporarily = false
 
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         Group {
@@ -399,42 +400,57 @@ struct SessionView: View {
         .accessibilityLabel("Submit Answer")
     }
 
-    private func answerActionDock(item: PracticeItem) -> some View {
-        VStack(spacing: 12) {
-            if sizeClass == .regular {
-                HStack(spacing: 12) {
-                    readAloudButton
-                    hintButton
-                }
-            } else {
-                VStack(spacing: 12) {
-                    readAloudButton
-                    hintButton
-                }
+    @ViewBuilder
+    private func dockButtons(item: PracticeItem) -> some View {
+        if verticalSizeClass == .compact {
+            // iPhone landscape: one row. Stacked, the three buttons covered most of the
+            // short screen and left only a sliver for the question.
+            HStack(spacing: 12) {
+                readAloudButton
+                hintButton
+                submitButton(item: item)
             }
-
-            submitButton(item: item)
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .padding(.bottom, 12)
-        .background {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .overlay(alignment: .top) {
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.82), Color.white.opacity(0.35), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+        } else {
+            VStack(spacing: 12) {
+                if sizeClass == .regular {
+                    HStack(spacing: 12) {
+                        readAloudButton
+                        hintButton
+                    }
+                } else {
+                    VStack(spacing: 12) {
+                        readAloudButton
+                        hintButton
+                    }
                 }
-                .ignoresSafeArea(edges: .bottom)
+
+                submitButton(item: item)
+            }
         }
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(Color.black.opacity(0.06))
-                .frame(height: 1)
-        }
+    }
+
+    private func answerActionDock(item: PracticeItem) -> some View {
+        dockButtons(item: item)
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
+            .background {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .overlay(alignment: .top) {
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.82), Color.white.opacity(0.35), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+                    .ignoresSafeArea(edges: .bottom)
+            }
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.black.opacity(0.06))
+                    .frame(height: 1)
+            }
     }
 
     @ViewBuilder
