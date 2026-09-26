@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprout Math UX matrix</title><style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#16181d;--muted:#5d6470;--line:#e2e5ea;--bad:#c8372d;--warn:#b86b00;--note:#3b63c4;--ok:#2e7d4f}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--panel:#1a1d24;--ink:#eceef2;--muted:#a3a9b5;--line:#2b303a;--bad:#ff6b5e;--warn:#f0a53a;--note:#86a8ff;--ok:#5fd08f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 20px}
+h1{font-size:20px;margin:0 0 2px}.meta{color:var(--muted);margin:0 0 10px;font-size:13px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+main,.top{padding:16px 20px;max-width:100%}
+table{border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;font-size:13px;color:var(--muted)}
+.chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.bad{color:var(--bad)}.warn{color:var(--warn)}.note{color:var(--note)}.ok{color:var(--ok)}
+.failures{margin:12px 0 0;padding-left:18px;color:var(--bad);font-size:13px}
+section.screen{margin:0 0 26px}section.screen h2{font-size:16px;margin:0 0 8px}
+.row{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;flex:0 0 auto;max-width:640px}
+figcaption{font-weight:600;font-size:13px;margin-bottom:6px}figcaption small{color:var(--muted);font-weight:400}
+.pair{display:flex;gap:8px;align-items:flex-start}.shot{display:flex;flex-direction:column;gap:4px}
+.shot img{display:block;height:260px;width:auto;border-radius:8px;border:1px solid var(--line);background:var(--bg)}
+.shot .missing{height:260px;width:120px;display:grid;place-items:center;color:var(--muted);font-size:12px;border:1px dashed var(--line);border-radius:8px}
+.shot span{font-size:11px;color:var(--muted)}
+ul.findings{list-style:none;margin:6px 0 0;padding:0;font-size:12px;max-width:600px}ul.findings li{margin:2px 0}
+.hidden{display:none}
+</style></head>
+<body>
+<header><h1>Sprout Math UX matrix</h1><p class="meta">Commit 3ae5198 on claude/zen-heisenberg-fpvrw6 · 0 devices · 0 screens · portrait and landscape · 2026-09-26 19:20 UTC · <a href="https://github.com/prasadnitish/mathquest-kids/actions/runs/36264988770">workflow run</a></p>
+<div class="controls"><label>Show <select id="filter"><option value="all">All screens</option><option value="problems">Screens with problems</option><option value="unreachable">Only: Unreachable</option><option value="overlap">Only: Overlap</option><option value="clipped">Only: Clipped</option><option value="below-fold">Only: Below the fold</option><option value="small-target">Only: Small target</option><option value="flow">Only: Flow</option></select></label></div></header>
+<div class="top"><div class="tablewrap"><table><tr><th>Device</th><th>Result</th><th>Tests passed</th><th>Unreachable</th><th>Overlap</th><th>Clipped</th><th>Below the fold</th><th>Small target</th></tr></table></div>
+<div class="legend"><span><span class="chip bad">Unreachable</span> A control could not be brought on screen, even by scrolling.</span><span><span class="chip warn">Overlap</span> Two tap targets partly cover each other, so a tap can hit the wrong one. Answers scrolled under the quest&#x27;s pinned button bar don&#x27;t count.</span><span><span class="chip warn">Clipped</span> Cut off at a screen edge. Expected for sideways-scrolling carousels.</span><span><span class="chip note">Below the fold</span> A primary control needs scrolling to reach.</span><span><span class="chip note">Small target</span> Tap area is under Apple&#x27;s 44×44 pt minimum.</span></div>
+</div>
+<main></main>
+<script>const PROBLEMS=["unreachable", "overlap", "clipped", "below-fold"];
+const pick=document.getElementById('filter');
+function apply(){const v=pick.value;document.querySelectorAll('section.screen').forEach(s=>{const k=(s.dataset.kinds||'').split(' ').filter(Boolean);
+s.classList.toggle('hidden',!(v==='all'||(v==='problems'&&k.some(x=>PROBLEMS.includes(x)))||k.includes(v)));});}
+pick.addEventListener('change',apply);apply();
+</script>
+</body></html>
