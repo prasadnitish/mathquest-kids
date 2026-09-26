@@ -59,43 +59,24 @@ struct AdditionStoryInteraction: View {
     let theme: VisualTheme
     var onDefer: (() -> Void)? = nil
 
+    private var left: Int { item.payload.left ?? 0 }
+    private var right: Int { item.payload.right ?? 0 }
+
+    /// Counting dots help with small sums only. Past 20 they're a wall of dots, and for
+    /// multi-step stories the two payload numbers aren't even the ones being added.
+    private var showsDots: Bool {
+        left + right > 0 && left + right <= 20
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            let left = item.payload.left ?? 0
-            let right = item.payload.right ?? 0
-
-            let addTotal = left + right
-            let addDotSize: CGFloat = addTotal > 12 ? 20 : 26
-            VStack(spacing: 8) {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: addDotSize, maximum: addDotSize + 4))], spacing: 6) {
-                    ForEach(0..<max(left, 0), id: \.self) { _ in
-                        Circle()
-                            .fill(AppTheme.accent.opacity(0.8))
-                            .frame(width: addDotSize, height: addDotSize)
-                    }
-                    ForEach(left..<(left + max(right, 0)), id: \.self) { _ in
-                        Circle()
-                            .fill(AppTheme.primary.opacity(0.7))
-                            .frame(width: addDotSize, height: addDotSize)
-                    }
-                }
-                if left > 0 && right > 0 {
-                    HStack(spacing: 6) {
-                        Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 12, height: 12)
-                        Text("= \(left)")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                        Text("+")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                        Circle().fill(AppTheme.primary.opacity(0.7)).frame(width: 12, height: 12)
-                        Text("= \(right)")
-                            .kidText(.caption)
-                            .foregroundStyle(AppTheme.textSecondary)
-                    }
-                }
+            if let problem = WrittenProblem.parse(item.prompt), problem.suitsLongForm {
+                LongFormProblemView(problem: problem, answer: item.answer, selection: selection)
+                    .padding(.vertical, 8)
+            } else if showsDots, WrittenProblem.parse(item.prompt).map({ $0.operation == .add }) ?? true {
+                // Stories don't parse as "A + B = ?", so they keep their dots.
+                dots
             }
-            .padding(.vertical, 8)
 
             VStack(spacing: 8) {
                 ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
@@ -119,6 +100,40 @@ struct AdditionStoryInteraction: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    private var dots: some View {
+        let addDotSize: CGFloat = left + right > 12 ? 20 : 26
+        return VStack(spacing: 8) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: addDotSize, maximum: addDotSize + 4))], spacing: 6) {
+                ForEach(0..<max(left, 0), id: \.self) { _ in
+                    Circle()
+                        .fill(AppTheme.accent.opacity(0.8))
+                        .frame(width: addDotSize, height: addDotSize)
+                }
+                ForEach(left..<(left + max(right, 0)), id: \.self) { _ in
+                    Circle()
+                        .fill(AppTheme.primary.opacity(0.7))
+                        .frame(width: addDotSize, height: addDotSize)
+                }
+            }
+            if left > 0 && right > 0 {
+                HStack(spacing: 6) {
+                    Circle().fill(AppTheme.accent.opacity(0.8)).frame(width: 12, height: 12)
+                    Text("= \(left)")
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                    Text("+")
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                    Circle().fill(AppTheme.primary.opacity(0.7)).frame(width: 12, height: 12)
+                    Text("= \(right)")
+                        .kidText(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+        }
+        .padding(.vertical, 8)
     }
 }
 
