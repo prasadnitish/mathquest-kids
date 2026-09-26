@@ -7,44 +7,15 @@ struct SessionSummaryView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 20) {
-                Spacer()
-
-                SummaryTitlePill(title: summaryTitle)
-
-                if let summary = appState.latestSummary {
-                    MascotBlock(
-                        companion: appState.activeCompanion,
-                        context: summaryContext(for: summary),
-                        theme: appState.selectedTheme
-                    )
-                    .padding(.horizontal, DesignTokens.Spacing.sp4)
-                    .padding(.bottom, DesignTokens.Spacing.sp4)
-
-                    SessionSummaryCard(
-                        summary: summary,
-                        nextLessonTitle: appState.adaptivePath.recommendedLessons.first?.title,
-                        badgeSymbol: summaryBadgeSymbol,
-                        animateBadge: animateBadge,
-                        reduceMotion: reduceMotion,
-                        theme: appState.selectedTheme
-                    )
-
-                    if !summary.missedItems.isEmpty {
-                        ReviewItemsCard(missedItems: summary.missedItems)
-                    }
+            // Scrolls when the summary is taller than the screen (a long review list, or
+            // landscape), so the Back to Home and Next Quest buttons stay reachable.
+            GeometryReader { proxy in
+                ScrollView {
+                    summaryContent
+                        .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                 }
-
-                SummaryActionButtons(
-                    theme: appState.selectedTheme,
-                    startNextQuest: appState.startRecommendedSession,
-                    goHome: appState.goHome
-                )
-
-                Spacer()
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .padding(24)
-            .background(.clear)
             .onAppear {
                 animateBadge = true
             }
@@ -67,6 +38,46 @@ struct SessionSummaryView: View {
             Motion.stateChange,
             value: appState.pendingStickerReward != nil || appState.pendingChapterCelebration != nil
         )
+    }
+
+    private var summaryContent: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            SummaryTitlePill(title: summaryTitle)
+
+            if let summary = appState.latestSummary {
+                MascotBlock(
+                    companion: appState.activeCompanion,
+                    context: summaryContext(for: summary),
+                    theme: appState.selectedTheme
+                )
+                .padding(.horizontal, DesignTokens.Spacing.sp4)
+                .padding(.bottom, DesignTokens.Spacing.sp4)
+
+                SessionSummaryCard(
+                    summary: summary,
+                    nextLessonTitle: appState.adaptivePath.recommendedLessons.first?.title,
+                    badgeSymbol: summaryBadgeSymbol,
+                    animateBadge: animateBadge,
+                    reduceMotion: reduceMotion,
+                    theme: appState.selectedTheme
+                )
+
+                if !summary.missedItems.isEmpty {
+                    ReviewItemsCard(missedItems: summary.missedItems)
+                }
+            }
+
+            SummaryActionButtons(
+                theme: appState.selectedTheme,
+                startNextQuest: appState.startRecommendedSession,
+                goHome: appState.goHome
+            )
+
+            Spacer()
+        }
+        .padding(24)
     }
 
     private var summaryTitle: String {

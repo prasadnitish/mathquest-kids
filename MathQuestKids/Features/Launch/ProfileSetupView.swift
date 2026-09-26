@@ -5,6 +5,18 @@ struct ProfileSetupView: View {
     @State private var name = ""
 
     var body: some View {
+        // Scrolls when the card is taller than the screen (e.g. iPhone landscape), and stays
+        // centered when it fits.
+        GeometryReader { proxy in
+            ScrollView {
+                profileCard
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+
+    private var profileCard: some View {
         VStack(spacing: 24) {
             Spacer()
 
