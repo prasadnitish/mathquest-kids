@@ -126,8 +126,9 @@ jobs:
     name: Layout (${{ matrix.device }})
     needs: plan
     runs-on: macos-26
-    # Per-test limits in run.sh stop a stuck test well before this, so results still upload.
-    timeout-minutes: 120
+    # A full pass takes 75 to 105 minutes (the iPhone SE is slowest). Per-test limits in run.sh
+    # stop a stuck test before this, so results still upload.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
