@@ -200,7 +200,8 @@ struct SessionView: View {
             return .answerIdk
         }
         guard feedback != nil else {
-            return .questionHint
+            // Counting along doesn't help with a written column problem.
+            return runtime.currentItem.columnProblem == nil ? .questionHint : .columnHint
         }
         return feedbackTone == .positive ? .answerCorrect : .answerWrong
     }
@@ -366,6 +367,9 @@ struct SessionView: View {
         }
         if feedback != nil {
             return "Use the clue below and try again."
+        }
+        if runtime.currentItem.columnProblem != nil {
+            return "Line up the numbers and work it out below."
         }
         return "Listen, think, and choose the answer that matches."
     }

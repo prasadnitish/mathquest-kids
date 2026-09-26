@@ -34,7 +34,12 @@ struct AnswerButton: View {
             HStack(spacing: DesignTokens.Spacing.sp4) {
                 numberPill
                 if let picture {
+                    // Pictures draw with offsets and rotations (a mirror half slid across the
+                    // line, say). Flattening each into its own frame keeps what it draws from
+                    // stretching this button's tap area over the next choice.
                     picture
+                        .drawingGroup()
+                        .contentShape(Rectangle())
                         .padding(.vertical, 6)
                 }
                 Text(title)

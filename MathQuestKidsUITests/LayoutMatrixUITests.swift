@@ -306,11 +306,11 @@ final class LayoutMatrixUITests: XCTestCase {
                 continue
             }
 
-            // Quests open with one warm-up review item from another unit; move past it
-            // so the screenshot shows this unit's own format.
+            // Quests open with one or two warm-up review items from other units; move past
+            // them so the screenshot shows this unit's own format.
             let notes = advancePastReviewItem(app)
                 ? []
-                : ["[flow] Could not get past the warm-up review item, so this shows the review item"]
+                : ["[flow] Could not get past the warm-up review items, so this shows a review item"]
             checkpoint("Q-\(sample.format)", app, targets: sessionTargets(app), notes: notes)
         }
     }
@@ -456,14 +456,23 @@ final class LayoutMatrixUITests: XCTestCase {
         return false
     }
 
+    /// Answers the quick-review items a quest opens with (there can be two), so the
+    /// screenshot shows the format being checked.
     @MainActor
     private func advancePastReviewItem(_ app: XCUIApplication) -> Bool {
         let reviewMarker = app.staticTexts["This is a review item"]
-        guard reviewMarker.exists else { return true }
-        let start = itemPosition(app)
-        return submitUntil(app) {
-            !reviewMarker.exists || itemPosition(app) != start
+        for _ in 0..<3 {
+            guard reviewMarker.exists else { return true }
+            let start = itemPosition(app)
+            let advanced = submitUntil(app) {
+                !reviewMarker.exists || itemPosition(app) != start
+            }
+            if !advanced {
+                return false
+            }
+            settle(0.6)
         }
+        return !reviewMarker.exists
     }
 
     @MainActor

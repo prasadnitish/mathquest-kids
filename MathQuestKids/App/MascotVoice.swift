@@ -5,6 +5,8 @@ enum MascotVoice {
         case homeGreeting
         case lessonStart
         case questionHint
+        /// A written column problem: work the ones first, then the tens.
+        case columnHint
         case answerCorrect
         case answerWrong
         case answerIdk
@@ -30,9 +32,15 @@ enum MascotVoice {
             }
         case .questionHint:
             switch tone {
-            case .calm:        return "Take your time. Look at the picture first."
-            case .energetic:   return "Try counting with me! One, two, three..."
+            case .calm:        return "Take your time. Look carefully first."
+            case .energetic:   return "Let's figure this one out together!"
             case .encouraging: return "You can do it. Let's try together."
+            }
+        case .columnHint:
+            switch tone {
+            case .calm:        return "Start with the ones. Then move to the tens."
+            case .energetic:   return "Ones first! Then zoom over to the tens!"
+            case .encouraging: return "One column at a time. You've got this!"
             }
         case .answerCorrect:
             switch tone {

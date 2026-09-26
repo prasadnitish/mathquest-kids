@@ -106,7 +106,7 @@ struct MascotBlock: View {
             return .celebrate
         case .answerWrong, .answerIdk:
             return .coach
-        case .questionHint, .lessonStart:
+        case .questionHint, .columnHint, .lessonStart:
             return .guide
         case .homeGreeting:
             return .welcome
@@ -119,7 +119,7 @@ struct MascotBlock: View {
             return "Adventure time"
         case .lessonStart:
             return "New chapter"
-        case .questionHint:
+        case .questionHint, .columnHint:
             return "Hint buddy"
         case .answerCorrect:
             return "Cheering"
