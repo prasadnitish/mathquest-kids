@@ -32,6 +32,11 @@ That is how the first run caught quest-screen art covering the question.
 iPhone SE (3rd generation), iPhone 17, iPhone 17 Pro Max, iPad mini, iPad (A16), and
 iPad Pro 13-inch. Each falls back to a similar model if the runtime lacks it.
 
+`run.sh` builds once (Release, like TestFlight), then runs each test on a freshly erased and
+booted simulator with the app warm-launched once: the quest check, the core flow, and the
+question formats in four slices of eight. A launch hiccup or crash then costs one slice, and
+every slice keeps its screenshots.
+
 ## Running it
 
 In CI, `.github/workflows/app-checks.yml` runs on pushes and pull requests that touch the
@@ -46,7 +51,8 @@ parallel. Results appear in three places:
 Locally, with Xcode 26:
 
 ```bash
-scripts/ux-matrix/run.sh                          # all six devices (about an hour)
+scripts/ux-matrix/run.sh                          # all six devices, one after another
 scripts/ux-matrix/run.sh iphone-small ipad-large  # just these
+TESTS="testCoreFlowLayouts" scripts/ux-matrix/run.sh ipad-mini   # one test on one device
 open build/ux-matrix/report/index.html
 ```

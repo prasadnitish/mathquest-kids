@@ -124,37 +124,44 @@ def collect(args):
     raw.mkdir(parents=True)
     img.mkdir()
 
-    record = {"slug": args.slug, "device": args.device, "result": "No results", "counts": {}, "failures": [], "checkpoints": []}
-    xcresult = Path(args.xcresult)
-    if not xcresult.exists():
-        record["failures"].append("No result bundle was produced, so the tests never started on this device.")
-        (out / "index.json").write_text(json.dumps(record, indent=1))
-        print(f"{args.slug}: no result bundle")
-        return
-
-    summary = xcresult_summary(xcresult)
-    if summary:
-        record["result"] = summary.get("result", "Unknown")
-        record["counts"] = {k: summary.get(k) for k in ("totalTestCount", "passedTests", "failedTests", "skippedTests")}
-        for failure in summary.get("testFailures") or []:
-            text = f"{failure.get('testName', '')}: {failure.get('failureText', '')}".strip(": ")
-            record["failures"].append(text)
-
-    export = run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(xcresult), "--output-path", str(raw)])
-    if export.returncode != 0:
-        record["failures"].append(f"Could not export screenshots: {export.stderr.strip()[:300]}")
-
+    record = {"slug": args.slug, "device": args.device, "result": "Passed", "counts": {}, "failures": [], "checkpoints": []}
+    counts = Counter()
     attachments = []
-    manifest = raw / "manifest.json"
-    if manifest.exists():
-        attachments = [n for n in walk(json.loads(manifest.read_text())) if "exportedFileName" in n]
-    attachments.sort(key=lambda a: a.get("timestamp") or 0)
+    for index, path in enumerate(args.xcresult):
+        xcresult = Path(path)
+        if not xcresult.exists():
+            record["result"] = "Failed"
+            record["failures"].append(f"{xcresult.stem}: no result bundle, so the test never started.")
+            continue
+
+        summary = xcresult_summary(xcresult)
+        if summary:
+            if summary.get("result") != "Passed":
+                record["result"] = "Failed"
+            for key in ("totalTestCount", "passedTests", "failedTests", "skippedTests"):
+                counts[key] += summary.get(key) or 0
+            for failure in summary.get("testFailures") or []:
+                text = f"{failure.get('testName', '')}: {failure.get('failureText', '')}".strip(": ")
+                record["failures"].append(text)
+        else:
+            record["result"] = "Failed"
+            record["failures"].append(f"{xcresult.stem}: could not read the test results.")
+
+        export_dir = raw / str(index)
+        export = run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(xcresult), "--output-path", str(export_dir)])
+        if export.returncode != 0:
+            record["failures"].append(f"{xcresult.stem}: could not export screenshots: {export.stderr.strip()[:300]}")
+        manifest = export_dir / "manifest.json"
+        if manifest.exists():
+            attachments += [(export_dir, n) for n in walk(json.loads(manifest.read_text())) if "exportedFileName" in n]
+    record["counts"] = dict(counts)
+    attachments.sort(key=lambda item: item[1].get("timestamp") or 0)
 
     checkpoints, order = {}, []
-    for attachment in attachments:
+    for export_dir, attachment in attachments:
         label = attachment.get("suggestedHumanReadableName") or attachment.get("name") or attachment["exportedFileName"]
         match = NAME_RE.search(label)
-        src = raw / attachment["exportedFileName"]
+        src = export_dir / attachment["exportedFileName"]
         if not match or not src.exists():
             continue
         screen, orientation, is_findings = match.group(1), match.group(2), bool(match.group(3))
@@ -171,7 +178,7 @@ def collect(args):
     record["checkpoints"] = [checkpoints[k] for k in order]
     (out / "index.json").write_text(json.dumps(record, indent=1))
     shutil.rmtree(raw, ignore_errors=True)
-    print(f"{args.slug}: {len(order)} screenshots, result: {record['result']}")
+    print(f"{args.slug}: {len(order)} screenshots from {len(args.xcresult)} test runs, result: {record['result']}")
 
 
 # ----------------------------------------------------------------- render
@@ -385,7 +392,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     commands = parser.add_subparsers(dest="command", required=True)
     c = commands.add_parser("collect", help="export one device's results (macOS)")
-    c.add_argument("--xcresult", required=True)
+    c.add_argument("--xcresult", action="append", required=True, help="repeat for each test run")
     c.add_argument("--slug", required=True)
     c.add_argument("--device", required=True)
     c.add_argument("--out", required=True)

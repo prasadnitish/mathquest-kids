@@ -16,7 +16,10 @@ OUT_DIR="${OUT_DIR:-$ROOT/build/ux-matrix}"
 DERIVED_DATA="${DERIVED_DATA:-$OUT_DIR/DerivedData}"
 PROJECT="$ROOT/MathQuestKids.xcodeproj"
 SCHEME="MathQuestKids"
-ONLY_TESTING="${ONLY_TESTING:-MathQuestKidsUITests/LayoutMatrixUITests}"
+TEST_CLASS="MathQuestKidsUITests/LayoutMatrixUITests"
+# Each test runs on a freshly erased and booted simulator, so one launch hiccup or crash
+# can't take the rest of the device's results down with it. Override with TESTS="...".
+TESTS="${TESTS:-testQuestCheckLayouts testCoreFlowLayouts testQuestionFormatLayouts1 testQuestionFormatLayouts2 testQuestionFormatLayouts3 testQuestionFormatLayouts4}"
 # Release: launches fast enough for XCUITest's launch timeout on slow CI machines,
 # and matches what testers get from TestFlight. The build only includes the UI tests
 # (and keeps testability on) because the unit tests need `@testable import`.
@@ -40,7 +43,7 @@ xcodebuild build-for-testing \
   -configuration "$CONFIGURATION" \
   -destination "generic/platform=iOS Simulator" \
   -derivedDataPath "$DERIVED_DATA" \
-  -only-testing:"$ONLY_TESTING" \
+  -only-testing:"$TEST_CLASS" \
   CODE_SIGNING_ALLOWED=NO \
   ENABLE_TESTABILITY=YES \
   > "$OUT_DIR/build.log" 2>&1
@@ -70,45 +73,56 @@ show_failure_details() {
   echo "-------------------------"
 }
 
-overall=0
-while IFS=$'\t' read -r slug udid model <&3; do
-  echo "==> $model ($slug)"
+# Fresh state for every test: erased, fully booted (home screen ready), app installed and
+# launched once so first-launch costs don't count against XCUITest's launch timeout.
+# "-ui-test" keeps the warm-up from saving a profile.
+prepare_simulator() {
+  local udid="$1"
   xcrun simctl shutdown "$udid" >/dev/null 2>&1 || true
   xcrun simctl erase "$udid"
-  # Boot fully (home screen ready) and pay the first-launch cost before XCUITest
-  # starts timing launches; "-ui-test" keeps the warm-up from saving a profile.
   xcrun simctl bootstatus "$udid" -b >/dev/null
   xcrun simctl install "$udid" "$APP"
   xcrun simctl launch "$udid" "$BUNDLE_ID" -ui-test >/dev/null || true
   sleep 20
   xcrun simctl terminate "$udid" "$BUNDLE_ID" >/dev/null 2>&1 || true
+}
 
-  result="$OUT_DIR/results/$slug.xcresult"
-  rm -rf "$result"
-  set +e
-  xcodebuild test-without-building \
-    -project "$PROJECT" \
-    -scheme "$SCHEME" \
-    -configuration "$CONFIGURATION" \
-    -destination "id=$udid" \
-    -derivedDataPath "$DERIVED_DATA" \
-    -only-testing:"$ONLY_TESTING" \
-    -parallel-testing-enabled NO \
-    -test-timeouts-enabled YES \
-    -default-test-execution-time-allowance 2400 \
-    -maximum-test-execution-time-allowance 2700 \
-    -resultBundlePath "$result" \
-    > "$OUT_DIR/results/$slug.log" 2>&1
-  status=$?
-  set -e
-  grep -E "Test Case .*(passed|failed)|Executed" "$OUT_DIR/results/$slug.log" | tail -12 || true
-  if [[ $status -ne 0 ]]; then
-    overall=1
-    show_failure_details "$OUT_DIR/results/$slug.log"
-  fi
+overall=0
+while IFS=$'\t' read -r slug udid model <&3; do
+  echo "==> $model ($slug)"
+  results=()
+  for test in $TESTS; do
+    prepare_simulator "$udid"
 
-  python3 "$HERE/make_report.py" collect \
-    --xcresult "$result" --slug "$slug" --device "$model" --out "$OUT_DIR/devices/$slug"
+    result="$OUT_DIR/results/$slug-$test.xcresult"
+    log="$OUT_DIR/results/$slug-$test.log"
+    rm -rf "$result"
+    set +e
+    xcodebuild test-without-building \
+      -project "$PROJECT" \
+      -scheme "$SCHEME" \
+      -configuration "$CONFIGURATION" \
+      -destination "id=$udid" \
+      -derivedDataPath "$DERIVED_DATA" \
+      -only-testing:"$TEST_CLASS/$test" \
+      -parallel-testing-enabled NO \
+      -test-timeouts-enabled YES \
+      -default-test-execution-time-allowance 2400 \
+      -maximum-test-execution-time-allowance 2700 \
+      -resultBundlePath "$result" \
+      > "$log" 2>&1
+    status=$?
+    set -e
+    grep -E "Test Case .*(passed|failed)" "$log" | tail -3 || true
+    if [[ $status -ne 0 ]]; then
+      overall=1
+      show_failure_details "$log"
+    fi
+    results+=(--xcresult "$result")
+  done
+
+  python3 "$HERE/make_report.py" collect "${results[@]}" \
+    --slug "$slug" --device "$model" --out "$OUT_DIR/devices/$slug"
   xcrun simctl shutdown "$udid" >/dev/null 2>&1 || true
 done 3< "$OUT_DIR/devices.tsv"
 

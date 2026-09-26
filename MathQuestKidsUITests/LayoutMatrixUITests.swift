@@ -263,12 +263,34 @@ final class LayoutMatrixUITests: XCTestCase {
         ])
     }
 
+    // The formats run in four slices so scripts/ux-matrix/run.sh can give each one a freshly
+    // booted simulator: a launch hiccup then costs one slice, not the whole format pass.
     @MainActor
-    func testQuestionFormatLayouts() throws {
+    func testQuestionFormatLayouts1() throws {
+        checkFormats(Self.formatSamples[0..<8])
+    }
+
+    @MainActor
+    func testQuestionFormatLayouts2() throws {
+        checkFormats(Self.formatSamples[8..<16])
+    }
+
+    @MainActor
+    func testQuestionFormatLayouts3() throws {
+        checkFormats(Self.formatSamples[16..<24])
+    }
+
+    @MainActor
+    func testQuestionFormatLayouts4() throws {
+        checkFormats(Self.formatSamples[24...])
+    }
+
+    @MainActor
+    private func checkFormats(_ samples: ArraySlice<(format: String, unit: String)>) {
         let app = XCUIApplication()
         defer { finish(app) }
 
-        for sample in Self.formatSamples {
+        for sample in samples {
             XCUIDevice.shared.orientation = .portrait
             app.launchArguments = ["-deterministic-session", "-ui-test", "-ui-test-start-unit", sample.unit]
             app.launch()
