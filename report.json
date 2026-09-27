@@ -1,0 +1,1310 @@
+[
+ {
+  "slug": "iphone-small",
+  "device": "iPhone SE (3rd generation)",
+  "result": "Passed",
+  "counts": {
+   "totalTestCount": 2,
+   "passedTests": 2,
+   "failedTests": 0,
+   "skippedTests": 0
+  },
+  "failures": [],
+  "checkpoints": [
+   {
+    "screen": "Q-addTwoDigit",
+    "orientation": "portrait",
+    "image": "Q-addTwoDigit__portrait.jpg",
+    "meta": {
+     "screen": "Q-addTwoDigit",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-addTwoDigit",
+    "orientation": "landscape",
+    "image": "Q-addTwoDigit__landscape.jpg",
+    "meta": {
+     "screen": "Q-addTwoDigit",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-additionStory",
+    "orientation": "portrait",
+    "image": "Q-additionStory__portrait.jpg",
+    "meta": {
+     "screen": "Q-additionStory",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-additionStory",
+    "orientation": "landscape",
+    "image": "Q-additionStory__landscape.jpg",
+    "meta": {
+     "screen": "Q-additionStory",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-angleMeasure",
+    "orientation": "portrait",
+    "image": "Q-angleMeasure__portrait.jpg",
+    "meta": {
+     "screen": "Q-angleMeasure",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-angleMeasure",
+    "orientation": "landscape",
+    "image": "Q-angleMeasure__landscape.jpg",
+    "meta": {
+     "screen": "Q-angleMeasure",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-areaTiling",
+    "orientation": "portrait",
+    "image": "Q-areaTiling__portrait.jpg",
+    "meta": {
+     "screen": "Q-areaTiling",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-areaTiling",
+    "orientation": "landscape",
+    "image": "Q-areaTiling__landscape.jpg",
+    "meta": {
+     "screen": "Q-areaTiling",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-buildShape",
+    "orientation": "portrait",
+    "image": "Q-buildShape__portrait.jpg",
+    "meta": {
+     "screen": "Q-buildShape",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-buildShape",
+    "orientation": "landscape",
+    "image": "Q-buildShape__landscape.jpg",
+    "meta": {
+     "screen": "Q-buildShape",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-countAndMatch",
+    "orientation": "portrait",
+    "image": "Q-countAndMatch__portrait.jpg",
+    "meta": {
+     "screen": "Q-countAndMatch",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-countAndMatch",
+    "orientation": "landscape",
+    "image": "Q-countAndMatch__landscape.jpg",
+    "meta": {
+     "screen": "Q-countAndMatch",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-dataPlot",
+    "orientation": "portrait",
+    "image": "Q-dataPlot__portrait.jpg",
+    "meta": {
+     "screen": "Q-dataPlot",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-dataPlot",
+    "orientation": "landscape",
+    "image": "Q-dataPlot__landscape.jpg",
+    "meta": {
+     "screen": "Q-dataPlot",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-decimalsAndVolume",
+    "orientation": "portrait",
+    "image": "Q-decimalsAndVolume__portrait.jpg",
+    "meta": {
+     "screen": "Q-decimalsAndVolume",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-decimalsAndVolume",
+    "orientation": "landscape",
+    "image": "Q-decimalsAndVolume__landscape.jpg",
+    "meta": {
+     "screen": "Q-decimalsAndVolume",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-solidAttributes",
+    "orientation": "portrait",
+    "image": "Q-solidAttributes__portrait.jpg",
+    "meta": {
+     "screen": "Q-solidAttributes",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-solidAttributes",
+    "orientation": "landscape",
+    "image": "Q-solidAttributes__landscape.jpg",
+    "meta": {
+     "screen": "Q-solidAttributes",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subTwoDigit",
+    "orientation": "portrait",
+    "image": "Q-subTwoDigit__portrait.jpg",
+    "meta": {
+     "screen": "Q-subTwoDigit",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subTwoDigit",
+    "orientation": "landscape",
+    "image": "Q-subTwoDigit__landscape.jpg",
+    "meta": {
+     "screen": "Q-subTwoDigit",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subtractionStory",
+    "orientation": "portrait",
+    "image": "Q-subtractionStory__portrait.jpg",
+    "meta": {
+     "screen": "Q-subtractionStory",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subtractionStory",
+    "orientation": "landscape",
+    "image": "Q-subtractionStory__landscape.jpg",
+    "meta": {
+     "screen": "Q-subtractionStory",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-symmetryMirror",
+    "orientation": "portrait",
+    "image": "Q-symmetryMirror__portrait.jpg",
+    "meta": {
+     "screen": "Q-symmetryMirror",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-symmetryMirror",
+    "orientation": "landscape",
+    "image": "Q-symmetryMirror__landscape.jpg",
+    "meta": {
+     "screen": "Q-symmetryMirror",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-teenPlaceValue",
+    "orientation": "portrait",
+    "image": "Q-teenPlaceValue__portrait.jpg",
+    "meta": {
+     "screen": "Q-teenPlaceValue",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-teenPlaceValue",
+    "orientation": "landscape",
+    "image": "Q-teenPlaceValue__landscape.jpg",
+    "meta": {
+     "screen": "Q-teenPlaceValue",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-threeDigitComparison",
+    "orientation": "portrait",
+    "image": "Q-threeDigitComparison__portrait.jpg",
+    "meta": {
+     "screen": "Q-threeDigitComparison",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-threeDigitComparison",
+    "orientation": "landscape",
+    "image": "Q-threeDigitComparison__landscape.jpg",
+    "meta": {
+     "screen": "Q-threeDigitComparison",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-timeMoney",
+    "orientation": "portrait",
+    "image": "Q-timeMoney__portrait.jpg",
+    "meta": {
+     "screen": "Q-timeMoney",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-timeMoney",
+    "orientation": "landscape",
+    "image": "Q-timeMoney__landscape.jpg",
+    "meta": {
+     "screen": "Q-timeMoney",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-twoDigitComparison",
+    "orientation": "portrait",
+    "image": "Q-twoDigitComparison__portrait.jpg",
+    "meta": {
+     "screen": "Q-twoDigitComparison",
+     "orientation": "portrait",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7regular",
+     "screen-size": "375\u00d7667 pt"
+    },
+    "findings": [
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   },
+   {
+    "screen": "Q-twoDigitComparison",
+    "orientation": "landscape",
+    "image": "Q-twoDigitComparison__landscape.jpg",
+    "meta": {
+     "screen": "Q-twoDigitComparison",
+     "orientation": "landscape",
+     "device": "UX iPhone SE (3rd generation)",
+     "size-class": "compact\u00d7compact",
+     "screen-size": "667\u00d7375 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "below-fold",
+      "text": "\"Question prompt\" is only reachable by scrolling"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "slug": "ipad-standard",
+  "device": "iPad (A16)",
+  "result": "Passed",
+  "counts": {
+   "totalTestCount": 2,
+   "passedTests": 2,
+   "failedTests": 0,
+   "skippedTests": 0
+  },
+  "failures": [],
+  "checkpoints": [
+   {
+    "screen": "Q-addTwoDigit",
+    "orientation": "portrait",
+    "image": "Q-addTwoDigit__portrait.jpg",
+    "meta": {
+     "screen": "Q-addTwoDigit",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Carry into the hundreds\" is 35\u00d731 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Carry into the tens\" is 35\u00d731 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-addTwoDigit",
+    "orientation": "landscape",
+    "image": "Q-addTwoDigit__landscape.jpg",
+    "meta": {
+     "screen": "Q-addTwoDigit",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Carry into the hundreds\" is 35\u00d731 pt (minimum 44\u00d744)"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Carry into the tens\" is 35\u00d731 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-additionStory",
+    "orientation": "portrait",
+    "image": "Q-additionStory__portrait.jpg",
+    "meta": {
+     "screen": "Q-additionStory",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-additionStory",
+    "orientation": "landscape",
+    "image": "Q-additionStory__landscape.jpg",
+    "meta": {
+     "screen": "Q-additionStory",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-angleMeasure",
+    "orientation": "portrait",
+    "image": "Q-angleMeasure__portrait.jpg",
+    "meta": {
+     "screen": "Q-angleMeasure",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-angleMeasure",
+    "orientation": "landscape",
+    "image": "Q-angleMeasure__landscape.jpg",
+    "meta": {
+     "screen": "Q-angleMeasure",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-areaTiling",
+    "orientation": "portrait",
+    "image": "Q-areaTiling__portrait.jpg",
+    "meta": {
+     "screen": "Q-areaTiling",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-areaTiling",
+    "orientation": "landscape",
+    "image": "Q-areaTiling__landscape.jpg",
+    "meta": {
+     "screen": "Q-areaTiling",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-buildShape",
+    "orientation": "portrait",
+    "image": "Q-buildShape__portrait.jpg",
+    "meta": {
+     "screen": "Q-buildShape",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-buildShape",
+    "orientation": "landscape",
+    "image": "Q-buildShape__landscape.jpg",
+    "meta": {
+     "screen": "Q-buildShape",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-countAndMatch",
+    "orientation": "portrait",
+    "image": "Q-countAndMatch__portrait.jpg",
+    "meta": {
+     "screen": "Q-countAndMatch",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-countAndMatch",
+    "orientation": "landscape",
+    "image": "Q-countAndMatch__landscape.jpg",
+    "meta": {
+     "screen": "Q-countAndMatch",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-dataPlot",
+    "orientation": "portrait",
+    "image": "Q-dataPlot__portrait.jpg",
+    "meta": {
+     "screen": "Q-dataPlot",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-dataPlot",
+    "orientation": "landscape",
+    "image": "Q-dataPlot__landscape.jpg",
+    "meta": {
+     "screen": "Q-dataPlot",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-decimalsAndVolume",
+    "orientation": "portrait",
+    "image": "Q-decimalsAndVolume__portrait.jpg",
+    "meta": {
+     "screen": "Q-decimalsAndVolume",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-decimalsAndVolume",
+    "orientation": "landscape",
+    "image": "Q-decimalsAndVolume__landscape.jpg",
+    "meta": {
+     "screen": "Q-decimalsAndVolume",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-solidAttributes",
+    "orientation": "portrait",
+    "image": "Q-solidAttributes__portrait.jpg",
+    "meta": {
+     "screen": "Q-solidAttributes",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-solidAttributes",
+    "orientation": "landscape",
+    "image": "Q-solidAttributes__landscape.jpg",
+    "meta": {
+     "screen": "Q-solidAttributes",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subTwoDigit",
+    "orientation": "portrait",
+    "image": "Q-subTwoDigit__portrait.jpg",
+    "meta": {
+     "screen": "Q-subTwoDigit",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subTwoDigit",
+    "orientation": "landscape",
+    "image": "Q-subTwoDigit__landscape.jpg",
+    "meta": {
+     "screen": "Q-subTwoDigit",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subtractionStory",
+    "orientation": "portrait",
+    "image": "Q-subtractionStory__portrait.jpg",
+    "meta": {
+     "screen": "Q-subtractionStory",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-subtractionStory",
+    "orientation": "landscape",
+    "image": "Q-subtractionStory__landscape.jpg",
+    "meta": {
+     "screen": "Q-subtractionStory",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-symmetryMirror",
+    "orientation": "portrait",
+    "image": "Q-symmetryMirror__portrait.jpg",
+    "meta": {
+     "screen": "Q-symmetryMirror",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-symmetryMirror",
+    "orientation": "landscape",
+    "image": "Q-symmetryMirror__landscape.jpg",
+    "meta": {
+     "screen": "Q-symmetryMirror",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-teenPlaceValue",
+    "orientation": "portrait",
+    "image": "Q-teenPlaceValue__portrait.jpg",
+    "meta": {
+     "screen": "Q-teenPlaceValue",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-teenPlaceValue",
+    "orientation": "landscape",
+    "image": "Q-teenPlaceValue__landscape.jpg",
+    "meta": {
+     "screen": "Q-teenPlaceValue",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-threeDigitComparison",
+    "orientation": "portrait",
+    "image": "Q-threeDigitComparison__portrait.jpg",
+    "meta": {
+     "screen": "Q-threeDigitComparison",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-threeDigitComparison",
+    "orientation": "landscape",
+    "image": "Q-threeDigitComparison__landscape.jpg",
+    "meta": {
+     "screen": "Q-threeDigitComparison",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-timeMoney",
+    "orientation": "portrait",
+    "image": "Q-timeMoney__portrait.jpg",
+    "meta": {
+     "screen": "Q-timeMoney",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-timeMoney",
+    "orientation": "landscape",
+    "image": "Q-timeMoney__landscape.jpg",
+    "meta": {
+     "screen": "Q-timeMoney",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-twoDigitComparison",
+    "orientation": "portrait",
+    "image": "Q-twoDigitComparison__portrait.jpg",
+    "meta": {
+     "screen": "Q-twoDigitComparison",
+     "orientation": "portrait",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "820\u00d71180 pt"
+    },
+    "findings": [
+     {
+      "kind": "flow",
+      "text": "Could not get past the warm-up review items, so this shows a review item"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   },
+   {
+    "screen": "Q-twoDigitComparison",
+    "orientation": "landscape",
+    "image": "Q-twoDigitComparison__landscape.jpg",
+    "meta": {
+     "screen": "Q-twoDigitComparison",
+     "orientation": "landscape",
+     "device": "UX iPad (A16)",
+     "size-class": "regular\u00d7regular",
+     "screen-size": "1180\u00d7820 pt"
+    },
+    "findings": [
+     {
+      "kind": "flow",
+      "text": "Could not get past the warm-up review items, so this shows a review item"
+     },
+     {
+      "kind": "small-target",
+      "text": "\"Quit quest\" is 50\u00d722 pt (minimum 44\u00d744)"
+     }
+    ]
+   }
+  ]
+ }
+]
