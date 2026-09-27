@@ -409,15 +409,20 @@ def create_duplicate_links(duplicates):
 
 
 def save_audio_index(manifest, duplicates):
-    """Save a JSON index mapping item IDs to audio file paths."""
+    """Save a JSON index mapping item IDs to audio files and the words each one says.
+
+    The app only plays a question clip whose words match the question on screen.
+    """
     index = {}
+    texts = {}
     for item in manifest:
         rel_path = f"{item['category']}/{item['filename']}"
-        index[item['id']] = rel_path
+        index[item['id']] = {"file": rel_path, "text": item['text']}
+        texts[item['id']] = item['text']
 
     # Add duplicates
     for secondary_id, primary_id in duplicates.items():
-        index[secondary_id] = f"questions/{secondary_id}.mp3"
+        index[secondary_id] = {"file": f"questions/{secondary_id}.mp3", "text": texts.get(primary_id)}
 
     index_path = os.path.join(OUTPUT_DIR, "audio_index.json")
     os.makedirs(OUTPUT_DIR, exist_ok=True)

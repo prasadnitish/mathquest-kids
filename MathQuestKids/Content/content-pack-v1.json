@@ -94196,9 +94196,9 @@
     },
     {
       "skill": "add_sub_100",
-      "concrete": "Use tens rods and ones cubes on a place-value mat.",
-      "strategy": "Add or subtract the tens first, then the ones.",
-      "worked": "23 + 14: 20 + 10 = 30, 3 + 4 = 7, so 23 + 14 = 37."
+      "concrete": "Use tens rods and ones cubes. Start with the ones, then the tens.",
+      "strategy": "Ones first, then tens. Adding? If the ones make 10 or more, carry 1 ten. Taking away? If there aren't enough ones, trade 1 ten for 10 ones.",
+      "worked": "23 + 14: ones first, 3 + 4 = 7. Then tens, 2 + 1 = 3. So 23 + 14 = 37."
     },
     {
       "skill": "measure_length",
@@ -94274,9 +94274,9 @@
     },
     {
       "skill": "mult_multi_digit",
-      "concrete": "Break the bigger number into tens and ones. Multiply each part.",
-      "strategy": "Use the area model: tens times the factor plus ones times the factor.",
-      "worked": "23 x 4: (20 x 4) + (3 x 4) = 80 + 12 = 92."
+      "concrete": "Break the bigger number into tens and ones. Multiply the ones first, then the tens.",
+      "strategy": "Multiply the ones and write the ones digit. Carry the tens, then multiply the tens and add what you carried.",
+      "worked": "23 \u00d7 4: ones first, 3 \u00d7 4 = 12. Write 2, carry 1. Then tens, 2 \u00d7 4 = 8, plus 1 is 9. So 23 \u00d7 4 = 92."
     },
     {
       "skill": "div_partial_quotients",

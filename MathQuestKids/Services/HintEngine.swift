@@ -220,7 +220,7 @@ struct DeterministicHintEngine: HintEngine {
         case .kSpatialPositionWords:
             return "Start at the anchor object, then follow the position word exactly."
         case .g1AddSub100:
-            return "Use a number line. Jump by tens first, then by ones."
+            return "Start with the ones, then the tens. Carry or trade a ten when the ones need it."
         case .g1MeasureLength:
             return "Start at zero on the ruler. Count each space, not each mark."
         case .k2SpatialRotateMatch:
@@ -375,9 +375,12 @@ struct DeterministicHintEngine: HintEngine {
                 ? "Use the visual clue step by step, then match the best answer choice."
                 : "Use the visual clue step by step. Match the choice that answers: \(context.prompt)"
         case .g1AddSub100:
-            let a = context.payload.left ?? context.payload.minuend ?? 0
-            let b = context.payload.right ?? context.payload.subtrahend ?? 0
-            return "Break it apart: \(a) and \(b). Add or subtract to get \(a + b)."
+            if let problem = WrittenProblem.parse(context.prompt), problem.operation != .divide,
+               let answer = context.payload.target.map({ String(Int($0)) }),
+               let walkthrough = ColumnWork(problem: problem, answer: answer).walkthrough(answer: answer) {
+                return walkthrough
+            }
+            return "Start with the ones, then the tens."
         case .g1MeasureLength:
             let length = Int(context.payload.target ?? 0)
             return "The object stretches from 0 to \(length). So it is \(length) units long."

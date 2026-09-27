@@ -202,4 +202,93 @@ struct LongFormTests {
         times.answer = [nil, 8, 1]
         #expect(times.coaching(for: 1, correct: "261") == "Did you add the 8 you carried into the tens?")
     }
+
+    @Test @MainActor
+    func walkthroughGoesColumnByColumnFromTheOnes() {
+        func walk(_ top: Int, _ op: WrittenProblem.Operation, _ bottom: Int, _ answer: String) -> String? {
+            ColumnWork(problem: WrittenProblem(top: top, bottom: bottom, operation: op), answer: answer).walkthrough(answer: answer)
+        }
+        #expect(walk(25, .add, 45, "70") == """
+            Ones: 5 + 5 = 10. Write 0, carry 1.
+            Tens: 2 + 4 + 1 = 7.
+            So 25 + 45 = 70.
+            """)
+        #expect(walk(78, .add, 45, "123") == """
+            Ones: 8 + 5 = 13. Write 3, carry 1.
+            Tens: 7 + 4 + 1 = 12. Write 2, carry 1.
+            Hundreds: write the 1 you carried.
+            So 78 + 45 = 123.
+            """)
+        #expect(walk(45, .add, 7, "52") == """
+            Ones: 5 + 7 = 12. Write 2, carry 1.
+            Tens: 4 + 1 = 5.
+            So 45 + 7 = 52.
+            """)
+        #expect(walk(72, .subtract, 45, "27") == """
+            Ones: 2 is less than 5, so trade 1 ten for 10 ones. 12 − 5 = 7.
+            Tens: after the trade, the 7 is a 6. 6 − 4 = 2.
+            So 72 − 45 = 27.
+            """)
+        #expect(walk(97, .subtract, 5, "92") == """
+            Ones: 7 − 5 = 2.
+            Tens: nothing to take away, so write the 9.
+            So 97 − 5 = 92.
+            """)
+        #expect(walk(29, .multiply, 9, "261") == """
+            Ones: 9 × 9 = 81. Write 1, carry 8.
+            Tens: 2 × 9 = 18, plus the 8 you carried is 26. Write 6, carry 2.
+            Hundreds: write the 2 you carried.
+            So 29 × 9 = 261.
+            """)
+        // Trading across a 0 takes two trades; that's left to the regular worked hint.
+        #expect(walk(302, .subtract, 5, "297") == nil)
+        #expect(walk(84, .divide, 7, "12") == nil)
+    }
+
+    @Test @MainActor
+    func everyColumnProblemHasAWalkthrough() throws {
+        let pack = try ContentLoader.loadDefaultPack()
+        var checked = 0
+        for template in pack.itemTemplates {
+            let item = PracticeItem(
+                id: template.id, templateID: template.id, unit: template.unit, skillID: template.skill,
+                format: template.format, prompt: template.prompt, spokenForm: template.spokenForm,
+                answer: template.answer, supports: template.supports, payload: template.payload,
+                options: [template.answer], isReview: false
+            )
+            guard let problem = item.columnProblem else { continue }
+            checked += 1
+            let text = ColumnWork(problem: problem, answer: item.answer).walkthrough(answer: item.answer)
+            #expect(text?.hasPrefix("Ones: ") == true, "\(template.id): \(text ?? "no walkthrough")")
+            #expect(text?.hasSuffix("= \(item.answer).") == true, "\(template.id): \(text ?? "no walkthrough")")
+        }
+        #expect(checked > 150)
+    }
+
+    /// Column problems are worked from the ones, so no hint for them may say to start with the tens.
+    @Test @MainActor
+    func columnHintsStartWithTheOnes() throws {
+        let pack = try ContentLoader.loadDefaultPack()
+        let engine = DeterministicHintEngine(contentPack: pack)
+        let tensFirst = try Regex("(?i)tens (first|then)|then (the )?ones|by tens first")
+        var checked = Set<String>()
+        for template in pack.itemTemplates {
+            let item = PracticeItem(
+                id: template.id, templateID: template.id, unit: template.unit, skillID: template.skill,
+                format: template.format, prompt: template.prompt, spokenForm: template.spokenForm,
+                answer: template.answer, supports: template.supports, payload: template.payload,
+                options: [template.answer], isReview: false
+            )
+            guard item.columnProblem != nil, checked.insert(template.skill).inserted else { continue }
+            for attempts in 0...2 {
+                let context = AttemptContext(
+                    unit: item.unit, skillID: item.skillID, prompt: item.prompt, payload: item.payload,
+                    incorrectAttempts: attempts, recentMisconceptions: [], supports: item.supports
+                )
+                let text = engine.nextHint(for: context).text
+                #expect(text.firstMatch(of: tensFirst) == nil, "\(template.skill) hint \(attempts): \(text)")
+            }
+        }
+        #expect(checked.isSuperset(of: ["add_sub_100", "add_2digit", "sub_2digit", "add_sub_regroup", "mult_multi_digit"]))
+    }
 }

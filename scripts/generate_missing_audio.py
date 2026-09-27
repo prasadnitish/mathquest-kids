@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
-"""Generate ElevenLabs audio for the 104 content-pack items missing from audio_index.json."""
+"""Record ElevenLabs narration for the content-pack questions that need it.
+
+A question needs a clip when it has none yet, or when it has been reworded since its clip was
+recorded. Each audio_index.json entry keeps the words its clip says ("text"), and the app only
+plays a clip whose words match the question on screen, so a reworded question is read by the
+system voice until it's re-recorded here.
+
+    ELEVENLABS_API_KEY=... python3 scripts/generate_missing_audio.py
+    python3 scripts/generate_missing_audio.py --list    # only refresh the waiting list
+
+Either way, scripts/questions_awaiting_audio.json lists the questions still without a clip.
+"""
 
 import json
 import os
 import shutil
+import sys
 import time
 import urllib.request
 import urllib.error
@@ -23,25 +35,59 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO_DIR = os.path.join(BASE_DIR, "MathQuestKids", "Audio", "questions")
 INDEX_PATH = os.path.join(BASE_DIR, "MathQuestKids", "Audio", "audio_index.json")
 CONTENT_PATH = os.path.join(BASE_DIR, "MathQuestKids", "Content", "content-pack-v1.json")
+AWAITING_PATH = os.path.join(BASE_DIR, "scripts", "questions_awaiting_audio.json")
 
 RATE_LIMIT_DELAY = 0.15  # seconds between API calls
 
 
+def spoken_text(template):
+    return " ".join((template.get("spokenForm") or template["prompt"]).split())
+
+
+def recorded_text(entry):
+    """The words an index entry's clip says, if the entry records them."""
+    if isinstance(entry, dict) and entry.get("text"):
+        return " ".join(entry["text"].split())
+    return None
+
+
 def load_missing_items():
-    """Find content-pack template IDs not in audio_index.json."""
+    """Content-pack questions with no clip, or a clip recorded from different words."""
     with open(INDEX_PATH) as f:
         audio_index = json.load(f)
     with open(CONTENT_PATH) as f:
         content = json.load(f)
 
-    audio_ids = set(audio_index.keys())
     missing = []
     for t in content["itemTemplates"]:
-        if t["id"] not in audio_ids:
-            spoken = t.get("spokenForm") or t["prompt"]
-            missing.append({"id": t["id"], "text": spoken})
+        if t.get("audioID"):
+            continue  # voiced from the recording set in Audio/future, not this index
+        if recorded_text(audio_index.get(t["id"])) != spoken_text(t):
+            missing.append({"id": t["id"], "text": spoken_text(t)})
 
     return missing, audio_index
+
+
+def save_index(audio_index):
+    with open(INDEX_PATH, "w") as f:
+        json.dump(audio_index, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+
+def save_awaiting(items):
+    with open(AWAITING_PATH, "w") as f:
+        json.dump(sorted(items, key=lambda item: item["id"]), f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+
+def clip_path(audio_index, item_id):
+    """Where an item's clip goes: its existing file (keeping that name's case), or a new one."""
+    entry = audio_index.get(item_id)
+    if isinstance(entry, dict):
+        return entry["file"]
+    if isinstance(entry, str):
+        return entry
+    return f"questions/{item_id}.mp3"
 
 
 def generate_audio(text: str, output_path: str) -> bool:
@@ -85,11 +131,17 @@ def generate_audio(text: str, output_path: str) -> bool:
 
 def main():
     missing, audio_index = load_missing_items()
-    print(f"Found {len(missing)} items missing audio")
+    print(f"Found {len(missing)} items needing audio")
 
-    if not missing:
-        print("Nothing to generate!")
+    if "--list" in sys.argv or not missing:
+        save_awaiting(missing)
+        print(f"Waiting list: {os.path.relpath(AWAITING_PATH, BASE_DIR)}")
         return
+
+    if not ELEVENLABS_API_KEY:
+        save_awaiting(missing)
+        print("Set ELEVENLABS_API_KEY to record them.")
+        sys.exit(1)
 
     # Group by spoken text to avoid duplicate API calls
     text_to_ids: dict[str, list[str]] = {}
@@ -100,48 +152,43 @@ def main():
     print(f"Unique spoken texts: {unique_texts} (saving {len(missing) - unique_texts} duplicate API calls)")
 
     generated = 0
-    skipped = 0
     failed = 0
+    done: set[str] = set()
 
     for text, ids in text_to_ids.items():
         primary_id = ids[0]
-        rel_path = f"questions/{primary_id}.mp3"
-        abs_path = os.path.join(AUDIO_DIR, f"{primary_id}.mp3")
+        rel_path = clip_path(audio_index, primary_id)
+        abs_path = os.path.join(os.path.dirname(AUDIO_DIR), rel_path)
 
-        # Skip if file already exists on disk
-        if os.path.exists(abs_path) and os.path.getsize(abs_path) > 100:
-            print(f"  SKIP (exists): {primary_id}")
-            skipped += 1
-        else:
-            print(f"  [{generated + failed + 1}/{unique_texts}] Generating: {primary_id} — \"{text[:60]}...\"" if len(text) > 60 else f"  [{generated + failed + 1}/{unique_texts}] Generating: {primary_id} — \"{text}\"")
-            if generate_audio(text, abs_path):
-                generated += 1
-                print(f"    OK ({os.path.getsize(abs_path):,} bytes)")
-            else:
-                failed += 1
-                print(f"    FAILED")
-                continue
-            time.sleep(RATE_LIMIT_DELAY)
+        # Always record afresh: a file already there says older words.
+        print(f"  [{generated + failed + 1}/{unique_texts}] Generating: {primary_id} — \"{text}\"")
+        if not generate_audio(text, abs_path):
+            failed += 1
+            print(f"    FAILED")
+            continue
+        generated += 1
+        print(f"    OK ({os.path.getsize(abs_path):,} bytes)")
 
-        # Add primary to index
-        audio_index[primary_id] = rel_path
+        audio_index[primary_id] = {"file": rel_path, "text": text}
+        done.add(primary_id)
 
-        # Handle duplicates — copy file and add index entries
+        # Duplicates share the recording
         for dup_id in ids[1:]:
-            dup_rel = f"questions/{dup_id}.mp3"
-            dup_abs = os.path.join(AUDIO_DIR, f"{dup_id}.mp3")
-            if not os.path.exists(dup_abs):
+            dup_rel = clip_path(audio_index, dup_id)
+            dup_abs = os.path.join(os.path.dirname(AUDIO_DIR), dup_rel)
+            if os.path.abspath(dup_abs) != os.path.abspath(abs_path):
                 shutil.copy2(abs_path, dup_abs)
                 print(f"    COPY: {primary_id} → {dup_id}")
-            audio_index[dup_id] = dup_rel
+            audio_index[dup_id] = {"file": dup_rel, "text": text}
+            done.add(dup_id)
 
-    # Save updated index
-    with open(INDEX_PATH, "w") as f:
-        json.dump(audio_index, f, indent=2)
-        f.write("\n")
+        # Save as we go, so an interrupted run picks up where it stopped.
+        save_index(audio_index)
+        save_awaiting([item for item in missing if item["id"] not in done])
+        time.sleep(RATE_LIMIT_DELAY)
 
-    print(f"\nDone! Generated: {generated}, Skipped: {skipped}, Failed: {failed}, Duplicates: {len(missing) - unique_texts}")
-    print(f"Audio index now has {len(audio_index)} entries")
+    print(f"\nDone! Generated: {generated}, Failed: {failed}, Duplicates: {len(done) - generated}")
+    print(f"Audio index now has {len(audio_index)} entries; {len(missing) - len(done)} still waiting")
 
 
 if __name__ == "__main__":

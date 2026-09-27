@@ -2,8 +2,19 @@ import AVFoundation
 import Foundation
 
 enum NarrationAudioIndex {
+    /// A clip in the audio index: its file, and the words it was recorded from where the index
+    /// records them (entries written as `{"file": …, "text": …}`).
+    struct Entry: Equatable {
+        let file: String
+        let text: String?
+    }
+
     static func load(bundle: Bundle = .main) throws -> [String: String] {
-        var resolved: [String: String] = [:]
+        try loadEntries(bundle: bundle).mapValues(\.file)
+    }
+
+    static func loadEntries(bundle: Bundle = .main) throws -> [String: Entry] {
+        var resolved: [String: Entry] = [:]
         for resource in resourceCandidates {
             guard let url = bundle.url(forResource: resource.name, withExtension: resource.ext, subdirectory: resource.subdirectory)
                 ?? bundle.url(forResource: resource.name, withExtension: resource.ext)
@@ -14,16 +25,17 @@ enum NarrationAudioIndex {
             let raw = try JSONSerialization.jsonObject(with: data) as? [String: Any] ?? [:]
             for (key, value) in raw {
                 if let str = value as? String {
-                    resolved[key] = str
+                    resolved[key] = Entry(file: str, text: nil)
                 } else if let dict = value as? [String: Any], let file = dict["file"] as? String {
-                    resolved[key] = file
+                    resolved[key] = Entry(file: file, text: dict["text"] as? String)
                 }
             }
         }
         return resolved
     }
 
-    static func loadTextMappings(bundle: Bundle = .main) -> [String: String] {
+    /// The clips of the 2026-04-26 recording set, each with the words it was recorded from.
+    static func loadRecordingSet(bundle: Bundle = .main) -> [(id: String, text: String)] {
         guard let url = bundle.url(
             forResource: "audio_recording_set_2026_04_26",
             withExtension: "json",
@@ -33,21 +45,63 @@ enum NarrationAudioIndex {
               let raw = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let clips = raw["clips"] as? [[String: Any]]
         else {
-            return [:]
+            return []
         }
 
-        var mappings: [String: String] = [:]
-        for clip in clips {
-            guard let text = clip["text"] as? String, let id = clip["id"] as? String else { continue }
-            mappings[text.trimmingCharacters(in: .whitespacesAndNewlines)] = id
+        return clips.compactMap { clip in
+            guard let text = clip["text"] as? String, let id = clip["id"] as? String else { return nil }
+            return (id: id, text: text.trimmingCharacters(in: .whitespacesAndNewlines))
         }
-        return mappings
+    }
+
+    /// Spoken text → clip id, for phrases looked up by what they say.
+    static func textMappings(_ recordingSet: [(id: String, text: String)]) -> [String: String] {
+        Dictionary(recordingSet.map { ($0.text, $0.id) }, uniquingKeysWith: { _, last in last })
     }
 
     private static let resourceCandidates = [
         (name: "audio_index", ext: "json", subdirectory: Optional("Audio")),
         (name: "audio_recording_set_2026_04_26_index", ext: "json", subdirectory: Optional("Audio/future"))
     ]
+}
+
+/// The recorded question clips, and the words each one says.
+///
+/// Questions are recorded by id, and a question can be reworded after its clip is made: the
+/// old clip would then read out different numbers from the ones on screen. So a clip reads a
+/// question only when it was recorded from those exact words; any other question is read by
+/// the system voice.
+struct QuestionClips {
+    private let recordedTexts: [String: String]
+
+    init(recordedTexts: [String: String]) {
+        self.recordedTexts = recordedTexts.mapValues(Self.normalized)
+    }
+
+    /// From the audio index entries that record their words, and the recording set.
+    init(entries: [String: NarrationAudioIndex.Entry], recordingSet: [(id: String, text: String)]) {
+        var texts = entries.compactMapValues(\.text)
+        for clip in recordingSet where entries[clip.id] != nil {
+            texts[clip.id] = texts[clip.id] ?? clip.text
+        }
+        self.init(recordedTexts: texts)
+    }
+
+    static func load(bundle: Bundle = .main) -> QuestionClips {
+        QuestionClips(
+            entries: (try? NarrationAudioIndex.loadEntries(bundle: bundle)) ?? [:],
+            recordingSet: NarrationAudioIndex.loadRecordingSet(bundle: bundle)
+        )
+    }
+
+    /// Whether clip `id` says `text`, word for word.
+    func clip(_ id: String, says text: String) -> Bool {
+        recordedTexts[id] == Self.normalized(text)
+    }
+
+    private static func normalized(_ text: String) -> String {
+        text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+    }
 }
 
 enum NarrationStyle: String, CaseIterable, Identifiable {
@@ -75,6 +129,7 @@ final class NarrationService {
     private var audioPlayer: AVAudioPlayer?
     private let audioIndex: [String: String]  // id → relative path
     private let textAudioIndex: [String: String]  // spoken text → id
+    private let questionClips: QuestionClips
 
     // MARK: - Fallback TTS
 
@@ -88,14 +143,18 @@ final class NarrationService {
     // MARK: - Init
 
     init() {
-        if let resolved = try? NarrationAudioIndex.load() {
-            audioIndex = resolved
+        let entries: [String: NarrationAudioIndex.Entry]
+        if let resolved = try? NarrationAudioIndex.loadEntries() {
+            entries = resolved
             print("[NarrationService] Loaded audio index: \(resolved.count) entries")
         } else {
-            audioIndex = [:]
+            entries = [:]
             print("[NarrationService] audio_index.json not found in bundle")
         }
-        textAudioIndex = NarrationAudioIndex.loadTextMappings()
+        let recordingSet = NarrationAudioIndex.loadRecordingSet()
+        audioIndex = entries.mapValues(\.file)
+        textAudioIndex = NarrationAudioIndex.textMappings(recordingSet)
+        questionClips = QuestionClips(entries: entries, recordingSet: recordingSet)
     }
 
     // MARK: - Public API
@@ -107,8 +166,8 @@ final class NarrationService {
             stopAll()
         }
 
-        // Try pre-generated audio by item ID
-        if let itemID, playPreGenerated(id: itemID) {
+        // Try pre-generated audio by item ID, if it says this question
+        if let itemID, questionClips.clip(itemID, says: text), playPreGenerated(id: itemID) {
             return
         }
 

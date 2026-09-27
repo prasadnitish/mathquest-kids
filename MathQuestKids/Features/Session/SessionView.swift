@@ -544,7 +544,11 @@ struct SessionView: View {
             recentMisconceptions: [],
             supports: item.supports
         )
-        let workedHint = appState.hintEngine.nextHint(for: context)
+        // Column problems are talked through with the child's own numbers, ones first, the
+        // same order they were worked in.
+        let workedText = item.columnProblem
+            .flatMap { ColumnWork(problem: $0, answer: item.answer).walkthrough(answer: item.answer) }
+            ?? appState.hintEngine.nextHint(for: context).text
 
         return VStack(spacing: 16) {
             MascotBlock(
@@ -585,7 +589,7 @@ struct SessionView: View {
                 Text("Let's Solve It Together")
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textSecondary)
-                Text(workedHint.text)
+                Text(workedText)
                     .kidText(.body)
                     .foregroundStyle(AppTheme.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)

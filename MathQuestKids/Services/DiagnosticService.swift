@@ -99,7 +99,7 @@ final class DiagnosticService {
         return deterministic ? selected : selected.shuffled()
     }
 
-    private static let questionBank: [DiagnosticQuestion] = [
+    static let questionBank: [DiagnosticQuestion] = [
         // Kindergarten
         DiagnosticQuestion(id: "diag-k-01", prompt: "Which number is 1 more than 7?", choices: ["6", "7", "8", "9"], correctIndex: 2, targetGrade: .kindergarten, domain: .numberSense),
         DiagnosticQuestion(id: "diag-k-02", prompt: "Sam has 5 apples and gets 2 more. How many now?", choices: ["6", "7", "8", "9"], correctIndex: 1, targetGrade: .kindergarten, domain: .operations),

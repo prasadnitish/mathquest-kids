@@ -345,6 +345,76 @@ struct ColumnWork: Equatable {
         let index = text.index(text.endIndex, offsetBy: -fromRight)
         return Int(String(text[index]))
     }
+
+    /// The problem worked the way it's written on paper, one line per column from the ones:
+    /// what the column comes to, and what's carried or traded. Nil for problems the columns
+    /// don't handle (dividing, multiplying by more than one digit, trading across a 0).
+    func walkthrough(answer: String) -> String? {
+        let symbol = problem.operation.symbol
+        var lines: [String] = []
+        var carried = 0
+        var tradedAway = false
+        for column in (firstOperandColumn...onesColumn).reversed() {
+            let place = LongFormProblemView.placeName(forColumn: column, of: columnCount)
+            let label = place.capitalized + ": "
+            let top = topDigit(column)
+            let bottom = bottomDigit(column)
+            switch problem.operation {
+            case .add:
+                let terms = [top, bottom].compactMap { $0 } + (carried > 0 ? [carried] : [])
+                let sum = terms.reduce(0, +)
+                var line = label + (terms.count == 1
+                    ? "nothing to add, so write the \(sum)."
+                    : terms.map { String($0) }.joined(separator: " + ") + " = \(sum).")
+                if sum >= 10 {
+                    line += " Write \(sum % 10), carry \(sum / 10)."
+                }
+                carried = sum / 10
+                lines.append(line)
+            case .subtract:
+                guard let top else { return nil }
+                var value = top - (tradedAway ? 1 : 0)
+                guard value >= 0 else { return nil }
+                var line = label
+                if tradedAway {
+                    line += "after the trade, the \(top) is a \(value). "
+                }
+                tradedAway = value < (bottom ?? 0)
+                if tradedAway {
+                    guard column > firstOperandColumn else { return nil }
+                    let left = LongFormProblemView.placeName(forColumn: column - 1, of: columnCount).dropLast()
+                    line += "\(value) is less than \(bottom ?? 0), so trade 1 \(left) for 10 \(place). "
+                    value += 10
+                }
+                if let bottom {
+                    line += "\(value) \(symbol) \(bottom) = \(value - bottom)."
+                } else {
+                    line += "nothing to take away, so write the \(value)."
+                }
+                lines.append(line)
+            case .multiply:
+                guard problem.bottom < 10 else { return nil }
+                guard let top else { continue }
+                let product = top * problem.bottom
+                let total = product + carried
+                var line = label + "\(top) \(symbol) \(problem.bottom) = \(product)"
+                line += carried > 0 ? ", plus the \(carried) you carried is \(total)." : "."
+                if total >= 10 {
+                    line += " Write \(total % 10), carry \(total / 10)."
+                }
+                carried = total / 10
+                lines.append(line)
+            case .divide:
+                return nil
+            }
+        }
+        if carried > 0 {
+            let place = LongFormProblemView.placeName(forColumn: firstOperandColumn - 1, of: columnCount)
+            lines.append(place.capitalized + ": write the \(carried) you carried.")
+        }
+        lines.append("So \(problem.top) \(symbol) \(problem.bottom) = \(answer).")
+        return lines.joined(separator: "\n")
+    }
 }
 
 /// Column-by-column entry for long-form problems: the child taps an answer box (the ones
