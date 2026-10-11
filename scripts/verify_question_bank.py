@@ -899,6 +899,8 @@ def write_markdown(path, results, by_fmt, counts, assertions, codes):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", help="directory for CSV/JSON/MD reports")
+    ap.add_argument("--ignore", action="append", default=[], metavar="CODE_PREFIX",
+                    help="error codes starting with this prefix do not affect the exit status (repeatable), e.g. AUDIO.file")
     args = ap.parse_args()
 
     pack = json.loads(PACK.read_text())
@@ -983,7 +985,10 @@ def main():
                          for r in results if r.status != "PASS"]}, indent=1, sort_keys=True))
         write_markdown(out / "QUESTION_BANK_VERIFICATION.md", results, by_fmt, counts, assertions, codes)
         print(f"\nWrote {out}/question_verification.csv, .json and QUESTION_BANK_VERIFICATION.md")
-    return 1 if counts["ERROR"] else 0
+    blocking = sum(1 for r in results for m in r.errors if not any(m.startswith(p) for p in args.ignore))
+    if args.ignore:
+        print(f"\nExit status counts {blocking} blocking error(s); ignored prefixes: {', '.join(args.ignore)}")
+    return 1 if blocking else 0
 
 
 if __name__ == "__main__":

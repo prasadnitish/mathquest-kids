@@ -1,0 +1,59 @@
+name: iOS build and test
+
+on:
+  push:
+    branches: ["main", "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  question-bank:
+    name: Verify question bank
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify every answer key (exact arithmetic, no network)
+        # Missing audio clips are tracked separately and deliberately deferred.
+        run: python3 -I scripts/verify_question_bank.py --ignore AUDIO.file
+
+  build-and-test:
+    name: Build and unit tests
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest stable Xcode
+        run: |
+          XC=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)
+          sudo xcode-select -s "$XC/Contents/Developer"
+          xcodebuild -version
+
+      - name: Pick a simulator
+        run: echo "SIM_ID=$(python3 scripts/ci/pick_simulator.py)" >> "$GITHUB_ENV"
+
+      - name: Build and run MathQuestKidsTests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project MathQuestKids.xcodeproj \
+            -scheme MathQuestKids \
+            -destination "id=$SIM_ID" \
+            -only-testing:MathQuestKidsTests \
+            -resultBundlePath "$RUNNER_TEMP/TestResults.xcresult" \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Upload build log and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ci-results
+          path: |
+            ${{ runner.temp }}/xcodebuild.log
+            ${{ runner.temp }}/TestResults.xcresult
+          if-no-files-found: ignore
