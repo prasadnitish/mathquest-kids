@@ -1333,15 +1333,7 @@ struct SpatialChoiceInteraction: View {
             spatialCue
 
             VStack(spacing: 8) {
-                ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
-                    AnswerButton(
-                        index: index,
-                        title: option,
-                        state: selection == option ? .selected : .default,
-                        theme: theme,
-                        action: { selection = option }
-                    )
-                }
+                spatialOptions
                 AnswerButton(
                     index: 0,
                     title: "I don't know yet",
@@ -1354,6 +1346,84 @@ struct SpatialChoiceInteraction: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(AppTheme.card, in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    /// Rotation, net and mirror questions answer with pictures; every other format uses text buttons.
+    private var usesVisualOptions: Bool {
+        switch item.format {
+        case .rotateToMatch, .netPreview, .symmetryMirror:
+            return item.payload.options != nil
+        default:
+            return false
+        }
+    }
+
+    @ViewBuilder
+    private var spatialOptions: some View {
+        if usesVisualOptions {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                ForEach(Array(item.options.enumerated()), id: \.offset) { _, label in
+                    SpatialVisualOptionButton(
+                        label: label,
+                        isSelected: selection == label,
+                        theme: theme,
+                        accessibilityDescription: visualOptionDescription,
+                        action: { selection = label }
+                    ) {
+                        visualOptionPicture(for: label)
+                    }
+                }
+            }
+        } else {
+            ForEach(Array(item.options.enumerated()), id: \.offset) { index, option in
+                AnswerButton(
+                    index: index,
+                    title: option,
+                    state: selection == option ? .selected : .default,
+                    theme: theme,
+                    action: { selection = option }
+                )
+            }
+        }
+    }
+
+    private var visualOptionDescription: String {
+        switch item.format {
+        case .rotateToMatch: return "a picture of the \(item.payload.shape ?? "shape")"
+        case .netPreview: return "a flat pattern of squares"
+        case .symmetryMirror: return "a picture of the other half"
+        default: return "a picture"
+        }
+    }
+
+    @ViewBuilder
+    private func visualOptionPicture(for label: String) -> some View {
+        let option = item.payload.options?.first { $0.label == label }
+        switch item.format {
+        case .rotateToMatch:
+            SpatialRotatedShapeView(
+                shapeName: option?.shape ?? item.payload.shape ?? "",
+                rotation: option?.rotation ?? 0,
+                mirrored: option?.mirrored ?? false,
+                color: SpatialPalette.color(named: item.payload.color, fallback: theme.primary)
+            )
+            .padding(6)
+        case .netPreview:
+            SpatialCellPictureView(
+                rows: option?.cells ?? [],
+                firstColor: theme.primary.opacity(0.85),
+                borderColor: Color.black.opacity(0.35)
+            )
+        case .symmetryMirror:
+            SpatialMirrorPictureView(
+                half: item.payload.halfCells ?? [],
+                other: option?.cells,
+                axis: item.payload.axis ?? "vertical",
+                theme: theme
+            )
+        default:
+            Text(label)
+        }
     }
 
     private var spatialCue: some View {
@@ -1371,6 +1441,37 @@ struct SpatialChoiceInteraction: View {
                     targetShape: item.payload.targetShape,
                     theme: theme
                 )
+            }
+
+            if item.format == .positionWords || item.format == .gridPath,
+               let objects = item.payload.objects,
+               let gridSize = item.payload.gridSize {
+                SpatialObjectGridView(
+                    objects: objects,
+                    gridSize: gridSize,
+                    highlightedName: item.format == .positionWords ? item.payload.anchor : item.payload.start,
+                    ringLabel: item.format == .positionWords ? "object to look around" : "starting point",
+                    theme: theme
+                )
+            }
+
+            if item.format == .rotateToMatch, let shape = item.payload.shape {
+                SpatialRotatedShapeView(
+                    shapeName: shape,
+                    rotation: 0,
+                    mirrored: false,
+                    color: SpatialPalette.color(named: item.payload.color, fallback: theme.primary)
+                )
+                .frame(width: 96, height: 96)
+                .accessibilityLabel("The starting \(shape)")
+            }
+
+            if item.format == .symmetryMirror,
+               let half = item.payload.halfCells,
+               let axis = item.payload.axis {
+                SpatialMirrorPictureView(half: half, other: nil, axis: axis, theme: theme)
+                    .frame(height: 130)
+                    .accessibilityLabel("Half of a picture beside a \(axis) mirror line")
             }
 
             if let spatialDetail {
@@ -1432,8 +1533,8 @@ struct SpatialChoiceInteraction: View {
             guard let shape = item.payload.shape, let degrees = item.payload.rotationDegrees else { return nil }
             return "Turn the \(shape) \(degrees) degrees."
         case .buildShape:
-            guard let targetShape = item.payload.targetShape, let pieces = item.payload.correctPieces else { return nil }
-            return "Build a \(targetShape) with \(pieces)."
+            guard let targetShape = item.payload.targetShape else { return nil }
+            return "Choose the pieces that build a \(targetShape)."
         case .symmetryMirror:
             guard let object = item.payload.object, let axis = item.payload.axis else { return nil }
             return "Mirror the \(object) across a \(axis) line."
@@ -1497,13 +1598,6 @@ private struct ShapeHuntSceneView: View {
                     spatialShape(object)
                         .frame(width: shapeSize, height: shapeSize)
                         .rotationEffect(.degrees(Double(object.rotation ?? 0)))
-                        .overlay {
-                            if object.target == true {
-                                Circle()
-                                    .stroke(theme.accent.opacity(0.55), lineWidth: 3)
-                                    .scaleEffect(1.22)
-                            }
-                        }
                         .position(
                             x: (CGFloat(object.x) + 0.5) * cellWidth,
                             y: (CGFloat(object.y) + 0.5) * cellHeight
@@ -1570,9 +1664,8 @@ private struct ShapeHuntSceneView: View {
     }
 
     private var accessibilitySummary: String {
-        let targetCount = scene.filter { $0.target == true }.count
-        let target = targetShape ?? "matching shapes"
-        return "Shape hunt scene with \(targetCount) \(target)"
+        let target = targetShape ?? "matching shape"
+        return "Shape hunt scene with several shapes. Count the \(target)s."
     }
 }
 

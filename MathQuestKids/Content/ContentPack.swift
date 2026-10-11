@@ -176,6 +176,8 @@ struct ItemPayload: Codable, Equatable {
     let attribute: String?
     let realWorldObjects: [String]?
     let targetSolid: String?
+    /// Visible half of a mirror picture, one string per row ('#' filled, '.' empty).
+    let halfCells: [String]?
 
     init(
         left: Int? = nil,
@@ -240,7 +242,8 @@ struct ItemPayload: Codable, Equatable {
         vertices: Int? = nil,
         attribute: String? = nil,
         realWorldObjects: [String]? = nil,
-        targetSolid: String? = nil
+        targetSolid: String? = nil,
+        halfCells: [String]? = nil
     ) {
         self.left = left
         self.right = right
@@ -305,6 +308,7 @@ struct ItemPayload: Codable, Equatable {
         self.attribute = attribute
         self.realWorldObjects = realWorldObjects
         self.targetSolid = targetSolid
+        self.halfCells = halfCells
     }
 }
 
@@ -337,6 +341,8 @@ struct SpatialOption: Codable, Equatable {
     let pattern: String?
     let description: String?
     let foldsToCube: Bool?
+    /// Drawable picture for net and mirror options, one string per row ('#' filled, '.' empty).
+    let cells: [String]?
 }
 
 struct HintTemplate: Codable {

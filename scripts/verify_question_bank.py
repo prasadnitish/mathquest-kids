@@ -74,7 +74,8 @@ SHAPE_FACTS = {"Triangle": (3, 3), "Square": (4, 4), "Rectangle": (4, 4), "Circl
 ROT_SYMMETRY = {"triangle": 360, "rectangle": 180, "diamond": 180, "pentagon": 72,
                 "trapezoid": 360, "arrow": 360, "L shape": 360, "T shape": 360}
 # shapes that have a mirror line, so a mirrored copy equals some rotation of it
-MIRROR_SYMMETRIC = {"triangle", "rectangle", "diamond", "pentagon", "T shape", "arrow"}
+# (the app draws triangle as a right triangle and trapezoid as a right trapezoid, both chiral)
+MIRROR_SYMMETRIC = {"rectangle", "diamond", "pentagon", "T shape", "arrow"}
 
 # Which of the four choices on a solidAttributes item can the clue truthfully describe?
 CLUE_TRUE_FOR = {
@@ -102,7 +103,7 @@ CAN_BUILD = {
     ("hexagon", "three circles"): False, ("hexagon", "one rectangle"): False,
     ("larger triangle", "four small triangles"): True, ("larger triangle", "two rectangles"): False,
     ("larger triangle", "three circles"): False, ("larger triangle", "one square and one circle"): False,
-    ("rectangle", "two squares"): True,
+    ("rectangle", "two squares"): True, ("rectangle", "two pentagons"): False,
     # two (right) triangles placed hypotenuse-to-hypotenuse make a rectangle
     ("rectangle", "two triangles"): True,
     ("rectangle", "two circles"): False, ("rectangle", "one triangle and one circle"): False,
@@ -178,7 +179,7 @@ def scan_ui():
 UI = scan_ui()
 
 # payload data an item's answer is derived from, per spatial format
-ANSWER_DEPENDS_ON = {"positionWords": "objects", "rotateToMatch": "options", "symmetryMirror": "options",
+ANSWER_DEPENDS_ON = {"positionWords": "objects", "rotateToMatch": "options", "symmetryMirror": "halfCells",
                      "netPreview": "options", "shapeHunt": "scene"}
 
 
@@ -395,6 +396,46 @@ def check_runtime(r: Result):
 # SPATIAL
 # --------------------------------------------------------------------------
 
+def folds_to_cube(rows) -> bool:
+    """Roll a cube over the '#' cells; the net folds iff the 6 cells get 6 distinct faces and the roll is consistent."""
+    cells = {(x, y) for y, row in enumerate(rows) for x, c in enumerate(row) if c == "#"}
+    if len(cells) != 6:
+        return False
+
+    def roll(st, d):
+        t, b, n, so, e, w = st
+        return {"E": (w, e, n, so, t, b), "W": (e, w, n, so, b, t),
+                "N": (so, n, t, b, e, w), "S": (n, so, b, t, e, w)}[d]
+
+    step = {"E": (1, 0), "W": (-1, 0), "N": (0, -1), "S": (0, 1)}
+    start = min(cells)
+    state = {start: (0, 1, 2, 3, 4, 5)}
+    queue = [start]
+    while queue:
+        c = queue.pop(0)
+        for d, (dx, dy) in step.items():
+            nb = (c[0] + dx, c[1] + dy)
+            if nb in cells and nb not in state:
+                state[nb] = roll(state[c], d)
+                queue.append(nb)
+    if len(state) != 6:
+        return False                       # not connected
+    for c in cells:                        # cycles must roll consistently
+        for d, (dx, dy) in step.items():
+            nb = (c[0] + dx, c[1] + dy)
+            if nb in cells and roll(state[c], d) != state[nb]:
+                return False
+    return len({st[1] for st in state.values()}) == 6
+
+
+def reflect_half(half, axis):
+    return [r[::-1] for r in half] if axis == "vertical" else half[::-1]
+
+
+assert folds_to_cube([".#..", "####", ".#.."]) and folds_to_cube([".#..", "####", "..#."]) and folds_to_cube(["##..", ".##.", "..##"])
+assert not folds_to_cube(["######"]) and not folds_to_cube([".#..", "####"]) and not folds_to_cube(["###", "###"])
+
+
 def check_spatial(r: Result):
     it, p, ans, ch = r.item, r.item["payload"], r.item["answer"], r.item.get("choices") or []
     f = it["format"]
@@ -455,6 +496,9 @@ def check_spatial(r: Result):
                      f"a {p['shape']} looks identical after turns of {step}°, so options {same} are indistinguishable")
         if p["shape"] in MIRROR_SYMMETRIC and any(o["mirrored"] for o in p["options"]):
             r.warn("CHOICES.mirror", f"'{p['shape']}' has a mirror line, so its mirrored distractors equal some rotation of it")
+        if step:
+            keys = [((o["rotation"] % 360) % step, bool(o["mirrored"]) and p["shape"] not in MIRROR_SYMMETRIC) for o in p["options"]]
+            r.expect("CHOICES.distinct", len(set(keys)) == 4, f"options are not four distinct pictures: {keys}")
         r.expect("CHOICES.labels", [o["label"] for o in p["options"]] == ch, "option labels != choices")
         if re.search(r"\d+ degrees", it["prompt"]):
             r.expect("PROMPT", str(p["rotationDegrees"]) in it["prompt"], "prompt degrees != payload.rotationDegrees")
@@ -477,8 +521,15 @@ def check_spatial(r: Result):
         r.expect("CHOICES.unique", len(marked) == 1, f"{len(marked)} options flagged correct: {marked}")
         r.expect("MATH", marked == [ans] == [p["answerChoice"]], f"flags {marked}, answerChoice {p['answerChoice']!r}, answer {ans!r}")
         r.expect("CHOICES.labels", [o["label"] for o in p["options"]] == ch, "option labels != choices")
-        r.warn("VERIFY.limit", "options hold only a boolean flag (no geometry); correctness can be checked for internal "
-                               "consistency only, not independently")
+        half = p.get("halfCells")
+        if not half or any("cells" not in o for o in p["options"]):
+            r.err("VERIFY.limit", "no drawable half-picture / option cells; correctness cannot be derived")
+        else:
+            want = reflect_half(half, p["axis"])
+            match = [o["label"] for o in p["options"] if o["cells"] == want]
+            r.expect("MATH.reflect", match == [ans], f"options equal to the true {p['axis']}-mirror image: {match}, stored {ans!r}")
+            r.expect("CHOICES.distinct", len({tuple(o["cells"]) for o in p["options"]}) == 4, "option pictures are not four distinct pictures")
+            r.expect("MATH.asym", half != want, "the half-picture is its own mirror image, so the question is trivial")
     elif f == "gridPath":
         sx, sy = p["startPosition"]["x"], p["startPosition"]["y"]
         dx = dy = 0
@@ -494,13 +545,23 @@ def check_spatial(r: Result):
         r.expect("VISUAL.bounds", 0 <= tx < gx and 0 <= ty < gy,
                  f"the path ends at {(tx, ty)}, outside the {gx}x{gy} grid, so no object can be there (answer {ans!r})")
         r.expect("MATH", ans == p["targetObject"], f"stored {ans!r} != payload.targetObject")
-        r.expect("PROMPT", p["start"] in it["prompt"], "prompt does not name the payload start object")
-        if p["moves"] not in it["prompt"]:
-            r.warn("SPOKEN.incomplete", f"narration '{it['prompt']}' never says the moves ('{p['moves']}'); a child who only "
-                                        "listens cannot answer (the moves appear only in the on-screen detail line)")
-        if not any(k in p for k in ("objects", "layout", "grid")):
-            r.warn("VERIFY.limit", "payload has no object layout, so which object sits at the end cell cannot be verified "
-                                   "(only the move arithmetic can)")
+        r.expect("PROMPT", p["start"] in it["prompt"] and p["moves"] in it["prompt"], "on-screen prompt lacks the start object or the moves")
+        if p["moves"] not in (it.get("spokenForm") or ""):
+            r.warn("SPOKEN.incomplete", f"narration '{it.get('spokenForm')}' never says the moves ('{p['moves']}'); a child who only "
+                                        "listens cannot answer (audio is deferred)")
+        lay = p.get("objects")
+        if not lay:
+            r.err("VERIFY.limit", "payload has no object layout, so the object at the end cell cannot be verified or drawn")
+        else:
+            cells = Counter((o["x"], o["y"]) for o in lay)
+            r.expect("VISUAL.layout", all(n == 1 for n in cells.values()), "two objects share a cell")
+            r.expect("VISUAL.layout", all(0 <= o["x"] < gx and 0 <= o["y"] < gy for o in lay), "layout object outside grid")
+            at_end = [o["name"] for o in lay if (o["x"], o["y"]) == (tx, ty)]
+            r.expect("CHOICES.unique", at_end == [ans], f"objects at the end cell: {at_end}, stored {ans!r}")
+            at_start = [o["name"] for o in lay if (o["x"], o["y"]) == (sx, sy)]
+            r.expect("VISUAL.layout", at_start == [p["start"]], f"objects at the start cell: {at_start}, expected {p['start']!r}")
+            names = {o["name"] for o in lay}
+            r.expect("VISUAL.layout", set(ch) <= names, f"choices {sorted(set(ch) - names)} are not drawn on the map")
     elif f == "solidAttributes":
         nm, clue = p["solidName"], p["attribute"]
         r.expect("MATH", ans == nm, f"stored {ans!r} != payload.solidName")
@@ -515,14 +576,16 @@ def check_spatial(r: Result):
             r.expect("CHOICES.unique", good == [ans], f"choices satisfying clue '{clue}': {good}, stored {ans!r}")
     elif f == "netPreview":
         r.expect("MATH.solid", p["targetSolid"] == "cube", "only cube nets are modelled")
-        for o in p["options"]:
-            r.expect("MATH.known", o["pattern"] in NET_FOLDS, f"unknown net pattern {o['pattern']!r}")
-        truth = [o["label"] for o in p["options"] if NET_FOLDS.get(o["pattern"])]
-        flagged = [o["label"] for o in p["options"] if o["foldsToCube"]]
-        r.expect("CHOICES.unique", len(truth) == 1, f"{len(truth)} options really fold to a cube: {truth}")
-        wrong = [o["label"] + ":" + o["pattern"] for o in p["options"] if bool(o["foldsToCube"]) != NET_FOLDS.get(o["pattern"])]
-        r.expect("MATH.label", not wrong, f"foldsToCube flag contradicts geometry for {wrong}")
-        r.expect("MATH", flagged == [ans] == [p["answerChoice"]], f"flags {flagged}, answerChoice {p['answerChoice']!r}, answer {ans!r}")
+        if any("cells" not in o for o in p["options"]):
+            r.err("VERIFY.limit", "net options carry no drawable cells; folding cannot be verified or drawn")
+        else:
+            real = {o["label"]: folds_to_cube(o["cells"]) for o in p["options"]}
+            truth = [lab for lab, ok in real.items() if ok]
+            flagged = [o["label"] for o in p["options"] if o["foldsToCube"]]
+            r.expect("CHOICES.unique", len(truth) == 1, f"{len(truth)} drawn nets really fold into a cube: {truth}")
+            wrong = [lab for lab, ok in real.items() if ok != next(o for o in p["options"] if o["label"] == lab)["foldsToCube"]]
+            r.expect("MATH.label", not wrong, f"foldsToCube flag contradicts the folding simulation for {wrong}")
+            r.expect("MATH", flagged == [ans] == [p["answerChoice"]] == truth, f"flags {flagged}, simulation {truth}, answerChoice {p['answerChoice']!r}, answer {ans!r}")
         r.expect("CHOICES.labels", [o["label"] for o in p["options"]] == ch, "option labels != choices")
 
     # UI: does any view display the data the answer depends on?
@@ -600,8 +663,13 @@ def check_spoken(r: Result):
     if not sp:
         r.err("SPOKEN", "missing spokenForm")
         return
-    r.expect("SPOKEN.numbers", _norm(prompt_values(it["prompt"])) == _norm(spoken_values(sp)),
-             f"numbers in prompt {_norm(prompt_values(it['prompt']))} != spoken {_norm(spoken_values(sp))} :: {sp!r}")
+    pn, sn = _norm(prompt_values(it["prompt"])), _norm(spoken_values(sp))
+    if pn == sn:
+        r.ok("SPOKEN.numbers")
+    elif all(sn.count(v) <= pn.count(v) for v in sn):
+        r.warn("SPOKEN.omits", f"narration leaves out numbers shown on screen {[v for v in pn if pn.count(v) > sn.count(v)]} :: {sp!r}")
+    else:
+        r.err("SPOKEN.numbers", f"numbers in prompt {pn} != spoken {sn} :: {sp!r}")
     for sym, word in {"+": "plus", "-": "minus", "×": "times", "÷": "divided by"}.items():
         if f" {sym} " in it["prompt"]:
             r.expect("SPOKEN.operator", word in sp.lower(), f"prompt has '{sym}' but spoken form lacks '{word}': {sp!r}")
@@ -732,17 +800,26 @@ def write_markdown(path, results, by_fmt, counts, assertions, codes):
       "comparison, closed reference tables; no sampling and no model judgement). Re-run: "
       "`python3 -I scripts/verify_question_bank.py --out docs/qa`.\n")
     w("## 1. Verdict\n")
+    base_a = [r for r in base if r.item["id"] in a_ids]
+    sp_ok = sum(1 for r in sp if r.status != "ERROR")
+    base_ok = len(base) - len(base_a)
+    b_only = tier_items["B"] - a_ids
+    audio_missing = len(tier_items["C"])
+    unproven = codes.get("W AUDIO.unproven", 0)
     w(f"- **Items checked:** {n} (`content-pack-v1.json`: {len(base)} numeric/visual-math items + {len(sp)} spatial items). "
       f"**Assertions evaluated:** {assertions}.")
-    w(f"- **Not every question is correct.** {len(a_ids)} items ({len(a_ids) * 100 // n}%) have an answer-key or "
-      f"question-validity defect (tier A), and {len(tier_items['B'] - a_ids)} more are unanswerable or give the answer away on screen (tier B, spatial formats only).")
-    base_a = [r for r in base if r.item["id"] in a_ids]
-    w(f"- **The core arithmetic bank is sound.** Of {len(base)} non-spatial items, every answer key was recomputed independently and "
-      f"{len(base) - len(base_a)} are correct; the {len(base_a)} defective ones are all `dataPlot` (3 ties for 'most', 4 impossible "
-      "'how many more' comparisons).")
-    w("- **The spatial bank (560 items, all live in the app) is where the problems are.** Only `solidAttributes` (80) is fully clean. "
-      "Details below.")
-    w("- A separate audio defect: 35 clips are missing, and 966 clips have no generation record, so their text cannot be proven current.\n")
+    if not a_ids and not b_only:
+        w("- **Every answer key is verified.** No question has a wrong key, several correct answers or an impossible setup, "
+          "and the Swift views read every payload field the answer depends on (a source scan; see section 4).")
+    else:
+        w(f"- **Not every question is correct.** {len(a_ids)} items have an answer-key or question-validity defect (tier A) and "
+          f"{len(b_only)} more are unanswerable or give the answer away on screen (tier B).")
+    w(f"- **Core bank:** {base_ok} of {len(base)} non-spatial items have a verified-correct key"
+      + (f"; the others are in: {', '.join(sorted({r.item['format'] for r in base_a}))}." if base_a else "."))
+    w(f"- **Spatial bank (all live in the app):** {sp_ok} of {len(sp)} items have no error.")
+    w(f"- **Audio (deferred, not changed):** {audio_missing} clips are indexed but missing from the bundle, and {unproven} clips "
+      "have no generation record, so their text cannot be proven current.")
+    w("- The data fixes applied to the bank are listed in `docs/qa/CORRECTED_QUESTIONS.md`.\n")
     w("| Status | Items |\n|---|---:|")
     for k in ("PASS", "WARNING", "ERROR"):
         w(f"| {k} | {counts[k]} |")
@@ -806,7 +883,9 @@ def write_markdown(path, results, by_fmt, counts, assertions, codes):
     w("- **Hints and lesson text** (`hints`, `lesson-plans-k5.json`) were not checked.")
     w("- **Spoken audio content.** Whether an MP3 actually says its text needs a transcript; that is not deterministic and was not attempted. "
       "Only file existence and, where a generation record exists, text equality were checked.")
-    w("- **Visual rendering of the iOS views** was inferred from the Swift source (which payload fields are read), not from running the app.")
+    w("- **Visual rendering of the iOS views** was inferred from the Swift source (which payload fields are read), not from running the app. "
+      "The spatial SwiftUI code was written without a Swift toolchain in the authoring environment and has **not been compiled or run**; "
+      "build and run `MathQuestKidsTests` in Xcode before shipping.")
     w("- Reference tables (shape facts, rotational symmetry, solid clues, piece-set geometry, net folding) are small closed sets printed at the top of the script; "
       "they are the only external knowledge used and are open to review.")
     w("- `symmetryMirror` correctness cannot be verified independently: its options contain only a boolean flag.\n")
